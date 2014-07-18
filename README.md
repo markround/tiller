@@ -88,7 +88,7 @@ It is suggested that you add all this under your Docker definition in a `data/ti
 * `data_sources` : The data sources you'll be using to populate the configuration files. This should usually just be set to "file" to start with, although you can write your own plugins and pull them in (more on that later).
 * `template_sources` Where the templates come from, again a list of plugins. 
 
-So for a simple use-case where you're just generating everything from files and then spawning supervisors, you'd have a common.yaml looking like this:
+So for a simple use-case where you're just generating everything from files and then spawning supervisord, you'd have a common.yaml looking like this:
 
 	exec: /usr/bin/supervisord
 	data_sources:
