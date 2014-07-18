@@ -1,3 +1,5 @@
+gem "tiller", :git => "git://github.com/markround/tiller.git"
+
 Gem::Specification.new do |s|
   s.name = 'tiller'
   s.version = '0.0.2'
@@ -21,6 +23,7 @@ Gem::Specification.new do |s|
   )
   s.executables << 'tiller'
   s.homepage =
-      'https://github.com/markround/tiller'
+      'http://www.markround.com'
   s.license = 'MIT'
+  s.metadata = { "source" => "https://github.com/markround/tiller" }
 end
