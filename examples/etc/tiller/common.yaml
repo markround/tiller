@@ -1,0 +1,36 @@
+# Example configuration file, demonstrating how to use Tiller.
+#
+# These examples create two templates with different values depending on if you set the environment to
+# "production" or "staging".
+#
+# This would be called with the following environment variables set (e.g. from a bash prompt) :
+#
+# tiller_base=$PWD/examples/etc/tiller tiller_lib=$PWD/examples/lib tiller
+#
+# (Tiller uses the "production" environment if none is set). Or, for staging:
+#
+# environment=staging tiller_base=$PWD/examples/etc/tiller tiller_lib=$PWD/examples/lib tiller
+#
+# See the documentation for more details on how to use this in a Dockerfile.
+
+# exec: The executable to handover to after execution. In a Dockerfile, this would probably be /usr/bin/supervisord
+# Or some other daemon. For testing, /usr/bin/date (or similar) is a useful one-shot command that just exits,
+# so you can inspect your templates.
+exec: date
+
+# data_sources: Sources of data. Here, we're pulling in the provided FileDataSource (ships with this gem), and also the
+# NetworkDataSource under examples/lib/tiller. This is found because we set tiller_lib when we called the tiller
+# executable. We're not pulling in the example DummyDataSource, because it also provides target_values, so would
+# overwrite the target_values from FileDataSource - you should only have one DataSource providing this information,
+# otherwise your templates may end up in strange places you didn't expect!
+data_sources:
+  - file
+  - network
+
+
+# template_sources: Sources of templates, in priority order (first takes precendence). Again using the provided
+# FileTemplateSource (uses templates under <tiller_base>/templates), and also because we set tiller_lib, we can use
+# DummyTemplateSource which creates a single "dummy.erb" template.
+template_sources:
+  - file
+  - dummy
