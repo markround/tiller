@@ -60,7 +60,7 @@ Now, set up your configuration. By default, Tiller looks for configuration under
 Tiller expects a directory structure like this (using /etc/tiller as it's base, and the file data and template sources) :
 
 	etc
-	└── runner
+	└── tiller
 	    ├── common.yaml
 	    │
 	    ├── environments
@@ -98,7 +98,7 @@ So for a simple use-case where you're just generating everything from files and 
 
 ## Environment configuration
 
-These files are named after the environment variable `environment` that you pass in (using `docker run -e`, or from the command line) They define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and a set of key:value pairs that are made available to the template. 
+These files are named after the environment variable `environment` that you pass in (using `docker run -e`, or from the command line). They define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and a set of key:value pairs that are made available to the template. 
 
 Example: In your <environment>.yaml file, let's assume you want to define some parameters for an application. For example, assume you wanted to use a different MongoDB replica set name in your staging environment. Here's how you might set the replica set name in your `staging.yaml` environment file :
 
@@ -117,7 +117,7 @@ And then your `production.yaml` (which everything will use if you don't specify 
 	  config:
 	    replSet: 'production'
 
-Note that if you omit the user/group/perms parameters, the defaults are root:root, 0644. Also, if you don't run the script as root, it will skip setting these.
+Note that if you omit the user/group/perms parameters, the defaults are whatever Docker runs as (usually root). Also, if you don't run the script as root, it will skip setting these.
 
 ## Template files
 
@@ -171,7 +171,7 @@ These provide values that templates can use. There are 3 kinds of values:
 * local values which are values provided for each template
 * target values which provide information about where a template should be installed to, what permissions it should have, and so on.
 
- The `FileDataSource` module only provide local and target values, and Tiller itself provides the `environment` global value. However, you can create your own datasources by inheriting `Tiller::DataSource` and providing 3 methods :
+ The `FileDataSource` module only provides local and target values, and Tiller itself provides the `environment` global value. However, you can create your own datasources by inheriting `Tiller::DataSource` and providing 3 methods :
  
 * `values(template_name)` : Return a hash of keys/values for the given template name
 * `target_values(template_name)` : Return a hash of values for the given template name, which must include:
