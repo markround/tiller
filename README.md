@@ -94,7 +94,7 @@ So for a simple use-case where you're just generating everything from files and 
 	data_sources:
 		- file
 	template_sources:
-		-file
+		- file
 
 ## Environment configuration
 
