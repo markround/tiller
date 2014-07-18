@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'tiller'
-  s.version = '0.0.1'
+  s.version = '0.0.2'
   s.date = '2014-07-18'
   s.summary = 'Dynamic configuration generation for Docker'
   s.description = 'A tool to create configuration files in Docker containers from a variety of sources'
@@ -21,6 +21,6 @@ Gem::Specification.new do |s|
   )
   s.executables << 'tiller'
   s.homepage =
-      'http://www.markround.com'
+      'https://github.com/markround/tiller'
   s.license = 'MIT'
 end
