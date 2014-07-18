@@ -2,10 +2,10 @@ gem "tiller", :git => "git://github.com/markround/tiller.git"
 
 Gem::Specification.new do |s|
   s.name = 'tiller'
-  s.version = '0.0.2'
+  s.version = '0.0.3'
   s.date = '2014-07-18'
   s.summary = 'Dynamic configuration generation for Docker'
-  s.description = 'A tool to create configuration files in Docker containers from a variety of sources'
+  s.description = 'A tool to create configuration files in Docker containers from a variety of sources. See https://github.com/markround/tiller for examples and documenmtation.'
   s.authors = ['Mark Round']
   s.email = 'github@markround.com'
   s.files = %w(
