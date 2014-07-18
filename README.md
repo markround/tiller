@@ -51,7 +51,7 @@ Firstly, install the tiller gem and set your Dockerfile to use it (assuming you'
 	...
 	... Rest of Dockerfile here
 	...
-	CMD /usr/bin/tiller
+	CMD /usr/local/bin/tiller
 
 Now, set up your configuration. By default, Tiller looks for configuration under `/etc/tiller`, but this can be set to somewhere else by setting the environment variable `tiller_base`. This is particularly useful for testing purposes, e.g.
 
