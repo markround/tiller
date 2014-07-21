@@ -93,7 +93,7 @@ It is suggested that you add all this under your Docker definition in a `data/ti
 
 So for a simple use-case where you're just generating everything from files and then spawning supervisord, you'd have a common.yaml looking like this:
 
-	exec: /usr/bin/supervisord
+	exec: /usr/bin/supervisord -n
 	data_sources:
 		- file
 	template_sources:
