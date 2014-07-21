@@ -3,7 +3,7 @@
 # Named from the first ship-building (Docker) related term I could find that didn't have an existing gem named after it!
 # Mark Round <github@markround.com>
 
-VERSION='0.0.4'
+VERSION='0.0.5'
 
 require 'erb'
 require 'ostruct'
@@ -100,6 +100,10 @@ module Tiller
       end
     end
 
+    # If our data source returned no values (e.g. we don't build this template for this environment)
+    # We move onto the next one.
+    next if target_values.empty?
+
     # Now, we build the template
     tiller = values.merge(global_values) do |key, old, new|
       warn_merge(key, old, new, 'global and local', 'merged configuration')
@@ -120,7 +124,8 @@ module Tiller
     # Set permissions if we are running as root
     if Process::Sys.geteuid == 0 then
       puts "Setting ownership/permissions on #{target_values['target']}"
-      FileUtils.chmod(target_values['perms'], target_values['target']) if target_values.has_key('perms')
+      FileUtils.chmod(target_values['perms'], target_values['target']) if target_values.has_key?('perms')
+      # Don't need to check for the presence of these, as they're ignored if null.
       FileUtils.chown(target_values['user'], target_values['group'], target_values['target'])
     else
       puts "Not running as root, so not setting ownership/permissions on #{target_values['target']}"

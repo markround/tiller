@@ -16,6 +16,7 @@ module Tiller
 
     attr_reader :global_values
 
+    # We should always return a hash; if we have no data for the given template, just return an empty hash.
     def values(template_name)
       Hash.new
     end
@@ -27,6 +28,7 @@ module Tiller
     #    'group'   => 'root',
     #    'perms'   => '0644'
     #}
+    # Again, we should always return a hash; if we have no data for the given template, just return an empty hash.
     def target_values(template_name)
       Hash.new
     end
