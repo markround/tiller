@@ -20,6 +20,9 @@ This way I can keep all my configuration together in the container, and just tel
 ## Why "Tiller" ?
 Docker-related projects all seem to have shipyard-related names, and this was the first ship-building related term I could find that didn't have an existing gem or project named after it! And a tiller is the thing that steers a boat, so it sounded appropriate for something that generates configuration files.
 
+## More information
+Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/)
+
 # Usage
 Tiller can be used to dynamically generate configuration files before passing execution over to a daemon process. 
 
