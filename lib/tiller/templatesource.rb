@@ -2,7 +2,7 @@
 # Subclasses provide templates (an array), and individual template contents (a string containing ERB data)
 
 module Tiller
-	class TemplateSource
+  class TemplateSource
 
     # All subclasses get this, which is a hash containing tiller_base, tiller_lib and environment.
     @@config = Array.new
@@ -22,5 +22,5 @@ module Tiller
     def ping
       "ping!" + @@config.to_s
     end
-	end
+  end
 end

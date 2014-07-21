@@ -4,7 +4,7 @@
 # about a template, e.g. target location, permissions, owner and so on)
 
 module Tiller
-	class DataSource
+  class DataSource
 
     # All subclasses get this, which is a hash containing tiller_base, tiller_lib and environment.
     @@config = Array.new
@@ -35,5 +35,5 @@ module Tiller
       "ping!" + @@config.to_s
     end
 
-	end
+  end
 end

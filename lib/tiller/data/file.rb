@@ -9,7 +9,7 @@ class FileDataSource < Tiller::DataSource
   # We don't provide any global values, just ones specific to a template.
   def initialize(config)
     super
-    env_file = File.join(@@config[:tiller_base] , "environments" , "#{@@config[:environment]}.yaml")
+    env_file = File.join(@@config[:tiller_base], "environments", "#{@@config[:environment]}.yaml")
     @config_hash = YAML::load(open(env_file))
   end
 
