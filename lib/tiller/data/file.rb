@@ -18,7 +18,7 @@ class FileDataSource < Tiller::DataSource
   end
 
   def target_values(template_name)
-    @config_hash.has_key?(template_name) ? @config_hash[template_name]['config'] : Hash.new
+    @config_hash.has_key?(template_name) ? @config_hash[template_name] : Hash.new
   end
 
 end
