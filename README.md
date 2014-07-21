@@ -194,6 +194,10 @@ Assuming you had created a pair of template and data source plugins called `Exam
 ## Gotchas
 Tiller will merge values from all sources. It will warn you, but it won't stop you from doing this, which may have undefined results. Particularly if you include two data sources that each provide target values - you may find that your templates end up getting installed in locations you didn't expect, or containing spurious values!
 
+# Other examples, articles etc.
+
+* [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/) - Introductory blog post that provides a quick overview and shows an example DataSource at the end.
+
 # Future improvements
 
 * Tests
