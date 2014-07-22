@@ -124,7 +124,7 @@ Note that if you omit the user/group/perms parameters, the defaults are whatever
 
 ## Template files
 
-These are simply the ERB templates for your configuration files, and are populated with values from the selected environment file. When the environment configuration is parsed (see above), key:value pairs are made available to the template. Note, this is different to the old behaviour of my "Runner.rb" script, as this required you to use the `config` hash. Using MongoDB as an example again, you'd have a `/etc/runner/templates/mongodb.erb` with the following content:
+These are simply the ERB templates for your configuration files, and are populated with values from the selected environment file. When the environment configuration is parsed (see above), key:value pairs are made available to the template. Note, this is different to the old behaviour of my "Runner.rb" script, as this required you to use the `config` hash. Using MongoDB as an example again, you'd have a `/etc/tiller/templates/mongodb.erb` with the following content:
 
 	... (rest of content snipped) ...
 	
