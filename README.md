@@ -165,7 +165,7 @@ You can create your own template provider by extending the `Tiller::TemplateSour
 * `templates` : Return an array of templates available
 * `template(template_name)` : Return a string containing an ERB template for the given `template_name`
 
-When the class is created, it gets passed a hash containing various variables you can use to return different templates based on environment etc. Or you can read in `common.yaml` yourself and pull additional variables out of it.
+When the class is created, it gets passed a hash containing various variables you can use to return different templates based on environment etc. Or you can read any values from `common.yaml` yourself, as it's accessible from the class variable `@@config[:common_config]`.
 
 ##Data sources
 These provide values that templates can use. There are 3 kinds of values:
