@@ -18,15 +18,15 @@
 # so you can inspect your templates.
 exec: date
 
-# data_sources: Sources of data. Here, we're pulling in the provided FileDataSource (ships with this gem), and also the
-# NetworkDataSource under examples/lib/tiller. This is found because we set tiller_lib when we called the tiller
-# executable. We're not pulling in the example DummyDataSource, because it also provides target_values, so would
-# overwrite the target_values from FileDataSource - you should only have one DataSource providing this information,
+# data_sources: Sources of data. Here, we're pulling in the provided FileDataSource and EnvironmentDataSource (ships with 
+# this gem), and also the NetworkDataSource under examples/lib/tiller. This is found because we set tiller_lib when we 
+# called the tiller executable. We're not pulling in the example DummyDataSource, because it also provides target_values, 
+# so would overwrite the target_values from FileDataSource - you should only have one DataSource providing this information,
 # otherwise your templates may end up in strange places you didn't expect!
 data_sources:
   - file
+  - environment
   - network
-
 
 # template_sources: Sources of templates, in priority order (first takes precendence). Again using the provided
 # FileTemplateSource (uses templates under <tiller_base>/templates), and also because we set tiller_lib, we can use

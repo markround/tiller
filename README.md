@@ -23,6 +23,9 @@ Docker-related projects all seem to have shipyard-related names, and this was th
 ## More information
 Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/)
 
+## Changes
+* v0.0.7 : Added `EnvironmentDataSource`, so you can now use environment variables in your templates, e.g. `<%= env_user %>`.
+
 # Usage
 Tiller can be used to dynamically generate configuration files before passing execution over to a daemon process. 
 
@@ -88,20 +91,21 @@ It is suggested that you add all this under your Docker definition in a `data/ti
 `common.yaml` contains the `exec`, `data_sources` and `template_sources` parameters. 
 
 * `exec`: This is simply what will be executed after the configuration files have been generated. 
-* `data_sources` : The data sources you'll be using to populate the configuration files. This should usually just be set to "file" to start with, although you can write your own plugins and pull them in (more on that later).
+* `data_sources` : The data sources you'll be using to populate the configuration files. This should usually just be set to "file" and "environment" to start with, although you can write your own plugins and pull them in (more on that later).
 * `template_sources` Where the templates come from, again a list of plugins. 
 
-So for a simple use-case where you're just generating everything from files and then spawning supervisord, you'd have a common.yaml looking like this:
+So for a simple use-case where you're just generating everything from files or environment variables and then spawning supervisord, you'd have a common.yaml looking like this:
 
 	exec: /usr/bin/supervisord -n
 	data_sources:
 		- file
+		- environment
 	template_sources:
 		- file
 
 ## Environment configuration
 
-These files are named after the environment variable `environment` that you pass in (using `docker run -e`, or from the command line). They define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and a set of key:value pairs that are made available to the template. 
+These files are named after the environment variable `environment` that you pass in (using `docker run -e`, or from the command line). They define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and a set of key:value pairs that are made available to the template via the usual `<%= key %>` ERB syntax. 
 
 Example: In your <environment>.yaml file, let's assume you want to define some parameters for an application. For example, assume you wanted to use a different MongoDB replica set name in your staging environment. Here's how you might set the replica set name in your `staging.yaml` environment file :
 
@@ -121,6 +125,9 @@ And then your `production.yaml` (which everything will use if you don't specify 
 	    replSet: 'production'
 
 Note that if you omit the user/group/perms parameters, the defaults are whatever Docker runs as (usually root). Also, if you don't run the script as root, it will skip setting these.
+
+### Environment plugin
+If you activated the `EnvironmentDataSource` (as documented above), you'll also be able to access environment variables within your templates. These are all converted to lower-case, and prefixed with `env_`. So for example, if you had the environment variable `LOGNAME` set, you could reference this in your template with `<%= env_logname %>`
 
 ## Template files
 
@@ -174,7 +181,13 @@ These provide values that templates can use. There are 3 kinds of values:
 * local values which are values provided for each template
 * target values which provide information about where a template should be installed to, what permissions it should have, and so on.
 
- The `FileDataSource` module only provides local and target values, and Tiller itself provides the `environment` global value. However, you can create your own datasources by inheriting `Tiller::DataSource` and providing 3 methods :
+The bundled datasources are : 
+
+* `FileDataSource` : Only provides local and target values, and Tiller itself provides the `environment` global value. 
+* `EnvironmentDataSource` (Since v0.0.7) : Extracts all environment variables, and makes them available to templates by converting them all to lowercase and prefixing them with `env_`
+
+
+However, you can create your own datasources by inheriting `Tiller::DataSource` and providing 3 methods :
  
 * `values(template_name)` : Return a hash of keys/values for the given template name
 * `target_values(template_name)` : Return a hash of values for the given template name, which must include:
