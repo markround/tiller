@@ -125,7 +125,7 @@ These are simply the ERB templates for your configuration files, and are populat
 
 ## Environment configuration
 
-These files are named after the environment variable `environment` that you pass in (using `docker run -e`, or from the command line). 
+These files live under `/etc/tiller/environments` and are named after the environment variable `environment` that you pass in (using `docker run -e`, or from the command line). 
 
 When you're using the default `FileDataSource`, they define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and also a set of key:value pairs that are made available to the template via the usual `<%= key %>` ERB syntax.
 
