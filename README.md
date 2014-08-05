@@ -112,7 +112,7 @@ So for a simple use-case where you're just generating everything from files or e
 
 ## Template files
 
-These are simply the ERB templates for your configuration files, and are populated with values from the selected environment file. When the environment configuration is parsed (see below), key:value pairs are made available to the template. Using MongoDB as an example, suppose you have 'staging' and 'production' environments, and want to set the "replica set" name dynamically, based on the which environment the Docker container is running in. You'd create a template mongodb.erb template with some placeholder values:
+These files under `/etc/tiller/templates` are simply the ERB templates for your configuration files, and are populated with values from the selected environment file. When the environment configuration is parsed (see below), key:value pairs are made available to the template. Using MongoDB as an example, suppose you have 'staging' and 'production' environments, and want to set the "replica set" name dynamically, based on the which environment the Docker container is running in. You'd create a template mongodb.erb template with some placeholder values:
 
 	... (rest of content snipped) ...
 	
