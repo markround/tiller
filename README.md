@@ -7,6 +7,7 @@ You might find this particularly useful if you're using Docker, as you can ship 
 Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/)
 
 ## Changes
+* v0.0.8 : Added `RandomDataSource` that wraps Ruby's `SecureRandom` class to provide UUIDs, random Base64 encoded data and so on.
 * v0.0.7 : Added `EnvironmentDataSource`, so you can now use environment variables in your templates, e.g. `<%= env_user %>`. See [http://www.markround.com/blog/2014/08/04/tiller-v0-dot-0-7-now-supports-environment-variables/](http://www.markround.com/blog/2014/08/04/tiller-v0-dot-0-7-now-supports-environment-variables/) for a very quick overview.
 
 # Background
@@ -38,7 +39,7 @@ Tiller can be used to dynamically generate configuration files before passing ex
 It looks at an environment variable called "environment", and creates a set of configuration files based on templates, and then runs a specified daemon process via `exec`. Usually, when running a container that users Tiller, all you need to do is pass the environment to it, e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
-	tiller v0.0.3 (https://github.com/markround/tiller) <github@markround.com>
+	tiller v0.0.8 (https://github.com/markround/tiller) <github@markround.com>
 	Using configuration from /etc/tiller
 	Using plugins from /usr/local/lib/tiller
 	Using environment production
@@ -109,11 +110,26 @@ So for a simple use-case where you're just generating everything from files or e
 	template_sources:
 		- file
 
+## Template files
+
+These are simply the ERB templates for your configuration files, and are populated with values from the selected environment file. When the environment configuration is parsed (see below), key:value pairs are made available to the template. Using MongoDB as an example, suppose you have 'staging' and 'production' environments, and want to set the "replica set" name dynamically, based on the which environment the Docker container is running in. You'd create a template mongodb.erb template with some placeholder values:
+
+	... (rest of content snipped) ...
+	
+	# in replica set configuration, specify the name of the replica set
+	<% if (replSet) %>
+	replSet = <%= replSet %>
+	<% end %> 
+	
+	... (rest of content snipped) ...
+
 ## Environment configuration
 
-These files are named after the environment variable `environment` that you pass in (using `docker run -e`, or from the command line). They define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and a set of key:value pairs that are made available to the template via the usual `<%= key %>` ERB syntax. 
+These files are named after the environment variable `environment` that you pass in (using `docker run -e`, or from the command line). 
 
-Example: In your <environment>.yaml file, let's assume you want to define some parameters for an application. For example, assume you wanted to use a different MongoDB replica set name in your staging environment. Here's how you might set the replica set name in your `staging.yaml` environment file :
+When you're using the default `FileDataSource`, they define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and also a set of key:value pairs that are made available to the template via the usual `<%= key %>` ERB syntax.
+
+Carrying on with the MongoDB example, here's how you might set the replica set name in your `staging.yaml` environment file :
 
 	mongodb.erb:
 	  target: /etc/mongodb.conf
@@ -132,38 +148,45 @@ And then your `production.yaml` (which everything will use if you don't specify 
 
 Note that if you omit the user/group/perms parameters, the defaults are whatever Docker runs as (usually root). Also, if you don't run the script as root, it will skip setting these.
 
-### Environment plugin
-If you activated the `EnvironmentDataSource` (as documented above), you'll also be able to access environment variables within your templates. These are all converted to lower-case, and prefixed with `env_`. So for example, if you had the environment variable `LOGNAME` set, you could reference this in your template with `<%= env_logname %>`
-
-## Template files
-
-These are simply the ERB templates for your configuration files, and are populated with values from the selected environment file. When the environment configuration is parsed (see above), key:value pairs are made available to the template. Note, this is different to the old behaviour of my "Runner.rb" script, as this required you to use the `config` hash. Using MongoDB as an example again, you'd have a `/etc/tiller/templates/mongodb.erb` with the following content:
-
-	... (rest of content snipped) ...
-	
-	# in replica set configuration, specify the name of the replica set
-	<% if (replSet) %>
-	replSet = <%= replSet %>
-	<% end %> 
-	
-	... (rest of content snipped) ...
-
-	
-Which, when run through Tiller/Docker with `-e environment=staging`, produces the following :
+So now, when run through Tiller/Docker with `-e environment=staging`, the template will be installed to /etc/mongodb.conf with the following content :
 
 	# in replica set configuration, specify the name of the replica set
 	replSet = stage
 	
-Or, if no environment is specified :
+Or, if no environment is specified (using the default 'production' environment'):
 
 	# in replica set configuration, specify the name of the replica set
 	replSet = production
 
+
+## Plugins
+
+In addition to specifying values in the environment files, there are other plugins that can also provide values to be used in your templates, and you can easily write your own. The plugins that ship with Tiller are :
+
+### File plugins
+These provide data and templates from files.
+
+### Environment plugin
+If you activated the `EnvironmentDataSource` (as shown by adding `  - environment` to the list of data sources in the example `common.yaml` above), you'll also be able to access environment variables within your templates. These are all converted to lower-case, and prefixed with `env_`. So for example, if you had the environment variable `LOGNAME` set, you could reference this in your template with `<%= env_logname %>`
+
+### Random plugin
+If you add `  - random` to your list of data sources in `common.yaml`, you'll be able to use randomly-generated values and strings in your templates, e.g. `<%= random_uuid %>`. This may be useful for generating random UUIDs, server IDs and so on. An example hash with demonstration values is as follows : 
+
+	{"random_base64"=>"nubFDEz2MWlIiJKUOQ+Ttw==",
+	 "random_hex"=>"550de401ef69d92b250ce379e5a5957c",
+	 "random_bytes"=>"3\xC8fS\x11`\\W\x00IF\x95\x9F8.\xA7",
+	 "random_number_10"=>8,
+	 "random_number_100"=>71,
+	 "random_number_1000"=>154,
+	 "random_urlsafe_base64"=>"MU9UP8lEOVA3Nsb0OURkrw",
+	 "random_uuid"=>"147acac8-7229-44af-80c1-246cf08910f5"}
+
+
 # Plugin architecture
-Well, "architecture" is probably too grand a word, but you can get data into your template files from a multitude of sources, or even grab your template files from a source such as a database or from a HTTP server. I've included some examples under the `examples/` directory, including dummy sources that return dummy data and templates, and a NetworkDataSource that provides the host's FQDN and a hash of IP address details, which templates can use. Have a look at those for a fuller example, but here's a quick overview:
+Well, "architecture" is probably too grand a word, but as discussed above, you can get data into your template files from a multitude of sources, or even grab your template files from a source such as a database or from a HTTP server. I've included some examples under the `examples/` directory, including dummy sources that return dummy data and templates, and a NetworkDataSource that provides the host's FQDN and a hash of IP address details, which templates can use. Have a look at those for a fuller example, but here's a quick overview:
 
 ##Template sources
-These are modules that provide a list of templates, and return the template contents. The code for the `FileDataSource` module is really simple. It pretty much just does this to return a list of templates :
+These are modules that provide a list of templates, and return the template contents. The code for the `FileTemplateSource` module is really simple. It pretty much just does this to return a list of templates :
 
     Dir.glob(File.join(@template_dir , '**' , '*.erb')).each do |t|
       t.sub!(@template_dir , '')
@@ -187,13 +210,7 @@ These provide values that templates can use. There are 3 kinds of values:
 * local values which are values provided for each template
 * target values which provide information about where a template should be installed to, what permissions it should have, and so on.
 
-The bundled datasources are : 
-
-* `FileDataSource` : Only provides local and target values, and Tiller itself provides the `environment` global value. 
-* `EnvironmentDataSource` (Since v0.0.7) : Extracts all environment variables, and makes them available to templates by converting them all to lowercase and prefixing them with `env_`
-
-
-However, you can create your own datasources by inheriting `Tiller::DataSource` and providing 3 methods :
+You can create your own datasources by inheriting `Tiller::DataSource` and providing any of the following 3 methods :
  
 * `values(template_name)` : Return a hash of keys/values for the given template name
 * `target_values(template_name)` : Return a hash of values for the given template name, which must include:
@@ -209,6 +226,7 @@ Assuming you had created a pair of template and data source plugins called `Exam
 	data_sources:
 		- file
 		- example
+		- random
 	template_sources:
 		- file
 		- example
