@@ -2,8 +2,8 @@ gem "tiller", :git => "git://github.com/markround/tiller.git"
 
 Gem::Specification.new do |s|
   s.name = 'tiller'
-  s.version = '0.0.7'
-  s.date = '2014-08-04'
+  s.version = '0.0.8'
+  s.date = '2014-08-05'
   s.summary = 'Dynamic configuration generation for Docker'
   s.description = 'A tool to create configuration files in Docker containers from a variety of sources. See https://github.com/markround/tiller for examples and documentation.'
   s.authors = ['Mark Round']
@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
     lib/tiller/templatesource.rb
     lib/tiller/data/file.rb
     lib/tiller/data/environment.rb
+    lib/tiller/data/random.rb
     lib/tiller/template/file.rb
     examples/etc/tiller/common.yaml
     examples/etc/tiller/environments/production.yaml
