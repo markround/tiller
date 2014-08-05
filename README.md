@@ -164,7 +164,7 @@ Or, if no environment is specified (using the default 'production' environment')
 In addition to specifying values in the environment files, there are other plugins that can also provide values to be used in your templates, and you can easily write your own. The plugins that ship with Tiller are :
 
 ### File plugins
-These provide data and templates from files.
+These provide data from YAML environment files, and templates from ERB files (see above).
 
 ### Environment plugin
 If you activated the `EnvironmentDataSource` (as shown by adding `  - environment` to the list of data sources in the example `common.yaml` above), you'll also be able to access environment variables within your templates. These are all converted to lower-case, and prefixed with `env_`. So for example, if you had the environment variable `LOGNAME` set, you could reference this in your template with `<%= env_logname %>`
