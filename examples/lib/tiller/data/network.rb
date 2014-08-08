@@ -6,14 +6,12 @@ require 'socket'
 
 class NetworkDataSource < Tiller::DataSource
 
-  def initialize(config)
-    super
+  def global_values
     # Note, these rely on DNS being available and configured correctly!
-    @global_values = {
+    {
         'fqdn'            =>  Socket.gethostbyname(Socket.gethostname).first,
         'ipv4_addresses'  =>  Socket.getaddrinfo(Socket.gethostbyname(Socket.gethostname).first, nil, :INET)
     }
   end
-
 
 end

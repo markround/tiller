@@ -4,8 +4,9 @@
 class EnvironmentDataSource < Tiller::DataSource
 
   def global_values
-    ENV.each { |k,v| @global_values["env_#{k.downcase}"] = v }
-    @global_values
+    values = Hash.new
+    ENV.each { |k,v| values["env_#{k.downcase}"] = v }
+    values
   end
 
 end
