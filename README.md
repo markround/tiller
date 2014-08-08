@@ -221,7 +221,7 @@ You can create your own datasources by inheriting `Tiller::DataSource` and provi
 	* `user` : The user that the file should be owned by (e.g. root)
 	* `group` : The group that the file should be owned by (e.g. bin)
 	* `perms`: The octal permissions the file should have (e.g. 0644)
-* `global_values` : Return a hash of global values. This is implemented as a class variable `@global_values` made accessible through `attr_accessor`, but you can easily override this in your own class.
+* `global_values` : Return a hash of global values. 
 
 As with template sources, if you need to connect to a database or do any other post-initialisation work, create a `setup` method.
 
