@@ -7,6 +7,7 @@ You might find this particularly useful if you're using Docker, as you can ship 
 Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/)
 
 ## Changes
+* v0.1.0 : Modified plugin API slightly by creating a `setup` hook which is called after the plugin is initialized. This could be useful for connecting to a database, parsing configuration files or setting up other data structures.
 * v0.0.8 : Added `RandomDataSource` that wraps Ruby's `SecureRandom` class to provide UUIDs, random Base64 encoded data and so on.
 * v0.0.7 : Added `EnvironmentDataSource`, so you can now use environment variables in your templates, e.g. `<%= env_user %>`. See [http://www.markround.com/blog/2014/08/04/tiller-v0-dot-0-7-now-supports-environment-variables/](http://www.markround.com/blog/2014/08/04/tiller-v0-dot-0-7-now-supports-environment-variables/) for a very quick overview.
 
@@ -39,7 +40,7 @@ Tiller can be used to dynamically generate configuration files before passing ex
 It looks at an environment variable called "environment", and creates a set of configuration files based on templates, and then runs a specified daemon process via `exec`. Usually, when running a container that users Tiller, all you need to do is pass the environment to it, e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
-	tiller v0.0.8 (https://github.com/markround/tiller) <github@markround.com>
+	tiller v0.1.0 (https://github.com/markround/tiller) <github@markround.com>
 	Using configuration from /etc/tiller
 	Using plugins from /usr/local/lib/tiller
 	Using environment production
@@ -201,6 +202,8 @@ You can create your own template provider by extending the `Tiller::TemplateSour
 * `templates` : Return an array of templates available
 * `template(template_name)` : Return a string containing an ERB template for the given `template_name`
 
+If you create a `setup` method, it will get called straight after initialization. This can be useful for connecting to a database, parsing configuration files and so on.
+
 When the class is created, it gets passed a hash containing various variables you can use to return different templates based on environment etc. Or you can read any values from `common.yaml` yourself, as it's accessible from the class variable `@@config[:common_config]`.
 
 ##Data sources
@@ -219,6 +222,8 @@ You can create your own datasources by inheriting `Tiller::DataSource` and provi
 	* `group` : The group that the file should be owned by (e.g. bin)
 	* `perms`: The octal permissions the file should have (e.g. 0644)
 * `global_values` : Return a hash of global values. This is implemented as a class variable `@global_values` made accessible through `attr_accessor`, but you can easily override this in your own class.
+
+As with template sources, if you need to connect to a database or do any other post-initialisation work, create a `setup` method.
 
 ## Naming
 Assuming you had created a pair of template and data source plugins called `ExampleTemplateSource` and `ExampleDataSource`, you'd drop them under `/usr/local/lib/tiller/template/example.rb` and `/usr/local/lib/tiller/data/example.rb` respectively, and then add them to `common.yaml` :

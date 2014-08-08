@@ -3,7 +3,7 @@
 # Named from the first ship-building (Docker) related term I could find that didn't have an existing gem named after it!
 # Mark Round <github@markround.com>
 
-VERSION='0.0.8'
+VERSION='0.1.0'
 
 require 'erb'
 require 'ostruct'

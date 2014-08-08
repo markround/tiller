@@ -11,10 +11,16 @@ module Tiller
 
     def initialize(config)
       @@config = config
-      @global_values = Hash.new
+      self.setup
     end
 
-    attr_reader :global_values
+    # This is where any post-initialisation logic happens (connecting to a database etc.)
+    def setup
+    end
+
+    def global_values
+      Hash.new
+    end
 
     # We should always return a hash; if we have no data for the given template, just return an empty hash.
     def values(template_name)
