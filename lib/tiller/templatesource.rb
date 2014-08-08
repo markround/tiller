@@ -11,6 +11,10 @@ module Tiller
       @@config = config
     end
 
+    # This is where any post-initialisation logic happens (connecting to a database etc.)
+    def setup
+    end
+
     def templates
       Hash.new
     end

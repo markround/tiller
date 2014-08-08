@@ -3,11 +3,8 @@
 
 class DummyDataSource < Tiller::DataSource
 
-  def initialize(config)
-    super
-    @global_values = {
-        'dummy_global' => 'dummy global replacement text'
-    }
+  def global_values
+    { 'dummy_global' => 'dummy global replacement text' }
   end
 
   def values(template_name)
