@@ -35,9 +35,9 @@ module Tiller
       :environment  => (ENV['environment'].nil?)  ? 'production' : ENV['environment']
   }
 
+  # Add tiller_lib to the LOAD PATH so we can pull in user-defined plugins
   $LOAD_PATH.unshift(config[:tiller_lib]) unless $LOAD_PATH.include?(config[:tiller_lib])
 
-  # User-provided sources.
   require 'tiller/templatesource.rb'
   require 'tiller/datasource.rb'
 
@@ -61,7 +61,7 @@ module Tiller
   puts 'Data sources loaded ' + DataSource.subclasses.to_s
 
   # Get all Templates for the given environment
-  templates = {}
+  templates = Hash.new
   TemplateSource.subclasses.each do |template_class|
     ts = template_class.new(config)
     ts.templates.each do |t|
@@ -71,7 +71,7 @@ module Tiller
 
   puts "Templates to build #{templates.keys.to_s}"
 
-  # Now go through all our data sources and start to assemble our "tiller_global" hash.
+  # Now go through all our data sources and start to assemble our "global_values" hash.
   # As hashes are getting merged, new values will take precedence over older ones, and a warning will be displayed.
   # Add in environment ti start with as it's very useful for all templates.
   global_values = {'environment' => config[:environment]}
@@ -85,7 +85,6 @@ module Tiller
   templates.each do |template, content|
     values = Hash.new
     target_values = Hash.new
-    puts "Building template #{template}"
 
     # Now we populate the hash with values from each DataSource, warning if we get duplicate values.
     DataSource.subclasses.each do |data_class|
@@ -105,6 +104,7 @@ module Tiller
     next if target_values.empty?
 
     # Now, we build the template
+    puts "Building template #{template}"
     tiller = values.merge(global_values) do |key, old, new|
       warn_merge(key, old, new, 'global and local', 'merged configuration')
     end
