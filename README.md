@@ -44,7 +44,7 @@ It looks at an environment variable called "environment", and creates a set of c
 	tiller v0.1.0 (https://github.com/markround/tiller) <github@markround.com>
 	Using configuration from /etc/tiller
 	Using plugins from /usr/local/lib/tiller
-	Using environment production
+	Using environment staging
 	Template sources loaded [FileTemplateSource]
 	Data sources loaded [FileDataSource, NetworkDataSource]
 	Templates to build ["mongodb.erb", "sensu_client.erb"]
