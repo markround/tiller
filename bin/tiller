@@ -25,9 +25,10 @@ def warn_merge(key, old, new, type, source)
   new
 end
 
+# And we're on our way...
 module Tiller
-  # Set these two environment variables if you want to debug a configuration in a
-  # temporary directory.
+  # Set these two environment variables if you want to debug a configuration
+  # in a temporary directory.
   # EG: $ tiller_base=/tmp tiller_lib=/tmp/lib ./tiller
   config = {
     :tiller_base  => (ENV['tiller_base'].nil?)  ? '/etc/tiller' : ENV['tiller_base'],

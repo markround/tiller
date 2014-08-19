@@ -1,20 +1,20 @@
 # Tiller data source base class.
-#
-# Subclasses provide global_values and/or values (things local to a specific template) and target_values (meta data
-# about a template, e.g. target location, permissions, owner and so on)
-
 module Tiller
+  # Subclasses provide global_values and/or values (things local to a specific
+  # template) and target_values (meta data about a template, e.g. target
+  # location, permissions, owner and so on)
   class DataSource
-
-    # All subclasses get this, which is a hash containing tiller_base, tiller_lib and environment.
-    @@config = Array.new
+    # All subclasses get this, which is a hash containing tiller_base,
+    # tiller_lib and environment.
+    @config = Array.new
 
     def initialize(config)
-      @@config = config
-      self.setup
+      @config = config
+      setup
     end
 
-    # This is where any post-initialisation logic happens (connecting to a database etc.)
+    # This is where any post-initialisation logic happens
+    # (connecting to a database etc.)
     def setup
     end
 
@@ -22,26 +22,27 @@ module Tiller
       Hash.new
     end
 
-    # We should always return a hash; if we have no data for the given template, just return an empty hash.
-    def values(template_name)
+    # We should always return a hash; if we have no data for the given
+    # template, just return an empty hash.
+    def values(_template_name)
       Hash.new
     end
 
     # This should provide a hash similar to this example :
-    #{
+    # {
     #    'target'  => "/tmp/#{template_name}",
     #    'user'    => 'root',
     #    'group'   => 'root',
     #    'perms'   => '0644'
-    #}
-    # Again, we should always return a hash; if we have no data for the given template, just return an empty hash.
-    def target_values(template_name)
+    # }
+    # Again, we should always return a hash; if we have no data for the given
+    # template, just return an empty hash.
+    def target_values(_template_name)
       Hash.new
     end
 
     def ping
-      "ping!" + @@config.to_s
+      'ping!' + @config.to_s
     end
-
   end
 end
