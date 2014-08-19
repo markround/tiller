@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
 # Tiller - Dynamic configuration generator, intended for use in Dockerfiles
-# Named from the first ship-building (Docker) related term I could find that didn't have an existing gem named after it!
+# Named from the first ship-building (Docker) related term I could find that
+# didn't have an existing gem named after it!
 # Mark Round <github@markround.com>
 
-VERSION='0.1.1'
+VERSION = '0.1.1'
 
 require 'erb'
 require 'ostruct'
@@ -25,14 +26,14 @@ def warn_merge(key, old, new, type, source)
 end
 
 module Tiller
-
-  # Set these two environment variables if you want to debug a configuration in a temporary directory.
+  # Set these two environment variables if you want to debug a configuration in a
+  # temporary directory.
   # EG: $ tiller_base=/tmp tiller_lib=/tmp/lib ./tiller
   config = {
-      :tiller_base  => (ENV['tiller_base'].nil?)  ? '/etc/tiller' : ENV['tiller_base'],
-      :tiller_lib   => (ENV['tiller_lib'].nil?)   ? '/usr/local/lib' : ENV['tiller_lib'],
-      # This is the main variable, usually the only one you pass into Docker.
-      :environment  => (ENV['environment'].nil?)  ? 'production' : ENV['environment']
+    :tiller_base  => (ENV['tiller_base'].nil?)  ? '/etc/tiller' : ENV['tiller_base'],
+    :tiller_lib   => (ENV['tiller_lib'].nil?)   ? '/usr/local/lib' : ENV['tiller_lib'],
+    # This is the main variable, usually the only one you pass into Docker.
+    :environment  => (ENV['environment'].nil?)  ? 'production' : ENV['environment']
   }
 
   # Add tiller_lib to the LOAD PATH so we can pull in user-defined plugins
@@ -42,7 +43,7 @@ module Tiller
   require 'tiller/datasource.rb'
 
   # Load the common YAML configuration file
-  config[:common_config] = YAML::load(open(File.join(config[:tiller_base], 'common.yaml')))
+  config[:common_config] = YAML.load(open(File.join(config[:tiller_base], 'common.yaml')))
 
   puts "tiller v#{VERSION} (https://github.com/markround/tiller) <github@markround.com>"
   puts "Using configuration from #{config[:tiller_base]}"
@@ -65,42 +66,47 @@ module Tiller
   TemplateSource.subclasses.each do |template_class|
     ts = template_class.new(config)
     ts.templates.each do |t|
-      templates[t]=ts.template(t)
+      templates[t] = ts.template(t)
     end
   end
 
-  puts "Templates to build #{templates.keys.to_s}"
+  puts "Templates to build #{templates.keys}"
 
-  # Now go through all our data sources and start to assemble our "global_values" hash.
-  # As hashes are getting merged, new values will take precedence over older ones, and a warning will be displayed.
-  # Add in environment ti start with as it's very useful for all templates.
-  global_values = {'environment' => config[:environment]}
+  # Now go through all our data sources and start to assemble our global_values
+  # hash. As hashes are getting merged, new values will take precedence over
+  # older ones, and a warning will be displayed.
+  # We also add in 'environment' to start with as it's very useful for all
+  # templates.
+  global_values = { 'environment' => config[:environment] }
   DataSource.subclasses.each do |data_class|
     global_values.merge!(data_class.new(config).global_values) do |key, old, new|
       warn_merge(key, old, new, 'global', data_class.to_s)
     end
   end
 
-  # Now we go through each template we've identified, and get the values for each one.
+  # Now we go through each template we've identified, and get the
+  # values for each one.
   templates.each do |template, content|
     values = Hash.new
     target_values = Hash.new
 
-    # Now we populate the hash with values from each DataSource, warning if we get duplicate values.
+    # Now we populate the hash with values from each DataSource, warning if we
+    # get duplicate values.
     DataSource.subclasses.each do |data_class|
       dc = data_class.new(config)
       values.merge!(dc.values(template)) do |key, old, new|
         warn_merge(key, old, new, 'data', data_class.to_s)
       end
 
-      # Now get target_values (where the file should be installed to, permissions and so on)
+      # Now get target_values (where the file should be installed to,
+      # permissions and so on)
       target_values.merge!(dc.target_values(template)) do |key, old, new|
         warn_merge(key, old, new, 'target', data_class.to_s)
       end
     end
 
-    # If our data source returned no values (e.g. we don't build this template for this environment)
-    # We move onto the next one.
+    # If our data source returned no values (e.g. we don't build this template
+    # for this environment), we move onto the next one.
     next if target_values.empty?
 
     # Now, we build the template
@@ -109,35 +115,40 @@ module Tiller
       warn_merge(key, old, new, 'global and local', 'merged configuration')
     end
 
-    # Use an OpenStruct namespace, as it's way easier than faffing around with manual binding, and also
-    # non-existing values just get replaced by <nil> instead of failing on errors.
+    # Use an OpenStruct namespace, as it's way easier than faffing around with
+    # manual binding, and also non-existing values just get replaced by <nil>
+    # instead of failing on errors.
     ns = OpenStruct.new(tiller)
     parsed_template = ERB.new(content).result(ns.instance_eval { binding })
 
-    # Write the template, and also create the directory path if it doesn't exist.
+    # Write the template, and also create the directory path if it
+    # doesn't exist.
     target_path = File.dirname(target_values['target'])
-    FileUtils.mkdir_p(target_path) if not File.directory?(target_path)
-    target = open(target_values['target'], "w")
+    FileUtils.mkdir_p(target_path) unless File.directory?(target_path)
+    target = open(target_values['target'], 'w')
     target.puts(parsed_template)
     target.close
 
     # Set permissions if we are running as root
-    if Process::Sys.geteuid == 0 then
+    if Process::Sys.geteuid == 0
       puts "Setting ownership/permissions on #{target_values['target']}"
-      FileUtils.chmod(target_values['perms'], target_values['target']) if target_values.has_key?('perms')
-      # Don't need to check for the presence of these, as they're ignored if null.
-      FileUtils.chown(target_values['user'], target_values['group'], target_values['target'])
+      if target_values.key?('perms')
+        FileUtils.chmod(target_values['perms'], target_values['target'])
+      end
+      # Don't need to check for the presence of these, as they're ignored
+      # if they are null.
+      FileUtils.chown(target_values['user'], target_values['group'],
+                      target_values['target'])
     else
-      puts "Not running as root, so not setting ownership/permissions on #{target_values['target']}"
+      puts 'Not running as root, so not setting ownership/permissions on ' \
+        "#{target_values['target']}"
     end
 
   end
 
-  # All templates created, so let's handover to the replacement process then it's home in time for tea and medals.
-  puts "Template generation completed, about to exec replacement process."
+  # All templates created, so let's handover to the replacement process then
+  # it's home in time for tea and medals.
+  puts 'Template generation completed, about to exec replacement process.'
   puts "Calling #{config[:common_config]['exec']}..."
   exec(config[:common_config]['exec'])
-
 end
-
-
