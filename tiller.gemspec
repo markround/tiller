@@ -1,4 +1,4 @@
-gem "tiller", :git => "git://github.com/markround/tiller.git"
+gem 'tiller', :git => 'git://github.com/markround/tiller.git'
 
 Gem::Specification.new do |s|
   s.name = 'tiller'
@@ -27,5 +27,5 @@ Gem::Specification.new do |s|
   s.homepage =
       'http://www.markround.com'
   s.license = 'MIT'
-  s.metadata = { "source" => "https://github.com/markround/tiller" }
+  s.metadata = { 'source' => 'https://github.com/markround/tiller' }
 end

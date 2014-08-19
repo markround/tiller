@@ -205,7 +205,7 @@ You can create your own template provider by extending the `Tiller::TemplateSour
 
 If you create a `setup` method, it will get called straight after initialization. This can be useful for connecting to a database, parsing configuration files and so on.
 
-When the class is created, it gets passed a hash containing various variables you can use to return different templates based on environment etc. Or you can read any values from `common.yaml` yourself, as it's accessible from the class variable `@@config[:common_config]`.
+When the class is created, it gets passed a hash containing various variables you can use to return different templates based on environment etc. Or you can read any values from `common.yaml` yourself, as it's accessible from the instance variable `@config[:common_config]`.
 
 ##Data sources
 These provide values that templates can use. There are 3 kinds of values:
