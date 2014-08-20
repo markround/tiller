@@ -1,9 +1,9 @@
-gem "tiller", :git => "git://github.com/markround/tiller.git"
+gem 'tiller', :git => 'git://github.com/markround/tiller.git'
 
 Gem::Specification.new do |s|
   s.name = 'tiller'
-  s.version = '0.1.0'
-  s.date = '2014-08-08'
+  s.version = '0.1.2'
+  s.date = '2014-08-20'
   s.summary = 'Dynamic configuration generation for Docker'
   s.description = 'A tool to create configuration files in Docker containers from a variety of sources. See https://github.com/markround/tiller for examples and documentation.'
   s.authors = ['Mark Round']
@@ -27,5 +27,5 @@ Gem::Specification.new do |s|
   s.homepage =
       'http://www.markround.com'
   s.license = 'MIT'
-  s.metadata = { "source" => "https://github.com/markround/tiller" }
+  s.metadata = { 'source' => 'https://github.com/markround/tiller' }
 end
