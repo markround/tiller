@@ -7,6 +7,7 @@ You might find this particularly useful if you're using Docker, as you can ship 
 Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/)
 
 ## Changes
+* 0.1.2 : Code cleanup based on input from RuboCop
 * 0.1.1 : Very minor code cleanup
 * 0.1.0 : Modified plugin API slightly by creating a `setup` hook which is called after the plugin is initialized. This could be useful for connecting to a database, parsing configuration files or setting up other data structures.
 * 0.0.8 : Added `RandomDataSource` that wraps Ruby's `SecureRandom` class to provide UUIDs, random Base64 encoded data and so on.
@@ -41,7 +42,7 @@ Tiller can be used to dynamically generate configuration files before passing ex
 It looks at an environment variable called "environment", and creates a set of configuration files based on templates, and then runs a specified daemon process via `exec`. Usually, when running a container that users Tiller, all you need to do is pass the environment to it, e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
-	tiller v0.0.8 (https://github.com/markround/tiller) <github@markround.com>
+	tiller v0.1.2 (https://github.com/markround/tiller) <github@markround.com>
 	Using configuration from /etc/tiller
 	Using plugins from /usr/local/lib/tiller
 	Using environment staging
