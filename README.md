@@ -4,7 +4,7 @@ Tiller is a tool that generates configuration files. It takes a set of templates
 You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container. However, it's use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
 
 ## More information
-Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/)
+Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/). You may also find my walkthrough tutorial useful : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/)
 
 ## Changes
 * 0.1.2 : Code cleanup based on input from RuboCop
@@ -244,6 +244,7 @@ Tiller will merge values from all sources. It will warn you, but it won't stop y
 # Other examples, articles etc.
 
 * [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/) - Introductory blog post that provides a quick overview and shows an example DataSource at the end.
+* [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/) - Walkthrough tutorial showing how to use Tiller's environment plugin. Includes a Dockerfile and downloadable example.
 
 # Future improvements
 
