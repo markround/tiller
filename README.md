@@ -1,7 +1,7 @@
 # What is it?
-Tiller is a tool that generates configuration files. It takes a set of templates, fills them in with values from a variety of sources (such as environment variables or YAML files), installs them in a specified location and then spawns a replacement process.
+Tiller is a tool that generates configuration files. It takes a set of templates, fills them in with values from a variety of sources (such as environment variables or YAML files), installs them in a specified location and then optionally spawns a replacement process.
 
-You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container. However, it's use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
+You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container. However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
 
 ## More information
 Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/). You may also find my walkthrough tutorial useful : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/)
@@ -81,7 +81,7 @@ Now, set up your configuration. By default, Tiller looks for configuration under
 
 	$ tiller_base=$PWD/tiller tiller -v
 
-Tiller expects a directory structure like this (using /etc/tiller as it's base, and the file data and template sources) :
+Tiller expects a directory structure like this (using /etc/tiller as its base, and the file data and template sources) :
 
 	etc
 	└── tiller
