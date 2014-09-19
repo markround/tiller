@@ -7,6 +7,7 @@ You might find this particularly useful if you're using Docker, as you can ship 
 Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/). You may also find my walkthrough tutorial useful : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/)
 
 ## Changes
+* 0.1.3 : Added "no exec" feature and command-line arguments -n, -v, and -h. Made output less verbose by default.
 * 0.1.2 : Code cleanup based on input from RuboCop
 * 0.1.1 : Very minor code cleanup
 * 0.1.0 : Modified plugin API slightly by creating a `setup` hook which is called after the plugin is initialized. This could be useful for connecting to a database, parsing configuration files or setting up other data structures.
@@ -27,7 +28,7 @@ So I knocked up a quick Ruby script (originally called "Runner.rb") that I could
 * Generates configuration files from ERB templates (which can come from a number of sources)
 * Uses values provided from a data source (i.e YAML files) for each environment
 * Copies the generated templates to the correct location and specifies permissions
-* Executes a replacement process once it's finished (e.g. mongod, nginx, supervisord, etc.)
+* Optionally executes a replacement process once it's finished (e.g. mongod, nginx, supervisord, etc.)
 * Now provides a pluggable architecture, so you can define additional data or template sources. For example, you can create a DataSource that looks up values from an LDAP store, or a TemplateSource that pulls things from a database. 
 
 This way I can keep all my configuration together in the container, and just tell Docker which environment to use when I start it. 
@@ -42,7 +43,7 @@ Tiller can be used to dynamically generate configuration files before passing ex
 It looks at an environment variable called "environment", and creates a set of configuration files based on templates, and then runs a specified daemon process via `exec`. Usually, when running a container that users Tiller, all you need to do is pass the environment to it, e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
-	tiller v0.1.2 (https://github.com/markround/tiller) <github@markround.com>
+	tiller v0.1.3 (https://github.com/markround/tiller) <github@markround.com>
 	Using configuration from /etc/tiller
 	Using plugins from /usr/local/lib/tiller
 	Using environment staging
@@ -56,7 +57,14 @@ It looks at an environment variable called "environment", and creates a set of c
 	Template generation completed, about to exec replacement process.
 	Calling /usr/bin/supervisord...
 
-If no environment is specified, it will default to using "production".
+If no environment is specified, it will default to using "production". 
+
+## Arguments
+As of version 0.1.3, Tiller understands command-line arguments :
+
+* `-n` / `--no-exec` : Do not execute a replacement process (e.g. you only want to generate the templates)
+* `-v` / `--verbose` : Display verbose output, useful for debugging and for seeing what templates are being parsed
+* `-h` / `--help` : Show a short help screen
 
 # Setup
 
@@ -67,11 +75,11 @@ Firstly, install the tiller gem and set your Dockerfile to use it (assuming you'
 	...
 	... Rest of Dockerfile here
 	...
-	CMD /usr/local/bin/tiller
+	CMD ["/usr/local/bin/tiller" , "-v"]
 
 Now, set up your configuration. By default, Tiller looks for configuration under `/etc/tiller`, but this can be set to somewhere else by setting the environment variable `tiller_base`. This is particularly useful for testing purposes, e.g.
 
-	$ tiller_base=$PWD/tiller tiller
+	$ tiller_base=$PWD/tiller tiller -v
 
 Tiller expects a directory structure like this (using /etc/tiller as it's base, and the file data and template sources) :
 
@@ -100,7 +108,7 @@ It is suggested that you add all this under your Docker definition in a `data/ti
 ## Common configuration
 `common.yaml` contains the `exec`, `data_sources` and `template_sources` parameters. 
 
-* `exec`: This is simply what will be executed after the configuration files have been generated. 
+* `exec`: This is simply what will be executed after the configuration files have been generated. If you omit this (or use the `-n` / `--no-exec` arguments) then no replacement process will be executed.
 * `data_sources` : The data sources you'll be using to populate the configuration files. This should usually just be set to "file" and "environment" to start with, although you can write your own plugins and pull them in (more on that later).
 * `template_sources` Where the templates come from, again a list of plugins. 
 

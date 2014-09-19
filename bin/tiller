@@ -4,12 +4,13 @@
 # didn't have an existing gem named after it!
 # Mark Round <github@markround.com>
 
-VERSION = '0.1.2'
+VERSION = '0.1.3'
 
 require 'erb'
 require 'ostruct'
 require 'yaml'
 require 'fileutils'
+require 'optparse'
 require 'pp'
 
 # This is needed so we can enumarate all the loaded plugins later
@@ -37,6 +38,29 @@ module Tiller
     :environment  => (ENV['environment'].nil?)  ? 'production' : ENV['environment']
   }
 
+  # Parse command-line arguments
+  config[:no_exec] = false
+  config[:verbose] = false
+
+  optparse = OptionParser.new do |opts|
+    opts.on('-n', '--no-exec', 'Do not execute a replacement process') do
+      config[:no_exec] = true
+    end
+    opts.on('-v', '--verbose', 'Display verbose output') do
+      config[:verbose] = true
+    end
+    opts.on('-h', '--help', 'Display this screen') do
+      puts opts
+      puts 'Tiller also uses the environment variables tiller_base and tiller_lib.'
+      puts 'See https://github.com/markround/tiller for documentation and usage.'
+      puts 'Current configuration hash follows :'
+      pp config
+      exit
+    end
+  end
+
+  optparse.parse!
+
   # Add tiller_lib to the LOAD PATH so we can pull in user-defined plugins
   $LOAD_PATH.unshift(config[:tiller_lib]) unless $LOAD_PATH.include?(config[:tiller_lib])
 
@@ -47,9 +71,12 @@ module Tiller
   config[:common_config] = YAML.load(open(File.join(config[:tiller_base], 'common.yaml')))
 
   puts "tiller v#{VERSION} (https://github.com/markround/tiller) <github@markround.com>"
-  puts "Using configuration from #{config[:tiller_base]}"
-  puts "Using plugins from #{config[:tiller_lib]}/tiller"
-  puts "Using environment #{config[:environment]}"
+
+  if config[:verbose]
+    puts "Using configuration from #{config[:tiller_base]}"
+    puts "Using plugins from #{config[:tiller_lib]}/tiller"
+    puts "Using environment #{config[:environment]}"
+  end
 
   # Now load all our plugins
   template_sources = Array.new
@@ -59,8 +86,10 @@ module Tiller
   template_sources.each { |t| require "tiller/template/#{t}.rb" }
   data_sources.each { |t| require "tiller/data/#{t}.rb" }
 
-  puts 'Template sources loaded ' + TemplateSource.subclasses.to_s
-  puts 'Data sources loaded ' + DataSource.subclasses.to_s
+  if config[:verbose]
+    puts 'Template sources loaded ' + TemplateSource.subclasses.to_s
+    puts 'Data sources loaded ' + DataSource.subclasses.to_s
+  end
 
   # Get all Templates for the given environment
   templates = Hash.new
@@ -71,7 +100,7 @@ module Tiller
     end
   end
 
-  puts "Templates to build #{templates.keys}"
+  puts "Templates to build #{templates.keys}" if config[:verbose]
 
   # Now go through all our data sources and start to assemble our global_values
   # hash. As hashes are getting merged, new values will take precedence over
@@ -111,7 +140,7 @@ module Tiller
     next if target_values.empty?
 
     # Now, we build the template
-    puts "Building template #{template}"
+    puts "Building template #{template}" if config[:verbose]
     tiller = values.merge(global_values) do |key, old, new|
       warn_merge(key, old, new, 'global and local', 'merged configuration')
     end
@@ -132,7 +161,7 @@ module Tiller
 
     # Set permissions if we are running as root
     if Process::Sys.geteuid == 0
-      puts "Setting ownership/permissions on #{target_values['target']}"
+      puts "Setting ownership/permissions on #{target_values['target']}" if config[:verbose]
       if target_values.key?('perms')
         FileUtils.chmod(target_values['perms'], target_values['target'])
       end
@@ -142,14 +171,19 @@ module Tiller
                       target_values['target'])
     else
       puts 'Not running as root, so not setting ownership/permissions on ' \
-        "#{target_values['target']}"
+        "#{target_values['target']}" if config[:verbose]
     end
 
   end
 
-  # All templates created, so let's handover to the replacement process then
-  # it's home in time for tea and medals.
-  puts 'Template generation completed, about to exec replacement process.'
-  puts "Calling #{config[:common_config]['exec']}..."
-  exec(config[:common_config]['exec'])
+  puts 'Template generation completed'
+
+  if config[:no_exec] == false && config[:common_config].key?('exec')
+    # All templates created, so let's handover to the replacement process then
+    # it's home in time for tea and medals.
+    puts "Executing #{config[:common_config]['exec']}..."
+    exec(config[:common_config]['exec'])
+  end
+
+
 end
