@@ -72,9 +72,6 @@ module Tiller
 
   optparse.parse!
 
-  pp config
-  exit
-
   # Add tiller_lib to the LOAD PATH so we can pull in user-defined plugins
   $LOAD_PATH.unshift(config[:tiller_lib]) unless $LOAD_PATH.include?(config[:tiller_lib])
 
