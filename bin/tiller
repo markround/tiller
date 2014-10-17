@@ -160,7 +160,7 @@ module Tiller
     # manual binding, and also non-existing values just get replaced by <nil>
     # instead of failing on errors.
     ns = OpenStruct.new(tiller)
-    parsed_template = ERB.new(content).result(ns.instance_eval { binding })
+    parsed_template = ERB.new(content, nil, '-').result(ns.instance_eval { binding })
 
     # Write the template, and also create the directory path if it
     # doesn't exist.
