@@ -42,7 +42,7 @@ Tiller can be used to dynamically generate configuration files before passing ex
 It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `exec`. Usually, when running a container that uses Tiller, all you need to do is pass the environment to it, e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
-	tiller v0.1.4 (https://github.com/markround/tiller) <github@markround.com>
+	tiller v0.1.5 (https://github.com/markround/tiller) <github@markround.com>
 	Using configuration from /etc/tiller
 	Using plugins from /usr/local/lib/tiller
 	Using environment staging
