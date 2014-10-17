@@ -264,8 +264,14 @@ Tiller will merge values from all sources. It will warn you, but it won't stop y
 ### ERb newlines
 By default, ERb will insert a newline character after a closing `%>` tag. You may not want this, particularly with loop constructs. As of version 0.1.5, you can suppress the newline using a closing tag prefixed with a `-` character, e.g. 
 
-	<%= some_var -%>
+```erb
+<% things.each do |thing| -%>
+	<%= thing %>
+<% end -%>
+```
+You may also need tell your editor to use Unix-style line endings. For example, in VIM :
 
+	:set fileformat=unix
 
 # Other examples, articles etc.
 
