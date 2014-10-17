@@ -4,7 +4,7 @@
 # didn't have an existing gem named after it!
 # Mark Round <github@markround.com>
 
-VERSION = '0.1.4'
+VERSION = '0.1.5'
 
 require 'erb'
 require 'ostruct'
@@ -29,8 +29,8 @@ end
 # And we're on our way...
 module Tiller
   # Set these two environment variables if you want to debug a configuration
-  # in a temporary directory.
-  # EG: $ tiller_base=/tmp tiller_lib=/tmp/lib ./tiller
+  # in a temporary directory, or use the -b and -l arguments.
+  # EG: $ ./bin/tiller -b /tmp/tiller/etc -l /tmp/tiller/lib
   config = {
     :tiller_base  => (ENV['tiller_base'].nil?)  ? '/etc/tiller' : ENV['tiller_base'],
     :tiller_lib   => (ENV['tiller_lib'].nil?)   ? '/usr/local/lib' : ENV['tiller_lib'],
