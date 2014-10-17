@@ -4,15 +4,12 @@ Tiller is a tool that generates configuration files. It takes a set of templates
 You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container. However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
 
 ## More information
-Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/). You may also find my walkthrough tutorial useful : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/)
+Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/). 
+
+You may also find my walkthrough tutorial useful : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/)
 
 ## Changes
-* 0.1.3 : Added "no exec" feature and command-line arguments -n, -v, and -h. Made output less verbose by default.
-* 0.1.2 : Code cleanup based on input from RuboCop
-* 0.1.1 : Very minor code cleanup
-* 0.1.0 : Modified plugin API slightly by creating a `setup` hook which is called after the plugin is initialized. This could be useful for connecting to a database, parsing configuration files or setting up other data structures.
-* 0.0.8 : Added `RandomDataSource` that wraps Ruby's `SecureRandom` class to provide UUIDs, random Base64 encoded data and so on.
-* 0.0.7 : Added `EnvironmentDataSource`, so you can now use environment variables in your templates, e.g. `<%= env_user %>`. See [http://www.markround.com/blog/2014/08/04/tiller-v0-dot-0-7-now-supports-environment-variables/](http://www.markround.com/blog/2014/08/04/tiller-v0-dot-0-7-now-supports-environment-variables/) for a very quick overview.
+See [CHANGELOG.md](https://github.com/markround/tiller/blob/master/CHANGELOG.md)
 
 # Background
 I had a number of Docker containers that I wanted to run with a slightly different configuration, depending on the environment I was launching them. For example, a web application might connect to a different database in a staging environment, a MongoDB replica set name might be different, or I might want to allocate a different amount of memory to a Java process. This meant my options basically looked like:
@@ -40,7 +37,7 @@ Docker-related projects all seem to have shipyard-related names, and this was th
 # Usage
 Tiller can be used to dynamically generate configuration files before passing execution over to a daemon process. 
 
-It looks at an environment variable called "environment", and creates a set of configuration files based on templates, and then runs a specified daemon process via `exec`. Usually, when running a container that users Tiller, all you need to do is pass the environment to it, e.g. 
+It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `exec`. Usually, when running a container that uses Tiller, all you need to do is pass the environment to it, e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
 	tiller v0.1.3 (https://github.com/markround/tiller) <github@markround.com>
@@ -60,10 +57,13 @@ It looks at an environment variable called "environment", and creates a set of c
 If no environment is specified, it will default to using "production". 
 
 ## Arguments
-As of version 0.1.3, Tiller understands command-line arguments :
+Tiller understands the following *optional* command-line arguments (mostly used for debugging purposes) :
 
 * `-n` / `--no-exec` : Do not execute a replacement process (e.g. you only want to generate the templates)
 * `-v` / `--verbose` : Display verbose output, useful for debugging and for seeing what templates are being parsed
+* `-b` / `--base-dir` : Specify the tiller_base directory for configuration files
+* `-l` / `--lib-dir` : Specify the tiller_lib directory for user-provided plugins
+* `-e` / `--environment` : Specify the tiller environment. This is usually set by the 'environment' environment variable, but this may be useful for debugging/switching between environments on the command line.
 * `-h` / `--help` : Show a short help screen
 
 # Setup
@@ -77,9 +77,13 @@ Firstly, install the tiller gem and set your Dockerfile to use it (assuming you'
 	...
 	CMD ["/usr/local/bin/tiller" , "-v"]
 
-Now, set up your configuration. By default, Tiller looks for configuration under `/etc/tiller`, but this can be set to somewhere else by setting the environment variable `tiller_base`. This is particularly useful for testing purposes, e.g.
+Now, set up your configuration. By default, Tiller looks for configuration under `/etc/tiller`, but this can be set to somewhere else by setting the environment variable `tiller_base` or by using the `-b` flag. This is particularly useful for testing purposes, e.g.
 
-	$ tiller_base=$PWD/tiller tiller -v
+	$ tiller_base=/tmp/tiller tiller -v
+	
+or
+
+	$ tiller -v -b /tmp/tiller
 
 Tiller expects a directory structure like this (using /etc/tiller as its base, and the file data and template sources) :
 
@@ -136,9 +140,9 @@ These files under `/etc/tiller/templates` are simply the ERB templates for your 
 
 ## Environment configuration
 
-These files live under `/etc/tiller/environments` and are named after the environment variable `environment` that you pass in (using `docker run -e`, or from the command line). 
+These files live under `/etc/tiller/environments` and are named after the environment variable `environment` that you pass in (by using `docker run -e`, or from the command line). Alternatively, you can set the environment by using the `-e` flag from the command line.
 
-When you're using the default `FileDataSource`, they define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and also a set of key:value pairs that are made available to the template via the usual `<%= key %>` ERB syntax.
+When you're using the default `FileDataSource`, these environment files define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and also a set of key:value pairs that are made available to the template via the usual `<%= key %>` ERB syntax.
 
 Carrying on with the MongoDB example, here's how you might set the replica set name in your `staging.yaml` environment file :
 
@@ -245,6 +249,8 @@ Assuming you had created a pair of template and data source plugins called `Exam
 	template_sources:
 		- file
 		- example
+
+If you don't want to use the default directory of `/usr/local/lib/tiller`, you can specify an alternate location by setting the `tiller_lib` environment variable, or by using the `-l`/`--libdir` flag on the command line.
 
 ## Gotchas
 Tiller will merge values from all sources. It will warn you, but it won't stop you from doing this, which may have undefined results. Particularly if you include two data sources that each provide target values - you may find that your templates end up getting installed in locations you didn't expect, or containing spurious values!
