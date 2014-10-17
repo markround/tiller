@@ -8,6 +8,8 @@ Check out my blog, and in particular my post introducing tiller : [http://www.ma
 
 You may also find my walkthrough tutorial useful : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/)
 
+Or my guide on using the Environment JSON plugin : [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/)
+
 ## Changes
 See [CHANGELOG.md](https://github.com/markround/tiller/blob/master/CHANGELOG.md)
 
@@ -40,7 +42,7 @@ Tiller can be used to dynamically generate configuration files before passing ex
 It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `exec`. Usually, when running a container that uses Tiller, all you need to do is pass the environment to it, e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
-	tiller v0.1.3 (https://github.com/markround/tiller) <github@markround.com>
+	tiller v0.1.4 (https://github.com/markround/tiller) <github@markround.com>
 	Using configuration from /etc/tiller
 	Using plugins from /usr/local/lib/tiller
 	Using environment staging
@@ -184,6 +186,9 @@ These provide data from YAML environment files, and templates from ERB files (se
 ### Environment plugin
 If you activated the `EnvironmentDataSource` (as shown by adding `  - environment` to the list of data sources in the example `common.yaml` above), you'll also be able to access environment variables within your templates. These are all converted to lower-case, and prefixed with `env_`. So for example, if you had the environment variable `LOGNAME` set, you could reference this in your template with `<%= env_logname %>`
 
+### Environment JSON
+If you add `  - environment_json` to your list of data sources in `common.yaml`, you'll be able to make complex JSON data structures available to your templates. Just pass your JSON in the environment variable `tiller_json`. See [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for some practical examples.
+
 ### Random plugin
 If you add `  - random` to your list of data sources in `common.yaml`, you'll be able to use randomly-generated values and strings in your templates, e.g. `<%= random_uuid %>`. This may be useful for generating random UUIDs, server IDs and so on. An example hash with demonstration values is as follows : 
 
@@ -259,6 +264,7 @@ Tiller will merge values from all sources. It will warn you, but it won't stop y
 
 * [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/) - Introductory blog post that provides a quick overview and shows an example DataSource at the end.
 * [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/) - Walkthrough tutorial showing how to use Tiller's environment plugin. Includes a Dockerfile and downloadable example.
+* [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) - Demonstration of using the JSON datasource, and shows how you can use it to over-ride default values or provide images that can be configured dynamically by end-users.
 
 # Future improvements
 
