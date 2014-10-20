@@ -223,32 +223,27 @@ Once Tiller has forked a child process (specified by the `exec` parameter), you 
 
 	Tiller API starting on port 6275
 	
-This listening port is bound to localhost only; if you want to expose it from inside a Docker container, you will need to add this port to your list of mappings (e.g. `docker run ... -p 6275:6275 ...`). You should now be able to connect to this via HTTP.
+This listening port is bound to localhost only; if you want to expose it from inside a Docker container, you will need to add this port to your list of mappings (e.g. `docker run ... -p 6275:6275 ...`). You should now be able to connect to this via HTTP, e.g.
+
+```
+$ curl -D - http://localhost:6275/ping
+HTTP/1.1 200 OK
+Content-Type: application/json
+Server: Tiller 0.2.0 / API v1
+
+{ "ping": "Tiller API v1 OK" }
+
+```
 
 ## Methods
-The API responds to the following :
-### /ping
-Returns a ping JSON hash. Used to check the API is up and running:
+The API responds to the following GET requests:
 
-	$ curl -D - http://localhost:6275/ping
-	HTTP/1.1 200 OK
-	Content-Type: application/json
-	Server: Tiller 0.1.5 / API v1
+* **/ping** : Used to check the API is up and running.
+* **/v1/config** : Return a hash of the Tiller configuration.
+* **/v1/globals** : Return a hash of global values from all data sources.
+* **/v1/templates** : Return a list of generated templates.
+* **/v1/template/<template_name>** : Return a hash of merged values and target values for the named template.
 
-	{ "ping": "Tiller API v1 OK" }
-
-### /v1/config
-Returns a hash of the Tiller configuration, global_values and templates:
-
-	curl -D - http://localhost:6275/v1/config
-	HTTP/1.1 200 OK
-	Content-Type: application/json
-	Server: Tiller 0.1.5 / API v1
-
-	{
-	"config":{"tiller_base":"examples/json","tiller_lib":"/usr/local/...
-	... rest of output truncated ...
-	}
 
 # Plugin architecture
 Well, "architecture" is probably too grand a word, but as discussed above, you can get data into your template files from a multitude of sources, or even grab your template files from a source such as a database or from a HTTP server. I've included some examples under the `examples/` directory, including dummy sources that return dummy data and templates, and a NetworkDataSource that provides the host's FQDN and a hash of IP address details, which templates can use. Have a look at those for a fuller example, but here's a quick overview:
