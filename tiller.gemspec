@@ -2,7 +2,7 @@ gem 'tiller', :git => 'git://github.com/markround/tiller.git'
 
 Gem::Specification.new do |s|
   s.name = 'tiller'
-  s.version = '0.2.1'
+  s.version = '0.2.2'
   s.date = '2014-10-20'
   s.summary = 'Dynamic configuration generation for Docker'
   s.description = 'A tool to create configuration files in Docker containers from a variety of sources. See https://github.com/markround/tiller for examples and documentation.'
