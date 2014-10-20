@@ -212,8 +212,7 @@ module Tiller
   end
 
   if config[:no_exec] == false && config.key?('exec')
-    # All templates created, so let's handover to the replacement process then
-    # it's home in time for tea and medals.
+    # All templates created, so let's start the replacement process
     puts "Executing #{config['exec']}..."
 
     # Fork and wait so API can continue to run
