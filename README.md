@@ -12,6 +12,8 @@ I have also written a few blog tutorials that provide a good overview of what Ti
 
 * Using the Environment JSON plugin : [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/)
 
+* Querying the Tiller API : [http://www.markround.com/blog/2014/10/20/querying-tiller-configuration-froma-running-docker-container/](http://www.markround.com/blog/2014/10/20/querying-tiller-configuration-froma-running-docker-container/)
+
 ## Changes
 See [CHANGELOG.md](https://github.com/markround/tiller/blob/master/CHANGELOG.md)
 
@@ -330,6 +332,7 @@ You may also need tell your editor to use Unix-style line endings. For example, 
 * [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/) - Introductory blog post that provides a quick overview and shows an example DataSource at the end.
 * [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/) - Walkthrough tutorial showing how to use Tiller's environment plugin. Includes a Dockerfile and downloadable example.
 * [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) - Demonstration of using the JSON datasource, and shows how you can use it to over-ride default values or provide images that can be configured dynamically by end-users.
+* [http://www.markround.com/blog/2014/10/20/querying-tiller-configuration-froma-running-docker-container/](http://www.markround.com/blog/2014/10/20/querying-tiller-configuration-froma-running-docker-container/) - Demonstration of querying the Tiller API to extract the information on generated templates.
 
 # Future improvements
 
