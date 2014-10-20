@@ -223,10 +223,10 @@ Once Tiller has forked a child process (specified by the `exec` parameter), you 
 
 	Tiller API starting on port 6275
 	
-This listening port is bound to localhost only; if you want to expose it from inside a Docker container, you will need to add this port to your list of mappings (e.g. `docker run ... -p 6275:6275 ...`). You should now be able to connect to this via HTTP, e.g.
+If you want to expose this port from inside a Docker container, you will need to add this port to your list of mappings (e.g. `docker run ... -p 6275:6275 ...`). You should now be able to connect to this via HTTP, e.g.
 
 ```
-$ curl -D - http://localhost:6275/ping
+$ curl -D - http://docker-container-ip:6275/ping
 HTTP/1.1 200 OK
 Content-Type: application/json
 Server: Tiller 0.2.2 / API v1
