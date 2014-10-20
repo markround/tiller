@@ -20,7 +20,7 @@ def tiller_api(tiller_api_hash)
 
   puts "Tiller API starting on port #{api_port}" if tiller_api_hash['config'][:verbose]
 
-  server = TCPServer.new('127.0.0.1', api_port)
+  server = TCPServer.new(api_port)
 
   loop do
     socket = server.accept
