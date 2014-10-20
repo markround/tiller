@@ -44,7 +44,7 @@ Tiller can be used to dynamically generate configuration files before passing ex
 It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `system`. Usually, when running a container that uses Tiller, all you need to do is pass the environment to it, e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
-	tiller v0.2.0 (https://github.com/markround/tiller) <github@markround.com>
+	tiller v0.2.1 (https://github.com/markround/tiller) <github@markround.com>
 	Using configuration from /etc/tiller
 	Using plugins from /usr/local/lib/tiller
 	Using environment staging
@@ -229,7 +229,7 @@ This listening port is bound to localhost only; if you want to expose it from in
 $ curl -D - http://localhost:6275/ping
 HTTP/1.1 200 OK
 Content-Type: application/json
-Server: Tiller 0.2.0 / API v1
+Server: Tiller 0.2.1 / API v1
 
 { "ping": "Tiller API v1 OK" }
 
