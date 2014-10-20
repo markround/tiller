@@ -13,6 +13,9 @@ Gem::Specification.new do |s|
     lib/tiller/api/handlers/404.rb
     lib/tiller/api/handlers/ping.rb
     lib/tiller/api/handlers/config.rb
+    lib/tiller/api/handlers/globals.rb
+    lib/tiller/api/handlers/templates.rb
+    lib/tiller/api/handlers/template.rb
     lib/tiller/datasource.rb
     lib/tiller/templatesource.rb
     lib/tiller/data/file.rb

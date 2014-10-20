@@ -182,8 +182,10 @@ module Tiller
     target.close
 
     # config is redundant in target_values, remove it for the final status hash.
-    all_templates[template]={'merged_values' => tiller,
-                             'target_values' => target_values.delete('config')}
+    all_templates[template]={
+        'merged_values' => tiller,
+        'target_values' => target_values.reject{|k,v| k=='config'}
+    }
 
     # Set permissions if we are running as root
     if Process::Sys.geteuid == 0

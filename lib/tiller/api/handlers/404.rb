@@ -1,6 +1,6 @@
 def handle_404
   {
-      :content => '{ "error" : "Not implemented" }',
+      :content => '{ "error" : "not implemented" }',
       :status => '404 Not Found'
   }
 end

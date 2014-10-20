@@ -3,6 +3,9 @@ require 'socket'
 require 'tiller/api/handlers/404'
 require 'tiller/api/handlers/ping'
 require 'tiller/api/handlers/config'
+require 'tiller/api/handlers/globals'
+require 'tiller/api/handlers/templates'
+require 'tiller/api/handlers/template'
 
 
 API_VERSION=1
@@ -37,8 +40,15 @@ def tiller_api(tiller_api_hash)
         case uri
           when '/ping'
             response = handle_ping
-          when /\/v([0-9]+)\/config/
+          when /^\/v([0-9]+)\/config/
             response = handle_config(api_version, tiller_api_hash)
+          when /^\/v([0-9]+)\/globals/
+            response = handle_globals(api_version, tiller_api_hash)
+          when /^\/v([0-9]+)\/templates/
+            response = handle_templates(api_version, tiller_api_hash)
+          when /^\/v([0-9]+)\/template\//
+            template = uri.split('/')[3]
+            response = handle_template(api_version, tiller_api_hash, template)
         end
     end
 
