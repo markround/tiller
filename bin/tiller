@@ -12,6 +12,9 @@ require 'yaml'
 require 'fileutils'
 require 'optparse'
 require 'pp'
+require 'json'
+require 'socket'
+require 'tiller/api'
 
 # This is needed so we can enumerate all the loaded plugins later
 class Class
@@ -41,6 +44,7 @@ module Tiller
   # Parse command-line arguments
   config[:no_exec] = false
   config[:verbose] = false
+  config[:api_enable] = false
 
   optparse = OptionParser.new do |opts|
     opts.on('-n', '--no-exec', 'Do not execute a replacement process') do
@@ -48,6 +52,12 @@ module Tiller
     end
     opts.on('-v', '--verbose', 'Display verbose output') do
       config[:verbose] = true
+    end
+    opts.on('-a', '--api', 'Enable HTTP API') do
+      config['api_enable'] = true
+    end
+    opts.on('-p', '--api-port [API_PORT]', 'HTTP API port') do |api_port|
+      config['api_port'] = api_port
     end
     opts.on('-b', '--base-dir [BASE_DIR]', 'Override the tiller_base environment variable') do |base_dir|
       config[:tiller_base] = base_dir
@@ -79,7 +89,7 @@ module Tiller
   require 'tiller/datasource.rb'
 
   # Load the common YAML configuration file
-  config[:common_config] = YAML.load(open(File.join(config[:tiller_base], 'common.yaml')))
+  config.merge!(YAML.load(open(File.join(config[:tiller_base], 'common.yaml'))))
 
   puts "tiller v#{VERSION} (https://github.com/markround/tiller) <github@markround.com>"
 
@@ -92,8 +102,8 @@ module Tiller
   # Now load all our plugins
   template_sources = Array.new
   data_sources = Array.new
-  template_sources |= config[:common_config]['template_sources']
-  data_sources |= config[:common_config]['data_sources']
+  template_sources |= config['template_sources']
+  data_sources |= config['data_sources']
   template_sources.each { |t| require "tiller/template/#{t}.rb" }
   data_sources.each { |t| require "tiller/data/#{t}.rb" }
 
@@ -127,6 +137,7 @@ module Tiller
 
   # Now we go through each template we've identified, and get the
   # values for each one.
+  all_templates = Hash.new
   templates.each do |template, content|
     values = Hash.new
     target_values = Hash.new
@@ -170,6 +181,12 @@ module Tiller
     target.puts(parsed_template)
     target.close
 
+    # config is redundant in target_values, remove it for the final status hash.
+    all_templates[template]={
+        'merged_values' => tiller,
+        'target_values' => target_values.reject{|k,v| k=='config'}
+    }
+
     # Set permissions if we are running as root
     if Process::Sys.geteuid == 0
       puts "Setting ownership/permissions on #{target_values['target']}" if config[:verbose]
@@ -189,11 +206,25 @@ module Tiller
 
   puts 'Template generation completed'
 
-  if config[:no_exec] == false && config[:common_config].key?('exec')
-    # All templates created, so let's handover to the replacement process then
-    # it's home in time for tea and medals.
-    puts "Executing #{config[:common_config]['exec']}..."
-    exec(config[:common_config]['exec'])
+  # Final status structure for API
+  tiller_api_hash={'config' => config, 'global_values' => global_values, 'templates' => all_templates}
+
+  if config['api_enable']
+    Thread.start{ tiller_api(tiller_api_hash) }
+  end
+
+  if config[:no_exec] == false && config.key?('exec')
+    # All templates created, so let's start the replacement process
+    puts "Executing #{config['exec']}..."
+
+    # Fork and wait so API can continue to run
+    fork do
+      system(config['exec'])
+    end
+
+    puts "Child process forked." if config[:verbose]
+    Process.wait
+    puts "Child process finished, Tiller is stopping." if config[:verbose]
   end
 
 

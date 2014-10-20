@@ -1,14 +1,16 @@
 # What is it?
-Tiller is a tool that generates configuration files. It takes a set of templates, fills them in with values from a variety of sources (such as environment variables or YAML files), installs them in a specified location and then optionally spawns a replacement process.
+Tiller is a tool that generates configuration files. It takes a set of templates, fills them in with values from a variety of sources (such as environment variables or YAML files), installs them in a specified location and then optionally spawns a child process.
 
 You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container. However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
 
 ## More information
 Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/). 
 
-You may also find my walkthrough tutorial useful : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/)
+I have also written a few blog tutorials that provide a good overview of what Tiller can do; I strongly recommend reading these through and following the examples :
 
-Or my guide on using the Environment JSON plugin : [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/)
+* Walkthrough tutorial : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/)
+
+* Using the Environment JSON plugin : [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/)
 
 ## Changes
 See [CHANGELOG.md](https://github.com/markround/tiller/blob/master/CHANGELOG.md)
@@ -27,7 +29,7 @@ So I knocked up a quick Ruby script (originally called "Runner.rb") that I could
 * Generates configuration files from ERB templates (which can come from a number of sources)
 * Uses values provided from a data source (i.e YAML files) for each environment
 * Copies the generated templates to the correct location and specifies permissions
-* Optionally executes a replacement process once it's finished (e.g. mongod, nginx, supervisord, etc.)
+* Optionally executes a child process once it's finished (e.g. mongod, nginx, supervisord, etc.)
 * Now provides a pluggable architecture, so you can define additional data or template sources. For example, you can create a DataSource that looks up values from an LDAP store, or a TemplateSource that pulls things from a database. 
 
 This way I can keep all my configuration together in the container, and just tell Docker which environment to use when I start it. 
@@ -39,10 +41,10 @@ Docker-related projects all seem to have shipyard-related names, and this was th
 # Usage
 Tiller can be used to dynamically generate configuration files before passing execution over to a daemon process. 
 
-It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `exec`. Usually, when running a container that uses Tiller, all you need to do is pass the environment to it, e.g. 
+It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `system`. Usually, when running a container that uses Tiller, all you need to do is pass the environment to it, e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
-	tiller v0.1.5 (https://github.com/markround/tiller) <github@markround.com>
+	tiller v0.2.0 (https://github.com/markround/tiller) <github@markround.com>
 	Using configuration from /etc/tiller
 	Using plugins from /usr/local/lib/tiller
 	Using environment staging
@@ -53,19 +55,22 @@ It looks at an environment variable called "environment" (or the argument to the
 	Setting ownership/permissions on /etc/mongodb.conf
 	Building template sensu_client.erb
 	Setting ownership/permissions on /etc/sensu/conf.d/client.json
-	Template generation completed, about to exec replacement process.
-	Calling /usr/bin/supervisord...
+	Template generation completed
+	Executing /usr/bin/supervisord
+	Child process forked.
 
 If no environment is specified, it will default to using "production". 
 
 ## Arguments
 Tiller understands the following *optional* command-line arguments (mostly used for debugging purposes) :
 
-* `-n` / `--no-exec` : Do not execute a replacement process (e.g. you only want to generate the templates)
+* `-n` / `--no-exec` : Do not execute a child process (e.g. you only want to generate the templates)
 * `-v` / `--verbose` : Display verbose output, useful for debugging and for seeing what templates are being parsed
 * `-b` / `--base-dir` : Specify the tiller_base directory for configuration files
 * `-l` / `--lib-dir` : Specify the tiller_lib directory for user-provided plugins
 * `-e` / `--environment` : Specify the tiller environment. This is usually set by the 'environment' environment variable, but this may be useful for debugging/switching between environments on the command line.
+* `-a` / `--api` : Enable the HTTP API (See below)
+* `-p` / `--api-port` : Set the port the API listens on (Default: 6275)
 * `-h` / `--help` : Show a short help screen
 
 # Setup
@@ -114,7 +119,7 @@ It is suggested that you add all this under your Docker definition in a `data/ti
 ## Common configuration
 `common.yaml` contains the `exec`, `data_sources` and `template_sources` parameters. 
 
-* `exec`: This is simply what will be executed after the configuration files have been generated. If you omit this (or use the `-n` / `--no-exec` arguments) then no replacement process will be executed.
+* `exec`: This is simply what will be executed after the configuration files have been generated. If you omit this (or use the `-n` / `--no-exec` arguments) then no child process will be executed.
 * `data_sources` : The data sources you'll be using to populate the configuration files. This should usually just be set to "file" and "environment" to start with, although you can write your own plugins and pull them in (more on that later).
 * `template_sources` Where the templates come from, again a list of plugins. 
 
@@ -202,6 +207,44 @@ If you add `  - random` to your list of data sources in `common.yaml`, you'll be
 	 "random_uuid"=>"147acac8-7229-44af-80c1-246cf08910f5"}
 
 
+# API
+There is a HTTP API provided for debugging purposes. This may be useful if you want a way of extracting and examining the configuration from a running container. Note that this is a *very* simple implementation, and should never be exposed to the internet or untrusted networks. Consider it as a tool to help debug configuration issues, and nothing more. 
+
+## Enabling
+You can enable the API by passing the `--api` (and optional `api-port`) command-line arguments. Alternatively, you can also set these in `common.yaml` :
+	
+```
+api_enable: true
+api_port: 6275
+```
+
+## Usage
+Once Tiller has forked a child process (specified by the `exec` parameter), you will see a message on stdout informing you the API is starting :
+
+	Tiller API starting on port 6275
+	
+This listening port is bound to localhost only; if you want to expose it from inside a Docker container, you will need to add this port to your list of mappings (e.g. `docker run ... -p 6275:6275 ...`). You should now be able to connect to this via HTTP, e.g.
+
+```
+$ curl -D - http://localhost:6275/ping
+HTTP/1.1 200 OK
+Content-Type: application/json
+Server: Tiller 0.2.0 / API v1
+
+{ "ping": "Tiller API v1 OK" }
+
+```
+
+## Methods
+The API responds to the following GET requests:
+
+* **/ping** : Used to check the API is up and running.
+* **/v1/config** : Return a hash of the Tiller configuration.
+* **/v1/globals** : Return a hash of global values from all data sources.
+* **/v1/templates** : Return a list of generated templates.
+* **/v1/template/<template_name>** : Return a hash of merged values and target values for the named template.
+
+
 # Plugin architecture
 Well, "architecture" is probably too grand a word, but as discussed above, you can get data into your template files from a multitude of sources, or even grab your template files from a source such as a database or from a HTTP server. I've included some examples under the `examples/` directory, including dummy sources that return dummy data and templates, and a NetworkDataSource that provides the host's FQDN and a hash of IP address details, which templates can use. Have a look at those for a fuller example, but here's a quick overview:
 
@@ -223,7 +266,7 @@ You can create your own template provider by extending the `Tiller::TemplateSour
 
 If you create a `setup` method, it will get called straight after initialization. This can be useful for connecting to a database, parsing configuration files and so on.
 
-When the class is created, it gets passed a hash containing various variables you can use to return different templates based on environment etc. Or you can read any values from `common.yaml` yourself, as it's accessible from the instance variable `@config[:common_config]`.
+When the class is created, it gets passed a hash containing various variables you can use to return different templates based on environment etc. Or you can read any values from `common.yaml` yourself, as it's accessible from the instance variable `@config`.
 
 ##Data sources
 These provide values that templates can use. There are 3 kinds of values:
@@ -257,11 +300,20 @@ Assuming you had created a pair of template and data source plugins called `Exam
 
 If you don't want to use the default directory of `/usr/local/lib/tiller`, you can specify an alternate location by setting the `tiller_lib` environment variable, or by using the `-l`/`--libdir` flag on the command line.
 
-## Gotchas
-### Merging values
+# Gotchas
+## Merging values
 Tiller will merge values from all sources. It will warn you, but it won't stop you from doing this, which may have undefined results. Particularly if you include two data sources that each provide target values - you may find that your templates end up getting installed in locations you didn't expect, or containing spurious values!
 
-### ERb newlines
+## Empty config
+If you are using the file datasource, you must provide a config hash, even if it's empty (e.g. you are using other data sources to provide all the values for your templates). For example:
+
+```
+my_template.erb:
+  target: /tmp/template.txt
+  config: {}
+```
+
+## ERb newlines
 By default, ERb will insert a newline character after a closing `%>` tag. You may not want this, particularly with loop constructs. As of version 0.1.5, you can suppress the newline using a closing tag prefixed with a `-` character, e.g. 
 
 ```erb

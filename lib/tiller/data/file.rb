@@ -18,6 +18,7 @@ class FileDataSource < Tiller::DataSource
   end
 
   def target_values(template_name)
+    # The config element is redundant (not a target value)
     @config_hash.key?(template_name) ? @config_hash[template_name] : Hash.new
   end
 end
