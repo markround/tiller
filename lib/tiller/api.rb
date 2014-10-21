@@ -16,15 +16,15 @@ API_PORT=6275
 
 def tiller_api(tiller_api_hash)
 
-  begin
-    api_port = tiller_api_hash['config']['api_port'] ?
-        tiller_api_hash['config']['api_port'] : API_PORT
+  api_port = tiller_api_hash['config']['api_port'] ?
+      tiller_api_hash['config']['api_port'] : API_PORT
 
-    puts "Tiller API starting on port #{api_port}"
+  puts "Tiller API starting on port #{api_port}"
 
-    server = TCPServer.new(api_port)
+  server = TCPServer.new(api_port)
 
-    loop do
+  loop do
+    begin
       socket = server.accept
       request = socket.gets
       (method, uri, http_version) = request.split
@@ -63,10 +63,11 @@ def tiller_api(tiller_api_hash)
       socket.print "\r\n"
       socket.print response[:content]
       socket.close
-    end
 
-  rescue Exception => e
-    puts "Error : Exception in Tiller API thread : #{e.class.name}\n#{e}"
+    rescue Exception => e
+      puts "Error : Exception in Tiller API thread : #{e.class.name}\n#{e}"
+      next
+    end
   end
 
 end
