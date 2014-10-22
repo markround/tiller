@@ -210,7 +210,7 @@ If you add `  - random` to your list of data sources in `common.yaml`, you'll be
 
 
 # API
-There is a HTTP API provided for debugging purposes. This may be useful if you want a way of extracting and examining the configuration from a running container. Note that this is a *very* simple implementation, and should never be exposed to the internet or untrusted networks. Consider it as a tool to help debug configuration issues, and nothing more. 
+There is a HTTP API provided for debugging purposes. This may be useful if you want a way of extracting and examining the configuration from a running container. Note that this is a *very* simple implementation, and should never be exposed to the internet or untrusted networks. Consider it as a tool to help debug configuration issues, and nothing more. Also see the "Gotchas" section if you experience any `Encoding::UndefinedConversionError` exceptions.
 
 ## Enabling
 You can enable the API by passing the `--api` (and optional `--api-port`) command-line arguments. Alternatively, you can also set these in `common.yaml` :
@@ -326,6 +326,10 @@ By default, ERb will insert a newline character after a closing `%>` tag. You ma
 You may also need tell your editor to use Unix-style line endings. For example, in VIM :
 
 	:set fileformat=unix
+
+## API Encoding::UndefinedConversionError exceptions
+This seems to crop up mostly on Ruby 1.9 installations, and happens when converting ASCII-8BIT strings to UTF-8. A workaround is to install the 'Oj' gem, and Tiller will use this if it's found. I didn't make it a hard dependency of Tiller as Oj is a C-library native extension, so you'll need a bunch of extra packages which you may consider overkill on a Docker container. E.g. on Ubuntu, you'll need `ruby-dev`, `make`, a compiler and so on. But if you have all the dependencies, a simple `gem install oj` in your Dockerfile or environment should be all you need.
+
 
 # Other examples, articles etc.
 
