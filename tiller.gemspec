@@ -1,5 +1,3 @@
-gem 'tiller', :git => 'git://github.com/markround/tiller.git'
-
 Gem::Specification.new do |s|
   s.name = 'tiller'
   s.version = '0.2.2'
@@ -17,6 +15,7 @@ Gem::Specification.new do |s|
     lib/tiller/api/handlers/templates.rb
     lib/tiller/api/handlers/template.rb
     lib/tiller/datasource.rb
+    lib/tiller/json.rb
     lib/tiller/templatesource.rb
     lib/tiller/data/file.rb
     lib/tiller/data/environment.rb

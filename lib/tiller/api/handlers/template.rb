@@ -1,4 +1,4 @@
-require 'json'
+require 'tiller/json'
 require 'tiller/api/handlers/404'
 
 def handle_template(api_version, tiller_api_hash, template)
@@ -6,7 +6,7 @@ def handle_template(api_version, tiller_api_hash, template)
     when 'v1'
       if tiller_api_hash['templates'].has_key?(template)
         {
-            :content => tiller_api_hash['templates'][template].to_json,
+            :content => dump_json(tiller_api_hash['templates'][template]),
             :status => '200 OK'
         }
       else

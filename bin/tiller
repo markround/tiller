@@ -44,7 +44,7 @@ module Tiller
   # Parse command-line arguments
   config[:no_exec] = false
   config[:verbose] = false
-  config[:api_enable] = false
+  config['api_enable'] = false
 
   optparse = OptionParser.new do |opts|
     opts.on('-n', '--no-exec', 'Do not execute a replacement process') do
