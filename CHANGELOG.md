@@ -1,5 +1,6 @@
 # Changelog
 
+* 0.2.4 : Bug fix case of 'Oj' gem
 * 0.2.3 : Catch Exceptions in API accept loop, dump JSON using Oj gem if it's installed, which resolves various `Encoding::UndefinedConversionError` problems.
 * 0.2.2 : API Bind to all addresses, otherwise won't work in Docker container.
 * 0.2.0 : Added HTTP API for querying status of Tiller from within a running container. Modified fork behaviour so that Tiller now spawns a child process and waits on it, so that the API can continue to run in a separate thread. Tidied up internal data structures (`common_config` now merged into main `config` hash).
