@@ -8,7 +8,7 @@ require 'json'
 def dump_json(structure)
   begin
     require 'Oj'
-    Oj.dump(structure, mode: :compat)
+    Oj.dump(structure, :mode => :compat)
   rescue LoadError
     structure.to_json
   end
