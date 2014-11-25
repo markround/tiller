@@ -45,6 +45,7 @@ module Tiller
   config[:no_exec] = false
   config[:verbose] = false
   config['api_enable'] = false
+  config['api_port'] = 6275
 
   optparse = OptionParser.new do |opts|
     opts.on('-n', '--no-exec', 'Do not execute a replacement process') do
