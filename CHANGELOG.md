@@ -1,5 +1,6 @@
 # Changelog
 
+* 0.2.5 : Minor code cleanup, allow config hash to be null in environments
 * 0.2.4 : Bug fix case of 'Oj' gem
 * 0.2.3 : Catch Exceptions in API accept loop, dump JSON using Oj gem if it's installed, which resolves various `Encoding::UndefinedConversionError` problems.
 * 0.2.2 : API Bind to all addresses, otherwise won't work in Docker container.
