@@ -4,7 +4,7 @@
 # didn't have an existing gem named after it!
 # Mark Round <github@markround.com>
 
-VERSION = '0.2.4'
+VERSION = '0.2.5'
 
 require 'erb'
 require 'ostruct'
@@ -45,6 +45,7 @@ module Tiller
   config[:no_exec] = false
   config[:verbose] = false
   config['api_enable'] = false
+  config['api_port'] = 6275
 
   optparse = OptionParser.new do |opts|
     opts.on('-n', '--no-exec', 'Do not execute a replacement process') do
@@ -146,8 +147,10 @@ module Tiller
     # get duplicate values.
     DataSource.subclasses.each do |data_class|
       dc = data_class.new(config)
-      values.merge!(dc.values(template)) do |key, old, new|
-        warn_merge(key, old, new, 'data', data_class.to_s)
+      if dc.values(template) != nil
+        values.merge!(dc.values(template)) do |key, old, new|
+          warn_merge(key, old, new, 'data', data_class.to_s)
+        end
       end
 
       # Now get target_values (where the file should be installed to,

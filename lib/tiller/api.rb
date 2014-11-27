@@ -9,15 +9,13 @@ require 'tiller/api/handlers/template'
 
 
 API_VERSION=1
-API_PORT=6275
 
 # The following is a VERY simple HTTP API, used for querying the status of Tiller
 # after it has generated templates and forked a child process.
 
 def tiller_api(tiller_api_hash)
 
-  api_port = tiller_api_hash['config']['api_port'] ?
-      tiller_api_hash['config']['api_port'] : API_PORT
+  api_port = tiller_api_hash['config']['api_port']
 
   puts "Tiller API starting on port #{api_port}"
 
