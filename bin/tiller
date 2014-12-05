@@ -81,6 +81,8 @@ module Tiller
     end
   end
 
+  puts "tiller v#{VERSION} (https://github.com/markround/tiller) <github@markround.com>"
+
   optparse.parse!
 
   # Add tiller_lib to the LOAD PATH so we can pull in user-defined plugins
@@ -91,8 +93,6 @@ module Tiller
 
   # Load the common YAML configuration file
   config.merge!(YAML.load(open(File.join(config[:tiller_base], 'common.yaml'))))
-
-  puts "tiller v#{VERSION} (https://github.com/markround/tiller) <github@markround.com>"
 
   if config[:verbose]
     puts "Using configuration from #{config[:tiller_base]}"
