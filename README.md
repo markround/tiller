@@ -4,15 +4,18 @@ Tiller is a tool that generates configuration files. It takes a set of templates
 You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container. However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
 
 ## More information
-Check out my blog, and in particular my post introducing tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/). 
+You may find a lot of the flexibility that Tiller offers overwhelming at first. I have written a few blog tutorials that provide a good overview of what Tiller can do, with practical examples; I strongly recommend that if you're new to all this, you read the following articles through for an introduction :  
 
-I have also written a few blog tutorials that provide a good overview of what Tiller can do; I strongly recommend reading these through and following the examples :
+* Introducing Tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/). 
 
 * Walkthrough tutorial : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/)
 
 * Using the Environment JSON plugin : [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/)
 
 * Querying the Tiller API : [http://www.markround.com/blog/2014/10/20/querying-tiller-configuration-from-a-running-docker-container/](http://www.markround.com/blog/2014/10/20/querying-tiller-configuration-from-a-running-docker-container/)
+
+* Using the Defaults data source : [http://www.markround.com/blog/2014/12/05/tiller-0.3.0-and-new-defaults-datasource](http://www.markround.com/blog/2014/12/05/tiller-0.3.0-and-new-defaults-datasource)
+
 
 ## Changes
 See [CHANGELOG.md](https://github.com/markround/tiller/blob/master/CHANGELOG.md)
@@ -46,7 +49,7 @@ Tiller can be used to dynamically generate configuration files before passing ex
 It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `system`. Usually, when running a container that uses Tiller, all you need to do is pass the environment to it, e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
-	tiller v0.2.5 (https://github.com/markround/tiller) <github@markround.com>
+	tiller v0.3.0 (https://github.com/markround/tiller) <github@markround.com>
 	Using configuration from /etc/tiller
 	Using plugins from /usr/local/lib/tiller
 	Using environment staging
@@ -134,6 +137,15 @@ So for a simple use-case where you're just generating everything from files or e
 	template_sources:
 		- file
 
+### Ordering
+Since Tiller 0.3.0, the order you specify these plugins in is important. They'll be used in the order you specify, so you can order them to your particular use case. For example, you may want to retrieve values from the `defaults` data source, then overwrite that with some values from the `file` data source, and finally allow users to set their own values from the `environment_json` source (see below for more on each of these). In which case, you'd specify :
+
+	data_sources:
+	  - defaults
+	  - file
+	  - environment_json
+
+
 ## Template files
 
 These files under `/etc/tiller/templates` are simply the ERB templates for your configuration files, and are populated with values from the selected environment file. When the environment configuration is parsed (see below), key:value pairs are made available to the template. Using MongoDB as an example, suppose you have 'staging' and 'production' environments, and want to set the "replica set" name dynamically, based on the which environment the Docker container is running in. You'd create a template mongodb.erb template with some placeholder values:
@@ -190,6 +202,16 @@ In addition to specifying values in the environment files, there are other plugi
 ### File plugins
 These provide data from YAML environment files, and templates from ERB files (see above).
 
+### Defaults plugin
+If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. These defaults are sourced from `/etc/tiller/defaults.yaml`, and any individual `.yaml` files under `/etc/tiller/defaults.d/`. Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example:
+
+	global:
+	  domain_name: 'example.com'
+	  
+	application.properties.erb:
+	  java_version: 'jdk8'
+
+
 ### Environment plugin
 If you activated the `EnvironmentDataSource` (as shown by adding `  - environment` to the list of data sources in the example `common.yaml` above), you'll also be able to access environment variables within your templates. These are all converted to lower-case, and prefixed with `env_`. So for example, if you had the environment variable `LOGNAME` set, you could reference this in your template with `<%= env_logname %>`
 
@@ -231,7 +253,7 @@ If you want to expose this port from inside a Docker container, you will need to
 $ curl -D - http://docker-container-ip:6275/ping
 HTTP/1.1 200 OK
 Content-Type: application/json
-Server: Tiller 0.2.5 / API v1
+Server: Tiller 0.3.0 / API v1
 
 { "ping": "Tiller API v1 OK" }
 
@@ -318,7 +340,7 @@ my_template.erb:
 Otherwise, you'll probably see an error message along the lines of :
 
 ```
-/var/lib/gems/1.9.1/gems/tiller-0.2.5/bin/tiller:149:in `merge!': can't convert nil into Hash (TypeError)
+/var/lib/gems/1.9.1/gems/tiller-0.2.4/bin/tiller:149:in `merge!': can't convert nil into Hash (TypeError)
 ```
 
 After 0.2.5, you can leave the config hash out altogether if you are providing all your values from another data source.
@@ -345,6 +367,8 @@ This seems to crop up mostly on Ruby 1.9 installations, and happens when convert
 * [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/) - Walkthrough tutorial showing how to use Tiller's environment plugin. Includes a Dockerfile and downloadable example.
 * [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) - Demonstration of using the JSON datasource, and shows how you can use it to over-ride default values or provide images that can be configured dynamically by end-users.
 * [http://www.markround.com/blog/2014/10/20/querying-tiller-configuration-from-a-running-docker-container/](http://www.markround.com/blog/2014/10/20/querying-tiller-configuration-from-a-running-docker-container/) - Demonstration of querying the Tiller API to extract the information on generated templates.
+* [http://www.markround.com/blog/2014/12/05/tiller-0.3.0-and-new-defaults-datasource](http://www.markround.com/blog/2014/12/05/tiller-0.3.0-and-new-defaults-datasource) - Shows how you can use the Defaults data source, and covers the changes in plugin loading behaviour.
+
 
 # Future improvements
 
