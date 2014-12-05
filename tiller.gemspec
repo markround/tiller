@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
     lib/tiller/data/environment.rb
     lib/tiller/data/environment_json.rb
     lib/tiller/data/random.rb
+    lib/tiller/data/defaults.rb
     lib/tiller/template/file.rb
     examples/plugins/etc/tiller/common.yaml
     examples/plugins/etc/tiller/environments/production.yaml
@@ -34,6 +35,25 @@ Gem::Specification.new do |s|
     examples/json/environments/simple_keys.yaml
     examples/json/templates/array.erb
     examples/json/templates/simple_keys.erb
+    examples/defaults
+    examples/defaults/common.yaml
+    examples/defaults/defaults.yaml
+    examples/defaults/environments
+    examples/defaults/environments/production.yaml
+    examples/defaults/environments/staging.yaml
+    examples/defaults/templates
+    examples/defaults/templates/app.conf.erb
+    examples/defaults.d
+    examples/defaults.d/common.yaml
+    examples/defaults.d/defaults.d
+    examples/defaults.d/defaults.d/app.conf.yaml
+    examples/defaults.d/defaults.d/global.yaml
+    examples/defaults.d/defaults.yaml
+    examples/defaults.d/environments
+    examples/defaults.d/environments/production.yaml
+    examples/defaults.d/environments/staging.yaml
+    examples/defaults.d/templates
+    examples/defaults.d/templates/app.conf.erb
   )
   s.executables << 'tiller'
   s.homepage =
