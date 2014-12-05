@@ -1,7 +1,7 @@
 require 'yaml'
-require 'pp'
 # Defaults datasource for Tiller.
 
+# Thanks, StackOverflow ;)
 class ::Hash
   def deep_merge!(second)
     merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : [:undefined, nil, :nil].include?(v2) ? v1 : v2 }
@@ -11,7 +11,6 @@ end
 
 
 class DefaultsDataSource < Tiller::DataSource
-  # Open and parse the environment file
   def setup
     defaults_file = File.join(@config[:tiller_base], 'defaults.yaml')
     defaults_dir  = File.join(@config[:tiller_base], 'defaults.d')
