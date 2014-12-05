@@ -1,4 +1,5 @@
 app.conf.erb:
   target: /tmp/app.conf
   config:
+    port: '8081'
     database: 'stg-db-1.dev.example.com'
