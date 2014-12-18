@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
     lib/tiller/api/handlers/globals.rb
     lib/tiller/api/handlers/templates.rb
     lib/tiller/api/handlers/template.rb
+    lib/tiller/loader.rb
     lib/tiller/options.rb
     lib/tiller/util.rb
     lib/tiller/defaults.rb

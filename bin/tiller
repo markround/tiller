@@ -16,6 +16,7 @@ require 'json'
 require 'socket'
 require 'tiller/api'
 require 'tiller/defaults'
+require 'tiller/loader'
 require 'tiller/options'
 require 'tiller/util'
 require 'tiller/templatesource'
@@ -41,39 +42,16 @@ module Tiller
   end
 
   # Now load all our plugins
-  template_sources = Array.new
-  data_sources = Array.new
-  template_sources |= config['template_sources']
-  data_sources |= config['data_sources']
-
-  # This looks a little counter-intuitive, but it's for a reason.
-  # We load things this way so that we get an array (data_sources, for example)
-  # That contains all the classes loaded, *in the order specified in common.yaml*
-  # This is very important, as it means we can specify the defaults DataSource
-  # first, for example and then let later DataSources override values from it.
-  # Otherwise, iterating through the available classes results in them being
-  # returned in no particular useful order.
-  template_classes = Array.new
-  template_sources.each do |t|
-    require "tiller/template/#{t}.rb"
-    template_classes |= TemplateSource.subclasses
-  end
-
-  data_classes = Array.new
-  data_sources.each do |d|
-    require "tiller/data/#{d}.rb"
-    data_classes |= DataSource.subclasses
-  end
-
+  data_classes = loader(DataSource, config['data_sources'])
+  template_classes = loader(TemplateSource, config['template_sources'])
 
   if config[:verbose]
     puts 'Template sources loaded ' + template_classes.to_s
     puts 'Data sources loaded ' + data_classes.to_s
   end
 
-
   # Get all Templates for the given environment
-  templates = Hash.new
+  templates = {}
   template_classes.each do |template_class|
     ts = template_class.new(config)
     ts.templates.each do |t|
@@ -97,10 +75,10 @@ module Tiller
 
   # Now we go through each template we've identified, and get the
   # values for each one.
-  all_templates = Hash.new
+  all_templates = {}
   templates.each do |template, content|
-    values = Hash.new
-    target_values = Hash.new
+    values = {}
+    target_values = {}
 
     # Now we populate the hash with values from each DataSource, warning if we
     # get duplicate values.
