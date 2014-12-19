@@ -4,7 +4,7 @@
 # didn't have an existing gem named after it!
 # Mark Round <github@markround.com>
 
-VERSION = '0.3.0'
+VERSION = '0.3.1'
 
 require 'erb'
 require 'ostruct'
@@ -15,84 +15,25 @@ require 'pp'
 require 'json'
 require 'socket'
 require 'tiller/api'
-
-# This is needed so we can enumerate all the loaded plugins later
-class Class
-  def subclasses
-    ObjectSpace.each_object(Class).select { |c| c < self }
-  end
-end
-
-def warn_merge(key, old, new, type, source)
-  puts "Warning, merging duplicate #{type} values."
-  puts "#{key} => '#{old}' being replaced by : '#{new}' from #{source}"
-  new
-end
+require 'tiller/defaults'
+require 'tiller/loader'
+require 'tiller/options'
+require 'tiller/util'
+require 'tiller/templatesource'
+require 'tiller/datasource'
 
 # And we're on our way...
 module Tiller
-  # Set these two environment variables if you want to debug a configuration
-  # in a temporary directory, or use the -b and -l arguments.
-  # EG: $ ./bin/tiller -b /tmp/tiller/etc -l /tmp/tiller/lib
-  config = {
-    :tiller_base  => (ENV['tiller_base'].nil?)  ? '/etc/tiller' : ENV['tiller_base'],
-    :tiller_lib   => (ENV['tiller_lib'].nil?)   ? '/usr/local/lib' : ENV['tiller_lib'],
-    # This is the main variable, usually the only one you pass into Docker.
-    :environment  => (ENV['environment'].nil?)  ? 'production' : ENV['environment']
-  }
 
-  # Parse command-line arguments
-  config[:no_exec] = false
-  config[:verbose] = false
-  config['api_enable'] = false
-  config['api_port'] = 6275
+  puts "tiller v#{VERSION} (https://github.com/markround/tiller) <github@markround.com>"
 
-  optparse = OptionParser.new do |opts|
-    opts.on('-n', '--no-exec', 'Do not execute a replacement process') do
-      config[:no_exec] = true
-    end
-    opts.on('-v', '--verbose', 'Display verbose output') do
-      config[:verbose] = true
-    end
-    opts.on('-a', '--api', 'Enable HTTP API') do
-      config['api_enable'] = true
-    end
-    opts.on('-p', '--api-port [API_PORT]', 'HTTP API port') do |api_port|
-      config['api_port'] = api_port
-    end
-    opts.on('-b', '--base-dir [BASE_DIR]', 'Override the tiller_base environment variable') do |base_dir|
-      config[:tiller_base] = base_dir
-    end
-    opts.on('-l', '--lib-dir [LIB_DIR]', 'Override the tiller_lib environment variable') do |lib_dir|
-      config[:tiller_lib] = lib_dir
-    end
-    opts.on('-e', '--environment [ENV]', 'Override the \'environment\' environment variable') do |environment|
-      config[:environment] = environment
-    end
-
-    opts.on('-h', '--help', 'Display this screen') do
-      puts opts
-      puts 'Tiller also uses the environment variables tiller_base, environment'
-      puts 'and tiller_lib (or they can be provided using the arguments shown above).'
-      puts 'See https://github.com/markround/tiller for documentation and usage.'
-      puts 'Current configuration hash follows :'
-      pp config
-      exit
-    end
-  end
-
-  optparse.parse!
+  config = parse_options(Tiller::Defaults)
 
   # Add tiller_lib to the LOAD PATH so we can pull in user-defined plugins
   $LOAD_PATH.unshift(config[:tiller_lib]) unless $LOAD_PATH.include?(config[:tiller_lib])
 
-  require 'tiller/templatesource.rb'
-  require 'tiller/datasource.rb'
-
   # Load the common YAML configuration file
   config.merge!(YAML.load(open(File.join(config[:tiller_base], 'common.yaml'))))
-
-  puts "tiller v#{VERSION} (https://github.com/markround/tiller) <github@markround.com>"
 
   if config[:verbose]
     puts "Using configuration from #{config[:tiller_base]}"
@@ -101,39 +42,16 @@ module Tiller
   end
 
   # Now load all our plugins
-  template_sources = Array.new
-  data_sources = Array.new
-  template_sources |= config['template_sources']
-  data_sources |= config['data_sources']
-
-  # This looks a little counter-intuitive, but it's for a reason.
-  # We load things this way so that we get an array (data_sources, for example)
-  # That contains all the classes loaded, *in the order specified in common.yaml*
-  # This is very important, as it means we can specify the defaults DataSource
-  # first, for example and then let later DataSources override values from it.
-  # Otherwise, iterating through the available classes results in them being
-  # returned in no particular useful order.
-  template_classes = Array.new
-  template_sources.each do |t|
-    require "tiller/template/#{t}.rb"
-    template_classes |= TemplateSource.subclasses
-  end
-
-  data_classes = Array.new
-  data_sources.each do |d|
-    require "tiller/data/#{d}.rb"
-    data_classes |= DataSource.subclasses
-  end
-
+  data_classes      = loader(DataSource, config['data_sources'])
+  template_classes  = loader(TemplateSource, config['template_sources'])
 
   if config[:verbose]
     puts 'Template sources loaded ' + template_classes.to_s
     puts 'Data sources loaded ' + data_classes.to_s
   end
 
-
   # Get all Templates for the given environment
-  templates = Hash.new
+  templates = {}
   template_classes.each do |template_class|
     ts = template_class.new(config)
     ts.templates.each do |t|
@@ -157,10 +75,10 @@ module Tiller
 
   # Now we go through each template we've identified, and get the
   # values for each one.
-  all_templates = Hash.new
+  all_templates = {}
   templates.each do |template, content|
-    values = Hash.new
-    target_values = Hash.new
+    values = {}
+    target_values = {}
 
     # Now we populate the hash with values from each DataSource, warning if we
     # get duplicate values.
