@@ -42,8 +42,8 @@ module Tiller
   end
 
   # Now load all our plugins
-  data_classes = loader(DataSource, config['data_sources'])
-  template_classes = loader(TemplateSource, config['template_sources'])
+  data_classes      = loader(DataSource, config['data_sources'])
+  template_classes  = loader(TemplateSource, config['template_sources'])
 
   if config[:verbose]
     puts 'Template sources loaded ' + template_classes.to_s
