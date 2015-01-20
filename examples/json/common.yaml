@@ -4,5 +4,3 @@ data_sources:
 template_sources:
   - file
 exec: sleep 600
-
-
