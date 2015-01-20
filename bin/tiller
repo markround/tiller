@@ -4,7 +4,7 @@
 # didn't have an existing gem named after it!
 # Mark Round <github@markround.com>
 
-VERSION = '0.3.1'
+VERSION = '0.3.2'
 
 require 'erb'
 require 'ostruct'
@@ -15,9 +15,9 @@ require 'pp'
 require 'json'
 require 'socket'
 require 'tiller/api'
-require './lib/tiller/defaults'
+require 'tiller/defaults'
 require 'tiller/loader'
-require './lib/tiller/options'
+require 'tiller/options'
 require 'tiller/util'
 require 'tiller/templatesource'
 require 'tiller/datasource'

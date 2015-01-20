@@ -1,5 +1,6 @@
 # Changelog
 
+* 0.3.2 : Added default_environment (https://github.com/markround/tiller/issues/5)
 * 0.3.1 : Internal code cleanup and refactor
 * 0.3.0 : Added defaults datasource and modified class loading behaviour, so plugins are used in the order they are specified in common.yaml. See [http://www.markround.com/blog/2014/12/05/tiller-0.3.0-and-new-defaults-datasource](http://www.markround.com/blog/2014/12/05/tiller-0.3.0-and-new-defaults-datasource)
 .
