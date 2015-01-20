@@ -15,9 +15,9 @@ require 'pp'
 require 'json'
 require 'socket'
 require 'tiller/api'
-require 'tiller/defaults'
+require './lib/tiller/defaults'
 require 'tiller/loader'
-require 'tiller/options'
+require './lib/tiller/options'
 require 'tiller/util'
 require 'tiller/templatesource'
 require 'tiller/datasource'
@@ -34,6 +34,9 @@ module Tiller
 
   # Load the common YAML configuration file
   config.merge!(YAML.load(open(File.join(config[:tiller_base], 'common.yaml'))))
+
+  # Set the environment if not already done through ENV or -e flag
+  config[:environment] = config['default_environment'] if config[:environment].nil?
 
   if config[:verbose]
     puts "Using configuration from #{config[:tiller_base]}"
