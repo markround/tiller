@@ -122,11 +122,12 @@ It is suggested that you add all this under your Docker definition in a `data/ti
 	ADD data/tiller /etc/tiller
 
 ## Common configuration
-`common.yaml` contains the `exec`, `data_sources` and `template_sources` parameters. 
+`common.yaml` contains the `exec`, `data_sources`, `template_sources` and `default_environment` parameters.
 
 * `exec`: This is simply what will be executed after the configuration files have been generated. If you omit this (or use the `-n` / `--no-exec` arguments) then no child process will be executed.
 * `data_sources` : The data sources you'll be using to populate the configuration files. This should usually just be set to "file" and "environment" to start with, although you can write your own plugins and pull them in (more on that later).
-* `template_sources` Where the templates come from, again a list of plugins. 
+* `template_sources` Where the templates come from, again a list of plugins.
+* `default_environment` : Sets the default environment file to load if none is specified (either using the -e flag, or via the `environment` environment variable). This defaults to 'production', but you may want to set this to something else like 'dev' to avoid things accidentally running in your production environment.
 
 So for a simple use-case where you're just generating everything from files or environment variables and then spawning supervisord, you'd have a common.yaml looking like this:
 
