@@ -54,10 +54,10 @@ def tiller_api(tiller_api_hash)
 
       # Response
       socket.print "HTTP/1.1 #{response[:status]}\r\n" +
-                       "Content-Type: application/json\r\n" +
-                       "Server: Tiller #{VERSION} / API v#{API_VERSION}\r\n"
-                       "Content-Length: #{response[:content].bytesize}\r\n" +
-                       "Connection: close\r\n"
+                   "Content-Type: application/json\r\n" +
+                   "Server: Tiller #{VERSION} / API v#{API_VERSION}\r\n"
+                   "Content-Length: #{response[:content].bytesize}\r\n" +
+                   "Connection: close\r\n"
       socket.print "\r\n"
       socket.print response[:content]
       socket.close

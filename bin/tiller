@@ -4,7 +4,7 @@
 # didn't have an existing gem named after it!
 # Mark Round <github@markround.com>
 
-VERSION = '0.3.2'
+VERSION = '0.4.0'
 
 require 'erb'
 require 'ostruct'
@@ -161,14 +161,18 @@ module Tiller
     puts "Executing #{config['exec']}..."
 
     # Fork and wait so API can continue to run
-    fork do
-      system(config['exec'])
+    child_pid = fork do
+      exec(config['exec'])
     end
 
-    puts "Child process forked." if config[:verbose]
-    Process.wait
-    puts "Child process finished, Tiller is stopping." if config[:verbose]
-  end
+    puts "Child process forked with PID #{child_pid}." if config[:verbose]
 
+    # Catch signals and send them on to the child process
+    [ :INT, :TERM, :HUP ].each { |sig| Signal.trap(sig) { signal(sig, child_pid, config) } }
+
+    Process.wait(child_pid)
+
+    puts 'Child process finished, Tiller is stopping.' if config[:verbose]
+  end
 
 end

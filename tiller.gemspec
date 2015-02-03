@@ -1,9 +1,9 @@
 Gem::Specification.new do |s|
   s.name = 'tiller'
-  s.version = '0.3.2'
-  s.date = '2015-01-20'
-  s.summary = 'Dynamic configuration generation for Docker'
-  s.description = 'A tool to create configuration files in Docker containers from a variety of sources. See https://github.com/markround/tiller for examples and documentation.'
+  s.version = '0.4.0'
+  s.date = '2015-02-03'
+  s.summary = 'Dynamic configuration file generation'
+  s.description = 'A tool to create configuration files from a variety of sources, particularly useful for Docker containers. See https://github.com/markround/tiller for examples and documentation.'
   s.authors = ['Mark Round']
   s.email = 'github@markround.com'
   s.files = %w(
