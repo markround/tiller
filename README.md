@@ -176,7 +176,7 @@ Carrying on with the MongoDB example, here's how you might set the replica set n
 	  config:
 	    replSet: 'stage'
 
-And then your `production.yaml` (which everything will use if you don't specify an environment) might contain the defaults :
+And then your `production.yaml` might contain the defaults :
 
 	mongodb.erb:
 	  target: /etc/mongodb.conf
@@ -190,7 +190,7 @@ So now, when run through Tiller/Docker with `-e environment=staging`, the templa
 	# in replica set configuration, specify the name of the replica set
 	replSet = stage
 	
-Or, if no environment is specified (using the default 'production' environment'):
+Or, if the production environment is specified :
 
 	# in replica set configuration, specify the name of the replica set
 	replSet = production
