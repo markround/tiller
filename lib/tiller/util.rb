@@ -11,3 +11,13 @@ def warn_merge(key, old, new, type, source)
   puts "#{key} => '#{old}' being replaced by : '#{new}' from #{source}"
   new
 end
+
+# Pass signals on to child process
+def signal(sig, pid, config)
+  puts "Caught signal #{sig}, passing to PID #{pid}" if config[:verbose]
+  begin
+    Process.kill(sig, pid)
+  rescue Errno::ESRCH
+    false
+  end
+end

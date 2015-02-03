@@ -64,7 +64,7 @@ It looks at an environment variable called "environment" (or the argument to the
 	Executing /usr/bin/supervisord
 	Child process forked.
 
-If no environment is specified, it will default to using "production". 
+If no environment is specified, it will default to using "development". Prior to version 0.4.0, this used to be "production", but as was quite rightly pointed out, this is a bit scary. You can always change the default anyway - see below. 
 
 ## Arguments
 Tiller understands the following *optional* command-line arguments (mostly used for debugging purposes) :
@@ -127,7 +127,7 @@ It is suggested that you add all this under your Docker definition in a `data/ti
 * `exec`: This is simply what will be executed after the configuration files have been generated. If you omit this (or use the `-n` / `--no-exec` arguments) then no child process will be executed.
 * `data_sources` : The data sources you'll be using to populate the configuration files. This should usually just be set to "file" and "environment" to start with, although you can write your own plugins and pull them in (more on that later).
 * `template_sources` Where the templates come from, again a list of plugins.
-* `default_environment` : Sets the default environment file to load if none is specified (either using the -e flag, or via the `environment` environment variable). This defaults to 'production', but you may want to set this to something else like 'dev' to avoid things accidentally running in your production environment.
+* `default_environment` : Sets the default environment file to load if none is specified (either using the -e flag, or via the `environment` environment variable). This defaults to 'development', but you may want to set this to something 'production' to mimic the old, pre-0.4.0 behaviour.
 
 So for a simple use-case where you're just generating everything from files or environment variables and then spawning supervisord, you'd have a common.yaml looking like this:
 
@@ -360,6 +360,9 @@ You may also need tell your editor to use Unix-style line endings. For example, 
 
 ## API Encoding::UndefinedConversionError exceptions
 This seems to crop up mostly on Ruby 1.9 installations, and happens when converting ASCII-8BIT strings to UTF-8. A workaround is to install the 'Oj' gem, and Tiller will use this if it's found. I didn't make it a hard dependency of Tiller as Oj is a C-library native extension, so you'll need a bunch of extra packages which you may consider overkill on a Docker container. E.g. on Ubuntu, you'll need `ruby-dev`, `make`, a compiler and so on. But if you have all the dependencies, a simple `gem install oj` in your Dockerfile or environment should be all you need.
+
+## Signal handling
+Not a "gotcha" as such, but worth noting. Since version 0.4.0, Tiller catches the `INT`,`TERM` and `HUP` aignals and passes them on to the child process spawned through `exec`. This helps avoid the ["PID 1"](http://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/) problem by making sure that if Tiller is killed then the child process should also exit.
 
 
 # Other examples, articles etc.
