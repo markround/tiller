@@ -7,7 +7,7 @@ module Tiller
     # from the -e flag or set it to default_environment.
     :environment          => (ENV['environment'].nil?)  ? nil : ENV['environment'],
     # This can be overridden in common.yaml.
-    'default_environment' => 'production',
+    'default_environment' => 'development',
     :no_exec              => false,
     :verbose              => false,
     'api_enable'          => false,
