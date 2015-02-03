@@ -362,7 +362,7 @@ You may also need tell your editor to use Unix-style line endings. For example, 
 This seems to crop up mostly on Ruby 1.9 installations, and happens when converting ASCII-8BIT strings to UTF-8. A workaround is to install the 'Oj' gem, and Tiller will use this if it's found. I didn't make it a hard dependency of Tiller as Oj is a C-library native extension, so you'll need a bunch of extra packages which you may consider overkill on a Docker container. E.g. on Ubuntu, you'll need `ruby-dev`, `make`, a compiler and so on. But if you have all the dependencies, a simple `gem install oj` in your Dockerfile or environment should be all you need.
 
 ## Signal handling
-Not a "gotcha" as such, but worth noting. Since version 0.4.0, Tiller catches the `INT`,`TERM` and `HUP` aignals and passes them on to the child process spawned through `exec`. This helps avoid the ["PID 1"](http://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/) problem by making sure that if Tiller is killed then the child process should also exit.
+Not a "gotcha" as such, but worth noting. Since version 0.4.0, Tiller catches the `INT`,`TERM` and `HUP` signals and passes them on to the child process spawned through `exec`. This helps avoid the ["PID 1"](http://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/) problem by making sure that if Tiller is killed then the child process should also exit.
 
 
 # Other examples, articles etc.
