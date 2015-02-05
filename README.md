@@ -301,7 +301,7 @@ The API responds to the following GET requests:
 * **/v1/config** : Return a hash of the Tiller configuration.
 * **/v1/globals** : Return a hash of global values from all data sources.
 * **/v1/templates** : Return a list of generated templates.
-* **/v1/template/<template_name>** : Return a hash of merged values and target values for the named template.
+* **/v1/template/{template_name}** : Return a hash of merged values and target values for the named template.
 
 
 # Plugin architecture
