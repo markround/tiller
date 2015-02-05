@@ -3,6 +3,10 @@ Tiller is a tool that generates configuration files. It takes a set of templates
 
 You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container. However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
 
+It's available as a [Ruby Gem](http://https://rubygems.org/gems/tiller), so installation should be a simple `gem install tiller`.
+
+[![Gem Version](https://badge.fury.io/rb/tiller.svg)](http://badge.fury.io/rb/tiller)
+
 ## More information
 You may find a lot of the flexibility that Tiller offers overwhelming at first. I have written a few blog tutorials that provide a good overview of what Tiller can do, with practical examples; I strongly recommend that if you're new to all this, you read the following articles through for an introduction :  
 
@@ -164,7 +168,7 @@ Here's a practical example, using MongoDB. Let's assume that you're setting up a
 * A local "development" environment (e.g. your own laptop), where you don't want to use it in a replica set.
 * "staging" and "production" environments, both of which are setup to be in a replica set, named after the environment.
 
-MongoDB needs to have the replica set name specified in the configuration file when it's launched. You'd therefore create a template mongodb.erb template with some placeholder values:
+MongoDB needs to have the replica set name specified in the configuration file when it's launched. You'd therefore create a template `templates/mongodb.erb` template with some placeholder values:
 
 ```erb
 	... (rest of content snipped) ...
@@ -186,33 +190,44 @@ These files live under `/etc/tiller/environments` and are named after the enviro
 When you're using the default `FileDataSource`, these environment files define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and also a set of key:value pairs that are made available to the template via the usual `<%= key %>` ERB syntax.
 
 Carrying on with the MongoDB example, here's how you might set the replica set name in your `staging.yaml` environment file :
-
+```yaml
 	mongodb.erb:
 	  target: /etc/mongodb.conf
 	  user: root
 	  group: root
 	  perms: 0644
 	  config:
-	    replSet: 'stage'
-
+	    replSet: 'staging'
+```
 And then your `production.yaml` might contain the defaults :
-
+```yaml
 	mongodb.erb:
 	  target: /etc/mongodb.conf
 	  config:
 	    replSet: 'production'
-
+```
 Note that if you omit the user/group/perms parameters, the defaults are whatever Docker runs as (usually root). Also, if you don't run the script as root, it will skip setting these.
+
+The `development.yaml` can be even simpler, as we don't actually define a replica set, so we can skip the whole `config` block :
+
+```yaml
+	mongodb.erb:
+	  target: /etc/mongodb.conf
+```
 
 So now, when run through Tiller/Docker with `-e environment=staging`, the template will be installed to /etc/mongodb.conf with the following content :
 
 	# in replica set configuration, specify the name of the replica set
-	replSet = stage
+	replSet = staging
 	
 Or, if the production environment is specified :
 
 	# in replica set configuration, specify the name of the replica set
 	replSet = production
+
+And if the `development` environment is used (it's the default, so will also get used if no environment is specified), then the config file will get installed but with the line relating to replica set name left out.
+
+Of course, this means you need an environment file for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered next.
 
 
 ## Plugins
