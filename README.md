@@ -171,14 +171,14 @@ Here's a practical example, again using MongoDB. Let's assume that you're settin
 MongoDB needs to have the replica set name specified in the configuration file when it's launched. You'd therefore create a template `templates/mongodb.erb` template with some placeholder values:
 
 ```erb
-	... (rest of content snipped) ...
+... (rest of content snipped) ...
 	
-	# in replica set configuration, specify the name of the replica set
-	<% if (replSet) %>
-	replSet = <%= replSet %>
-	<% end %> 
+# in replica set configuration, specify the name of the replica set
+<% if (replSet) %>
+replSet = <%= replSet %>
+<% end %> 
 	
-	... (rest of content snipped) ...
+... (rest of content snipped) ...
 ```
 
 Now it will only contain the `replSet = (whatever)` line when there is a variable "`replSet`" defined. How that gets defined is (usually) the job of the environment files - these are covered next.
@@ -272,7 +272,7 @@ There is a HTTP API provided for debugging purposes. This may be useful if you w
 ## Enabling
 You can enable the API by passing the `--api` (and optional `--api-port`) command-line arguments. Alternatively, you can also set these in `common.yaml` :
 	
-```
+```yaml
 api_enable: true
 api_port: 6275
 ```
