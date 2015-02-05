@@ -309,15 +309,15 @@ Well, "architecture" is probably too grand a word, but as discussed above, you c
 
 ##Template sources
 These are modules that provide a list of templates, and return the template contents. The code for the `FileTemplateSource` module is really simple. It pretty much just does this to return a list of templates :
-
+```ruby
     Dir.glob(File.join(@template_dir , '**' , '*.erb')).each do |t|
       t.sub!(@template_dir , '')
     end
-  
+```  
 And then to return an individual template, it just does :
- 
+```ruby 
     open(File.join(@template_dir , template_name)).read
- 
+``` 
 You can create your own template provider by extending the `Tiller::TemplateSource` class and providing two methods :
 
 * `templates` : Return an array of templates available
