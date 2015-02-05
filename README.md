@@ -380,7 +380,7 @@ Otherwise, you'll probably see an error message along the lines of :
 /var/lib/gems/1.9.1/gems/tiller-0.2.4/bin/tiller:149:in `merge!': can't convert nil into Hash (TypeError)
 ```
 
-After 0.2.5, you can leave the config hash out altogether if you are providing all your values from another data source.
+After 0.2.5, you can leave the config hash out altogether if you are providing all your values from another data source (or don't want to provide any values at all).
 
 ## ERb newlines
 By default, ERb will insert a newline character after a closing `%>` tag. You may not want this, particularly with loop constructs. As of version 0.1.5, you can suppress the newline using a closing tag prefixed with a `-` character, e.g. 
