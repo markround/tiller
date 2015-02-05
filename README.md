@@ -79,15 +79,15 @@ Tiller understands the following *optional* command-line arguments (mostly used 
 * `-h` / `--help` : Show a short help screen
 
 # Setup
+All of the following assumes you're using Tiller with Docker. So, firstly install the Tiller gem and set your Dockerfile to use it (assuming you're pulling in a suitable version of Ruby already) :
 
-Firstly, install the tiller gem and set your Dockerfile to use it (assuming you're pulling in a suitable version of Ruby already) :
-
-	CMD gem install tiller
-	ADD data/tiller/common.yaml /etc/tiller/common.yaml
-	...
-	... Rest of Dockerfile here
-	...
-	CMD ["/usr/local/bin/tiller" , "-v"]
+```dockerfile
+CMD gem install tiller
+...
+... Rest of Dockerfile here
+...
+CMD ["/usr/local/bin/tiller" , "-v"]
+```
 
 Now, set up your configuration. By default, Tiller looks for configuration under `/etc/tiller`, but this can be set to somewhere else by setting the environment variable `tiller_base` or by using the `-b` flag. This is particularly useful for testing purposes, e.g.
 
@@ -117,9 +117,17 @@ Tiller expects a directory structure like this (using /etc/tiller as its base, a
 	        ... other configuration file templates go here
 	        ...
 
-It is suggested that you add all this under your Docker definition in a `data/tiller` base directory (e.g. data/tiller/common.yaml, data/tiller/environments and so on...) and then add it in your Dockerfile :
+It is suggested that you add all this under your Docker definition in a `data/tiller` base directory (e.g. data/tiller/common.yaml, data/tiller/environments and so on...) and then add it in your Dockerfile. This would therefore now look like:
+```dockerfile
+CMD gem install tiller
+...
+... Rest of Dockerfile here
+...
+ADD data/tiller /etc/tiller
+CMD ["/usr/local/bin/tiller" , "-v"]
+```
 
-	ADD data/tiller /etc/tiller
+Note that the configuration directory was added later on in the Dockerfile; this is because `ADD` commands cause the Docker build cache to become invalidated so it's a good idea to put them as far as possible towards the end of the Dockerfile.
 
 ## Common configuration
 `common.yaml` contains the `exec`, `data_sources`, `template_sources` and `default_environment` parameters.
@@ -130,27 +138,35 @@ It is suggested that you add all this under your Docker definition in a `data/ti
 * `default_environment` : Sets the default environment file to load if none is specified (either using the -e flag, or via the `environment` environment variable). This defaults to 'development', but you may want to set this to something 'production' to mimic the old, pre-0.4.0 behaviour.
 
 So for a simple use-case where you're just generating everything from files or environment variables and then spawning supervisord, you'd have a common.yaml looking like this:
-
+```yaml
 	exec: /usr/bin/supervisord -n
 	data_sources:
 		- file
 		- environment
 	template_sources:
 		- file
-
+```
 ### Ordering
 Since Tiller 0.3.0, the order you specify these plugins in is important. They'll be used in the order you specify, so you can order them to your particular use case. For example, you may want to retrieve values from the `defaults` data source, then overwrite that with some values from the `file` data source, and finally allow users to set their own values from the `environment_json` source (see below for more on each of these). In which case, you'd specify :
-
+```yaml
 	data_sources:
 	  - defaults
 	  - file
 	  - environment_json
-
+```
 
 ## Template files
 
-These files under `/etc/tiller/templates` are simply the ERB templates for your configuration files, and are populated with values from the selected environment file. When the environment configuration is parsed (see below), key:value pairs are made available to the template. Using MongoDB as an example, suppose you have 'staging' and 'production' environments, and want to set the "replica set" name dynamically, based on the which environment the Docker container is running in. You'd create a template mongodb.erb template with some placeholder values:
+These files under `/etc/tiller/templates` are simply the ERB templates for your configuration files, and are populated with values from the selected environment file. When the environment configuration is parsed (see below), key:value pairs are made available to the template. 
 
+Here's a practical example, using MongoDB. Let's assume that you're setting up a "MongoDB" container for your platform to use, and you want to have it configured so it can run in 3 environments: 
+
+* A local "development" environment (e.g. your own laptop), where you don't want to use it in a replica set.
+* "staging" and "production" environments, both of which are setup to be in a replica set, named after the environment.
+
+MongoDB needs to have the replica set name specified in the configuration file when it's launched. You'd therefore create a template mongodb.erb template with some placeholder values:
+
+```erb
 	... (rest of content snipped) ...
 	
 	# in replica set configuration, specify the name of the replica set
@@ -159,6 +175,9 @@ These files under `/etc/tiller/templates` are simply the ERB templates for your 
 	<% end %> 
 	
 	... (rest of content snipped) ...
+```
+
+Now it will only contain the `replSet = (whatever)` line when there is a variable "`replSet`" defined. How that gets defined is (usually) the job of the environment files - these are covered next.
 
 ## Environment configuration
 
