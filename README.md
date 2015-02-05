@@ -139,11 +139,11 @@ Note that the configuration directory was added later on in the Dockerfile; this
 * `exec`: This is simply what will be executed after the configuration files have been generated. If you omit this (or use the `-n` / `--no-exec` arguments) then no child process will be executed.
 * `data_sources` : The data sources you'll be using to populate the configuration files. This should usually just be set to "file" and "environment" to start with, although you can write your own plugins and pull them in (more on that later).
 * `template_sources` Where the templates come from, again a list of plugins.
-* `default_environment` : Sets the default environment file to load if none is specified (either using the -e flag, or via the `environment` environment variable). This defaults to 'development', but you may want to set this to something 'production' to mimic the old, pre-0.4.0 behaviour.
+* `default_environment` : Sets the default environment file to load if none is specified (either using the -e flag, or via the `environment` environment variable). This defaults to 'development', but you may want to set this to 'production' to mimic the old, pre-0.4.0 behaviour.
 
-So for a simple use-case where you're just generating everything from files or environment variables and then spawning supervisord, you'd have a common.yaml looking like this:
+So for a simple use-case where you're just generating everything from files or environment variables and then spawning MongoDB, you'd have a common.yaml looking like this:
 ```yaml
-	exec: /usr/bin/supervisord -n
+	exec: /usr/bin/mongod --config /etc/mongodb.conf --rest
 	data_sources:
 		- file
 		- environment
@@ -163,7 +163,7 @@ Since Tiller 0.3.0, the order you specify these plugins in is important. They'll
 
 These files under `/etc/tiller/templates` are simply the ERB templates for your configuration files, and are populated with values from the selected environment file. When the environment configuration is parsed (see below), key:value pairs are made available to the template. 
 
-Here's a practical example, using MongoDB. Let's assume that you're setting up a "MongoDB" container for your platform to use, and you want to have it configured so it can run in 3 environments: 
+Here's a practical example, again using MongoDB. Let's assume that you're setting up a "MongoDB" container for your platform to use, and you want to have it configured so it can run in 3 environments: 
 
 * A local "development" environment (e.g. your own laptop), where you don't want to use it in a replica set.
 * "staging" and "production" environments, both of which are setup to be in a replica set, named after the environment.
@@ -199,7 +199,7 @@ Carrying on with the MongoDB example, here's how you might set the replica set n
 	  config:
 	    replSet: 'staging'
 ```
-And then your `production.yaml` might contain the defaults :
+And then your `production.yaml` might look like the following :
 ```yaml
 	mongodb.erb:
 	  target: /etc/mongodb.conf
