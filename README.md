@@ -143,20 +143,20 @@ Note that the configuration directory was added later on in the Dockerfile; this
 
 So for a simple use-case where you're just generating everything from files or environment variables and then spawning MongoDB, you'd have a common.yaml looking like this:
 ```yaml
-	exec: /usr/bin/mongod --config /etc/mongodb.conf --rest
-	data_sources:
-		- file
-		- environment
-	template_sources:
-		- file
+exec: /usr/bin/mongod --config /etc/mongodb.conf --rest
+data_sources:
+  - file
+  - environment
+template_sources:
+  - file
 ```
 ### Ordering
 Since Tiller 0.3.0, the order you specify these plugins in is important. They'll be used in the order you specify, so you can order them to your particular use case. For example, you may want to retrieve values from the `defaults` data source, then overwrite that with some values from the `file` data source, and finally allow users to set their own values from the `environment_json` source (see below for more on each of these). In which case, you'd specify :
 ```yaml
-	data_sources:
-	  - defaults
-	  - file
-	  - environment_json
+data_sources:
+  - defaults
+  - file
+  - environment_json
 ```
 
 ## Template files
@@ -191,28 +191,28 @@ When you're using the default `FileDataSource`, these environment files define t
 
 Carrying on with the MongoDB example, here's how you might set the replica set name in your `staging.yaml` environment file :
 ```yaml
-	mongodb.erb:
-	  target: /etc/mongodb.conf
-	  user: root
-	  group: root
-	  perms: 0644
-	  config:
-	    replSet: 'staging'
+mongodb.erb:
+  target: /etc/mongodb.conf
+  user: root
+  group: root
+  perms: 0644
+  config:
+    replSet: 'staging'
 ```
 And then your `production.yaml` might look like the following :
 ```yaml
-	mongodb.erb:
-	  target: /etc/mongodb.conf
-	  config:
-	    replSet: 'production'
+mongodb.erb:
+  target: /etc/mongodb.conf
+  config:
+    replSet: 'production'
 ```
 Note that if you omit the user/group/perms parameters, the defaults are whatever Docker runs as (usually root). Also, if you don't run the script as root, it will skip setting these.
 
 The `development.yaml` can be even simpler, as we don't actually define a replica set, so we can skip the whole `config` block :
 
 ```yaml
-	mongodb.erb:
-	  target: /etc/mongodb.conf
+mongodb.erb:
+  target: /etc/mongodb.conf
 ```
 
 So now, when run through Tiller/Docker with `-e environment=staging`, the template will be installed to /etc/mongodb.conf with the following content :
@@ -239,13 +239,13 @@ These provide data from YAML environment files, and templates from ERB files (se
 
 ### Defaults plugin
 If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. These defaults are sourced from `/etc/tiller/defaults.yaml`, and any individual `.yaml` files under `/etc/tiller/defaults.d/`. Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example:
-
-	global:
-	  domain_name: 'example.com'
+```yaml
+global:
+  domain_name: 'example.com'
 	  
-	application.properties.erb:
-	  java_version: 'jdk8'
-
+application.properties.erb:
+  java_version: 'jdk8'
+```
 
 ### Environment plugin
 If you activated the `EnvironmentDataSource` (as shown by adding `  - environment` to the list of data sources in the example `common.yaml` above), you'll also be able to access environment variables within your templates. These are all converted to lower-case, and prefixed with `env_`. So for example, if you had the environment variable `LOGNAME` set, you could reference this in your template with `<%= env_logname %>`
@@ -349,13 +349,15 @@ As with template sources, if you need to connect to a database or do any other p
 ## Naming
 Assuming you had created a pair of template and data source plugins called `ExampleTemplateSource` and `ExampleDataSource`, you'd drop them under `/usr/local/lib/tiller/template/example.rb` and `/usr/local/lib/tiller/data/example.rb` respectively, and then add them to `common.yaml` :
 
-	data_sources:
-		- file
-		- example
-		- random
-	template_sources:
-		- file
-		- example
+```yaml
+data_sources:
+  - file
+  - example
+  - random
+template_sources:
+  - file
+  - example
+```
 
 If you don't want to use the default directory of `/usr/local/lib/tiller`, you can specify an alternate location by setting the `tiller_lib` environment variable, or by using the `-l`/`--libdir` flag on the command line.
 
@@ -366,7 +368,7 @@ Tiller will merge values from all sources. It will warn you, but it won't stop y
 ## Empty config
 If you are using the file datasource with Tiller < 0.2.5, you must provide a config hash, even if it's empty (e.g. you are using other data sources to provide all the values for your templates). For example:
 
-```
+```yaml
 my_template.erb:
   target: /tmp/template.txt
   config: {}
