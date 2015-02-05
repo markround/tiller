@@ -50,7 +50,7 @@ Docker-related projects all seem to have shipyard-related names, and this was th
 # Usage
 Tiller can be used to dynamically generate configuration files before passing execution over to a daemon process. 
 
-It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `system`. Usually, when running a container that uses Tiller, all you need to do is pass the environment to it, e.g. 
+It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `exec`. Usually, when running a container that uses Tiller, all you need to do is pass the environment to it, e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
 	tiller v0.3.1 (https://github.com/markround/tiller) <github@markround.com>
