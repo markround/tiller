@@ -18,14 +18,20 @@ module Tiller
     def setup
     end
 
+    # This is where we override any of the common.yaml settings per environment.
+    # EG, the exec: parameter and so on.
+    def common
+      {}
+    end
+
     def global_values
-      Hash.new
+      {}
     end
 
     # We should always return a hash; if we have no data for the given
     # template, just return an empty hash.
     def values(_template_name)
-      Hash.new
+      {}
     end
 
     # This should provide a hash similar to this example :
@@ -38,7 +44,7 @@ module Tiller
     # Again, we should always return a hash; if we have no data for the given
     # template, just return an empty hash.
     def target_values(_template_name)
-      Hash.new
+      {}
     end
 
     def ping

@@ -74,6 +74,12 @@ module Tiller
     global_values.merge!(data_class.new(config).global_values) do |key, old, new|
       warn_merge(key, old, new, 'global', data_class.to_s)
     end
+
+    # Now need to see if any of the common.yaml values have been over-ridden by a datasource
+    # e.g. environment-specific execs and so on.
+    config.merge!(data_class.new(config).common) do |key, old, new|
+      warn_merge(key, old, new, 'common', data_class.to_s)
+    end
   end
 
   # Now we go through each template we've identified, and get the
@@ -160,10 +166,8 @@ module Tiller
     # All templates created, so let's start the replacement process
     puts "Executing #{config['exec']}..."
 
-    # Fork and wait so API can continue to run
-    child_pid = fork do
-      exec(config['exec'])
-    end
+    # Spawn and wait so API can continue to run
+    child_pid = spawn(config['exec'])
 
     puts "Child process forked with PID #{child_pid}." if config[:verbose]
 

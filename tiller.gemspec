@@ -64,4 +64,5 @@ Gem::Specification.new do |s|
       'http://www.markround.com'
   s.license = 'MIT'
   s.metadata = { 'source' => 'https://github.com/markround/tiller' }
+  s.required_ruby_version = '>= 1.9.2'
 end

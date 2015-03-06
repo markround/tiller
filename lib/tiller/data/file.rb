@@ -13,12 +13,16 @@ class FileDataSource < Tiller::DataSource
     @config_hash = YAML.load(open(env_file))
   end
 
+  def common
+    @config_hash.key?('common') ? @config_hash['common'] : {}
+  end
+
   def values(template_name)
-    @config_hash.key?(template_name) ? @config_hash[template_name]['config'] : Hash.new
+    @config_hash.key?(template_name) ? @config_hash[template_name]['config'] : {}
   end
 
   def target_values(template_name)
     # The config element is redundant (not a target value)
-    @config_hash.key?(template_name) ? @config_hash[template_name] : Hash.new
+    @config_hash.key?(template_name) ? @config_hash[template_name] : {}
   end
 end
