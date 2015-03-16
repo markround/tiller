@@ -1,5 +1,10 @@
 # Here is an example configuration file for your production environment.
 
+# We override a setting from common.yaml for this environment.
+common:
+  api_enable: true
+  exec: env
+
 # First, we define the values for an example sensu_client template :
 sensu_client.erb:
   target: /etc/sensu/conf.d/client.json
