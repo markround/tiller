@@ -150,6 +150,7 @@ So for a simple use-case where you're just generating everything from files or e
 	template_sources:
 		- file
 ```
+
 ### Ordering
 Since Tiller 0.3.0, the order you specify these plugins in is important. They'll be used in the order you specify, so you can order them to your particular use case. For example, you may want to retrieve values from the `defaults` data source, then overwrite that with some values from the `file` data source, and finally allow users to set their own values from the `environment_json` source (see below for more on each of these). In which case, you'd specify :
 ```yaml
@@ -227,7 +228,15 @@ Or, if the production environment is specified :
 
 And if the `development` environment is used (it's the default, so will also get used if no environment is specified), then the config file will get installed but with the line relating to replica set name left out.
 
-Of course, this means you need an environment file for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered next.
+Of course, this means you need an environment file for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered in the next section.
+
+As of Tiller 0.5.0, you can also override defaults from common.yaml if you specify them in a `common` block in an environment file. This means you can specify a different `exec` or enable the API on a per-environment basis, e.g.
+
+```yaml
+common:
+  api_enable: true
+  api_port: 1234
+```
 
 
 ## Plugins
