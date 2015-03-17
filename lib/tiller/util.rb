@@ -32,7 +32,6 @@ def launch(cmd, options={})
     if cmd.size > 1
       (1..cmd.size-1).each {|c| final="#{final} , cmd[#{c}]" }
     end
-    puts 'Using array exec' if options[:verbose]
     pid=eval "spawn(#{final})"
   else
     pid=spawn(cmd)
