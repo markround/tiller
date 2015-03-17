@@ -18,7 +18,7 @@ require 'tiller/api'
 require 'tiller/defaults'
 require 'tiller/loader'
 require 'tiller/options'
-require './lib/tiller/util'
+require 'tiller/util'
 require 'tiller/templatesource'
 require 'tiller/datasource'
 
