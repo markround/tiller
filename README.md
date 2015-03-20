@@ -136,14 +136,25 @@ Note that the configuration directory was added later on in the Dockerfile; this
 ## Common configuration
 `common.yaml` contains the `exec`, `data_sources`, `template_sources` and `default_environment` parameters.
 
-* `exec`: This is simply what will be executed after the configuration files have been generated. If you omit this (or use the `-n` / `--no-exec` arguments) then no child process will be executed.
+* `exec`: This is simply what will be executed after the configuration files have been generated. If you omit this (or use the `-n` / `--no-exec` arguments) then no child process will be executed. As of 0.5.1, you can also specify the command and arguments as an array, e.g.
+
+```yaml
+	exec: [ "/usr/bin/supervisord" , "-n" ]
+```
+
+This means that a shell will not be spawned to run the command, and no shell expansion will take place. This is the preferred form, as it means that signals should propagate properly through to spawned processes. However, you can still use the old style string parameter, e.g.
+
+```yaml
+	exec: "/usr/bin/supervisord -n"
+```
+
 * `data_sources` : The data sources you'll be using to populate the configuration files. This should usually just be set to "file" and "environment" to start with, although you can write your own plugins and pull them in (more on that later).
 * `template_sources` Where the templates come from, again a list of plugins.
 * `default_environment` : Sets the default environment file to load if none is specified (either using the -e flag, or via the `environment` environment variable). This defaults to 'development', but you may want to set this to 'production' to mimic the old, pre-0.4.0 behaviour.
 
 So for a simple use-case where you're just generating everything from files or environment variables and then spawning MongoDB, you'd have a common.yaml looking like this:
 ```yaml
-	exec: /usr/bin/mongod --config /etc/mongodb.conf --rest
+	exec: [ "/usr/bin/mongod" , "--config" , "/etc/mongodb.conf" , "--rest" ]
 	data_sources:
 		- file
 		- environment
