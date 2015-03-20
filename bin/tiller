@@ -4,7 +4,7 @@
 # didn't have an existing gem named after it!
 # Mark Round <github@markround.com>
 
-VERSION = '0.5.0'
+VERSION = '0.5.1'
 
 require 'erb'
 require 'ostruct'
@@ -164,15 +164,17 @@ module Tiller
 
   if config[:no_exec] == false && config.key?('exec')
     # All templates created, so let's start the replacement process
-    puts "Executing #{config['exec']}..."
+    puts "Executing #{config['exec'].to_s}..."
 
     # Spawn and wait so API can continue to run
-    child_pid = spawn(config['exec'])
+    child_pid = launch(config['exec'], :verbose => config[:verbose])
 
     puts "Child process forked with PID #{child_pid}." if config[:verbose]
 
     # Catch signals and send them on to the child process
-    [ :INT, :TERM, :HUP ].each { |sig| Signal.trap(sig) { signal(sig, child_pid, config) } }
+    [ :INT, :TERM, :HUP ].each do |sig|
+      Signal.trap(sig) { signal(sig, child_pid, :verbose => config[:verbose]) }
+    end
 
     Process.wait(child_pid)
 
