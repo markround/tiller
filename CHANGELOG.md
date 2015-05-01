@@ -1,5 +1,6 @@
 # Changelog
 
+* 0.5.2 : Author name change; I got married :)
 * 0.5.1 : Added ability to specify exec: parameter as an array, which avoids spawning a subshell.
 * 0.5.0 : Added common: override in each environment file, switched to using spawn, dropped support for Ruby < 1.9.2
 * 0.4.0 : Changed default environment to "development" and added signal-catching behaviour.Tiller now catches the INT,TERM and HUP signals and passes them on to the child process spawned through exec. This helps avoid the "PID 1" problem by making sure that if Tiller is killed then the child process should also exit.
