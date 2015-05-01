@@ -2,7 +2,7 @@
 # Tiller - Dynamic configuration generator, intended for use in Dockerfiles
 # Named from the first ship-building (Docker) related term I could find that
 # didn't have an existing gem named after it!
-# Mark Round <github@markround.com>
+# Mark Dastmalchi-Round <github@markround.com>
 
 VERSION = '0.5.1'
 
