@@ -50,7 +50,7 @@ Docker-related projects all seem to have shipyard-related names, and this was th
 # Usage
 Tiller can be used to dynamically generate configuration files before passing execution over to a daemon process. 
 
-It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `system`. Usually, when running a container that uses Tiller, all you need to do is pass the environment to it, e.g. 
+It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `exec`. Usually, when running a container that uses Tiller, all you need to do is pass the environment to it, e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
 	tiller v0.3.1 (https://github.com/markround/tiller) <github@markround.com>
@@ -165,10 +165,10 @@ So for a simple use-case where you're just generating everything from files or e
 ### Ordering
 Since Tiller 0.3.0, the order you specify these plugins in is important. They'll be used in the order you specify, so you can order them to your particular use case. For example, you may want to retrieve values from the `defaults` data source, then overwrite that with some values from the `file` data source, and finally allow users to set their own values from the `environment_json` source (see below for more on each of these). In which case, you'd specify :
 ```yaml
-	data_sources:
-	  - defaults
-	  - file
-	  - environment_json
+data_sources:
+  - defaults
+  - file
+  - environment_json
 ```
 
 ## Template files
@@ -183,14 +183,14 @@ Here's a practical example, again using MongoDB. Let's assume that you're settin
 MongoDB needs to have the replica set name specified in the configuration file when it's launched. You'd therefore create a template `templates/mongodb.erb` template with some placeholder values:
 
 ```erb
-	... (rest of content snipped) ...
+... (rest of content snipped) ...
 	
-	# in replica set configuration, specify the name of the replica set
-	<% if (replSet) %>
-	replSet = <%= replSet %>
-	<% end %> 
+# in replica set configuration, specify the name of the replica set
+<% if (replSet) %>
+replSet = <%= replSet %>
+<% end %> 
 	
-	... (rest of content snipped) ...
+... (rest of content snipped) ...
 ```
 
 Now it will only contain the `replSet = (whatever)` line when there is a variable "`replSet`" defined. How that gets defined is (usually) the job of the environment files - these are covered next.
@@ -203,28 +203,28 @@ When you're using the default `FileDataSource`, these environment files define t
 
 Carrying on with the MongoDB example, here's how you might set the replica set name in your `staging.yaml` environment file :
 ```yaml
-	mongodb.erb:
-	  target: /etc/mongodb.conf
-	  user: root
-	  group: root
-	  perms: 0644
-	  config:
-	    replSet: 'staging'
+mongodb.erb:
+  target: /etc/mongodb.conf
+  user: root
+  group: root
+  perms: 0644
+  config:
+    replSet: 'staging'
 ```
 And then your `production.yaml` might look like the following :
 ```yaml
-	mongodb.erb:
-	  target: /etc/mongodb.conf
-	  config:
-	    replSet: 'production'
+mongodb.erb:
+  target: /etc/mongodb.conf
+  config:
+    replSet: 'production'
 ```
 Note that if you omit the user/group/perms parameters, the defaults are whatever Docker runs as (usually root). Also, if you don't run the script as root, it will skip setting these.
 
 The `development.yaml` can be even simpler, as we don't actually define a replica set, so we can skip the whole `config` block :
 
 ```yaml
-	mongodb.erb:
-	  target: /etc/mongodb.conf
+mongodb.erb:
+  target: /etc/mongodb.conf
 ```
 
 So now, when run through Tiller/Docker with `-e environment=staging`, the template will be installed to /etc/mongodb.conf with the following content :
@@ -259,13 +259,13 @@ These provide data from YAML environment files, and templates from ERB files (se
 
 ### Defaults plugin
 If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. These defaults are sourced from `/etc/tiller/defaults.yaml`, and any individual `.yaml` files under `/etc/tiller/defaults.d/`. Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example:
-
-	global:
-	  domain_name: 'example.com'
+```yaml
+global:
+  domain_name: 'example.com'
 	  
-	application.properties.erb:
-	  java_version: 'jdk8'
-
+application.properties.erb:
+  java_version: 'jdk8'
+```
 
 ### Environment plugin
 If you activated the `EnvironmentDataSource` (as shown by adding `  - environment` to the list of data sources in the example `common.yaml` above), you'll also be able to access environment variables within your templates. These are all converted to lower-case, and prefixed with `env_`. So for example, if you had the environment variable `LOGNAME` set, you could reference this in your template with `<%= env_logname %>`
@@ -292,7 +292,7 @@ There is a HTTP API provided for debugging purposes. This may be useful if you w
 ## Enabling
 You can enable the API by passing the `--api` (and optional `--api-port`) command-line arguments. Alternatively, you can also set these in `common.yaml` :
 	
-```
+```yaml
 api_enable: true
 api_port: 6275
 ```
@@ -321,7 +321,7 @@ The API responds to the following GET requests:
 * **/v1/config** : Return a hash of the Tiller configuration.
 * **/v1/globals** : Return a hash of global values from all data sources.
 * **/v1/templates** : Return a list of generated templates.
-* **/v1/template/<template_name>** : Return a hash of merged values and target values for the named template.
+* **/v1/template/{template_name}** : Return a hash of merged values and target values for the named template.
 
 
 # Plugin architecture
@@ -329,15 +329,15 @@ Well, "architecture" is probably too grand a word, but as discussed above, you c
 
 ##Template sources
 These are modules that provide a list of templates, and return the template contents. The code for the `FileTemplateSource` module is really simple. It pretty much just does this to return a list of templates :
-
+```ruby
     Dir.glob(File.join(@template_dir , '**' , '*.erb')).each do |t|
       t.sub!(@template_dir , '')
     end
-  
+```  
 And then to return an individual template, it just does :
- 
+```ruby 
     open(File.join(@template_dir , template_name)).read
- 
+``` 
 You can create your own template provider by extending the `Tiller::TemplateSource` class and providing two methods :
 
 * `templates` : Return an array of templates available
@@ -369,13 +369,15 @@ As with template sources, if you need to connect to a database or do any other p
 ## Naming
 Assuming you had created a pair of template and data source plugins called `ExampleTemplateSource` and `ExampleDataSource`, you'd drop them under `/usr/local/lib/tiller/template/example.rb` and `/usr/local/lib/tiller/data/example.rb` respectively, and then add them to `common.yaml` :
 
-	data_sources:
-		- file
-		- example
-		- random
-	template_sources:
-		- file
-		- example
+```yaml
+data_sources:
+  - file
+  - example
+  - random
+template_sources:
+  - file
+  - example
+```
 
 If you don't want to use the default directory of `/usr/local/lib/tiller`, you can specify an alternate location by setting the `tiller_lib` environment variable, or by using the `-l`/`--libdir` flag on the command line.
 
@@ -386,7 +388,7 @@ Tiller will merge values from all sources. It will warn you, but it won't stop y
 ## Empty config
 If you are using the file datasource with Tiller < 0.2.5, you must provide a config hash, even if it's empty (e.g. you are using other data sources to provide all the values for your templates). For example:
 
-```
+```yaml
 my_template.erb:
   target: /tmp/template.txt
   config: {}
@@ -398,7 +400,7 @@ Otherwise, you'll probably see an error message along the lines of :
 /var/lib/gems/1.9.1/gems/tiller-0.2.4/bin/tiller:149:in `merge!': can't convert nil into Hash (TypeError)
 ```
 
-After 0.2.5, you can leave the config hash out altogether if you are providing all your values from another data source.
+After 0.2.5, you can leave the config hash out altogether if you are providing all your values from another data source (or don't want to provide any values at all).
 
 ## ERb newlines
 By default, ERb will insert a newline character after a closing `%>` tag. You may not want this, particularly with loop constructs. As of version 0.1.5, you can suppress the newline using a closing tag prefixed with a `-` character, e.g. 
