@@ -3,12 +3,13 @@ module Tiller
   # Subclasses provide templates (an array), and individual template contents
   # (a string containing ERB data)
   class TemplateSource
-    # All subclasses get this, which is a hash containing tiller_base,
-    # tiller_lib and environment.
-    @config = Array.new
+
+    # Every plugin gets this hash, which is the full parsed config
+    @config = {}
 
     def initialize(config)
       @config = config
+      setup
     end
 
     # This is where any post-initialisation logic happens
@@ -17,11 +18,11 @@ module Tiller
     end
 
     def templates
-      Hash.new
+      {}
     end
 
     def template
-      String.new
+      ""
     end
 
     def ping
