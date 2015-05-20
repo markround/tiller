@@ -1,6 +1,6 @@
-# Zookeeper plugins
+# ZooKeeper plugins
 
-As of version 0.6.0, Tiller includes plugins to retrieve templates and values from a [Zookeeper](http://zookeeper.apache.org/) cluster. These plugins rely on the `zk` gem to be present, so before proceeding ensure you have run `gem install zk` in your environment. This is not listed as a hard dependency of Tiller, as this would force the gem to be installed even on systems that would never use these plugins.
+As of version 0.6.0, Tiller includes plugins to retrieve templates and values from a [ZooKeeper](http://zookeeper.apache.org/) cluster. These plugins rely on the `zk` gem to be present, so before proceeding ensure you have run `gem install zk` in your environment. This is not listed as a hard dependency of Tiller, as this would force the gem to be installed even on systems that would never use these plugins.
  
 
 # Enabling the plugin
@@ -15,9 +15,9 @@ template_sources:
   - file
 ```
 
-Note that the ordering is significant. In the above example, values from the Zookeeper data source will take precedence over YAML files, but templates loaded from files will take precedence over templates stored in Zookeeper. You should tweak this as appropriate for your environment.
+Note that the ordering is significant. In the above example, values from the ZooKeeper data source will take precedence over YAML files, but templates loaded from files will take precedence over templates stored in ZooKeeper. You should tweak this as appropriate for your environment.
 
-You also do not need to enable both plugins; for example you may just want to retrieve values for your templates from zookeeper, but continue to use files to store your actual template content.
+You also do not need to enable both plugins; for example you may just want to retrieve values for your templates from ZooKeeper, but continue to use files to store your actual template content.
 
 # Configuring
 Configuration for this plugin is placed inside a "zookeeper" block. This can either be included in the main `common.yaml` file, or in a per-environment file inside the `common:` block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this. 
@@ -34,21 +34,21 @@ A sample configuration (showing the defaults for most parameters) is as follows 
      target: '/tiller/%e/%t/target_values'
 ```
 
-At a bare minimum, you need to specify a URI for the plugins to connect to. This takes the form of a standard Zookeeper connection string (as understood by the ZK gem). For example :
+At a bare minimum, you need to specify a URI for the plugins to connect to. This takes the form of a standard ZooKeeper connection string (as understood by the ZK gem). For example :
 
 * `server1:2181` : connection to a single server
 * `server1:2181/tiller` : connection to a single server with a chroot
 * `server1:2181,server2:2181,server3:2181` : connection to multiple servers (a cluster)
 * `server1:2181,server2:2181,server3:2181/tiller` : connection to multiple servers with a chroot
 
-The default timeout is 5 seconds; if a connection to a Zookeeper server/cluster takes longer than this, the connection will abort and Tiller will stop with an exception.
+The default timeout is 5 seconds; if a connection to a ZooKeeper server/cluster takes longer than this, the connection will abort and Tiller will stop with an exception.
 
 Note that as you can specify `common:` blocks in each environment file, you can specify a different URI per environment. 
 
 If you omit the other parameters (`timeout`,`templates` and so on), they will default to the values shown above. These will be explained in the next section.
 
 # Paths
-As Zookeeper is a hierarchical store, its "nodes" can be thought of as directories in a filesystem. The default expected structure (reflected by the defaults shown above) is as follows, using MongoDB configuration as an example again :
+As ZooKeeper is a hierarchical store, its "nodes" can be thought of as directories in a filesystem. The default expected structure (reflected by the defaults shown above) is as follows, using MongoDB configuration as an example again :
 
  	   /tiller
  	    ├── globals
@@ -96,7 +96,7 @@ The following screenshot using the ZooInspector GUI illustrates how a template n
 
 You can however change this hierarchy to suit your environment or working practices.
 
-There are 4 parameters that tell Tiller where to look for templates and values inside your Zookeeper cluster :
+There are 4 parameters that tell Tiller where to look for templates and values inside your ZooKeeper cluster :
 
 * `templates` : where to find the templates. It is expected that there will be one node per template under this path.
 * `values.global` : where to find the global values that are the usually the same across all environments and templates

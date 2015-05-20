@@ -22,11 +22,13 @@ Gem::Specification.new do |s|
     lib/tiller/json.rb
     lib/tiller/templatesource.rb
     lib/tiller/data/file.rb
+    lib/tiller/data/zookeeper.rb
     lib/tiller/data/environment.rb
     lib/tiller/data/environment_json.rb
     lib/tiller/data/random.rb
     lib/tiller/data/defaults.rb
     lib/tiller/template/file.rb
+    lib/tiller/template/zookeeper.rb
     examples/plugins/etc/tiller/common.yaml
     examples/plugins/etc/tiller/environments/production.yaml
     examples/plugins/etc/tiller/environments/staging.yaml

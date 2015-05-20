@@ -257,6 +257,9 @@ In addition to specifying values in the environment files, there are other plugi
 ### File plugins
 These provide data from YAML environment files, and templates from ERB files (see above).
 
+### ZooKeeper plugins
+These allow you to store your templates and values in a [ZooKeeper](http://zookeeper.apache.org) cluster. Full documentation for this plugin is available in [README-zookeeper.md](https://github.com/markround/tiller/blob/master/README-zookeeper.md)
+
 ### Defaults plugin
 If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. These defaults are sourced from `/etc/tiller/defaults.yaml`, and any individual `.yaml` files under `/etc/tiller/defaults.d/`. Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example:
 ```yaml
