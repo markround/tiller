@@ -20,7 +20,7 @@ Note that the ordering is significant. In the above example, values from the Zoo
 You also do not need to enable both plugins; for example you may just want to retrieve values for your templates from zookeeper, but continue to use files to store your actual template content.
 
 # Configuring
-Configuration for this plugin is placed inside a "zookeeper" block; this can either be included in the main `common.yaml` file, or in a per-environment file inside the `common:` block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this. 
+Configuration for this plugin is placed inside a "zookeeper" block. This can either be included in the main `common.yaml` file, or in a per-environment file inside the `common:` block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this. 
 
 A sample configuration (showing the defaults for most parameters) is as follows :
 ```yaml
@@ -48,7 +48,7 @@ Note that as you can specify `common:` blocks in each environment file, you can 
 If you omit the other parameters (`timeout`,`templates` and so on), they will default to the values shown above. These will be explained in the next section.
 
 # Paths
-As Zookeeper is a hierarchical store, it's "nodes" can be thought of as directories in a filesystem. The default expected structure (reflected by the defaults shown above) is as follows, using MongoDB configuration as an example again :
+As Zookeeper is a hierarchical store, its "nodes" can be thought of as directories in a filesystem. The default expected structure (reflected by the defaults shown above) is as follows, using MongoDB configuration as an example again :
 
  	   /tiller
  	    ├── globals
@@ -77,7 +77,7 @@ As Zookeeper is a hierarchical store, it's "nodes" can be thought of as director
 	    ... Other environments go here
 	    ...
 
-So, you can obtain the replSet value for the mongod.erb template in the dev environment via `/tiller/dev/mongod.erb/values/replSet`. An example zkCli.sh session follows :
+So, you can obtain the "replSet" value for the "mongod.erb" template in the dev environment via `/tiller/dev/mongod.erb/values/replSet`. An example zkCli.sh session follows :
 
 ```
 [zk: localhost:2181(CONNECTED) 1] ls /tiller/dev
