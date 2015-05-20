@@ -4,9 +4,9 @@ module Tiller
   # template) and target_values (meta data about a template, e.g. target
   # location, permissions, owner and so on)
   class DataSource
-    # All subclasses get this, which is a hash containing tiller_base,
-    # tiller_lib and environment.
-    @config = Array.new
+
+    # Every plugin gets this hash, which is the full parsed config
+    @config ={}
 
     def initialize(config)
       @config = config
@@ -19,7 +19,8 @@ module Tiller
     end
 
     # This is where we override any of the common.yaml settings per environment.
-    # EG, the exec: parameter and so on.
+    # EG, the exec: parameter and so on. Also can be used for things like
+    # network service connection strings (e.g. Zookeeper) and so on.
     def common
       {}
     end

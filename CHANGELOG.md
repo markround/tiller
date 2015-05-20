@@ -1,5 +1,6 @@
 # Changelog
 
+* 0.6.0 : Internal changes and optimisations. Added ZooKeeper data and template sources.
 * 0.5.2 : Author name change; I got married :)
 * 0.5.1 : Added ability to specify exec: parameter as an array, which avoids spawning a subshell.
 * 0.5.0 : Added common: override in each environment file, switched to using spawn, dropped support for Ruby < 1.9.2

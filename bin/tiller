@@ -4,7 +4,7 @@
 # didn't have an existing gem named after it!
 # Mark Dastmalchi-Round <github@markround.com>
 
-VERSION = '0.5.2'
+VERSION = '0.6.0'
 
 require 'erb'
 require 'ostruct'
@@ -53,6 +53,26 @@ module Tiller
     puts 'Data sources loaded ' + data_classes.to_s
   end
 
+  # Now go through all our data sources and start to assemble our global_values
+  # hash. As hashes are getting merged, new values will take precedence over
+  # older ones, and a warning will be displayed.
+  # We also add in 'environment' to start with as it's very useful for all
+  # templates.
+  global_values = { 'environment' => config[:environment] }
+  data_classes.each do |data_class|
+    # Now need to see if any of the common.yaml values have been over-ridden by a datasource
+    # e.g. environment-specific execs and so on. We do this first so that connection strings
+    # to datasources (e.g. zookeeper) can be included in the config before we obtain any
+    # values.
+    config.merge!(data_class.new(config).common) do |key, old, new|
+      warn_merge(key, old, new, 'common', data_class.to_s)
+    end
+
+    global_values.merge!(data_class.new(config).global_values) do |key, old, new|
+      warn_merge(key, old, new, 'global', data_class.to_s)
+    end
+  end
+
   # Get all Templates for the given environment
   templates = {}
   template_classes.each do |template_class|
@@ -63,24 +83,6 @@ module Tiller
   end
 
   puts "Templates to build #{templates.keys}" if config[:verbose]
-
-  # Now go through all our data sources and start to assemble our global_values
-  # hash. As hashes are getting merged, new values will take precedence over
-  # older ones, and a warning will be displayed.
-  # We also add in 'environment' to start with as it's very useful for all
-  # templates.
-  global_values = { 'environment' => config[:environment] }
-  data_classes.each do |data_class|
-    global_values.merge!(data_class.new(config).global_values) do |key, old, new|
-      warn_merge(key, old, new, 'global', data_class.to_s)
-    end
-
-    # Now need to see if any of the common.yaml values have been over-ridden by a datasource
-    # e.g. environment-specific execs and so on.
-    config.merge!(data_class.new(config).common) do |key, old, new|
-      warn_merge(key, old, new, 'common', data_class.to_s)
-    end
-  end
 
   # Now we go through each template we've identified, and get the
   # values for each one.
