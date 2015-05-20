@@ -1,6 +1,6 @@
 # Zookeeper plugins
 
-As of version 0.6.0, Tiller includes plugins to retrieve templates and values from a [Zookeeper](http://zookeeper.apache.org/) cluster. These plugins rely on the `zk` gem to be present, so before proceeding ensure you have run `gem install zk` in your environment. This is not listed as a hard dependency of Tiller in it's gemspec, as this would force the gem to be installed even on systems that would never use these plugins.
+As of version 0.6.0, Tiller includes plugins to retrieve templates and values from a [Zookeeper](http://zookeeper.apache.org/) cluster. These plugins rely on the `zk` gem to be present, so before proceeding ensure you have run `gem install zk` in your environment. This is not listed as a hard dependency of Tiller, as this would force the gem to be installed even on systems that would never use these plugins.
  
 
 # Enabling the plugin
@@ -20,9 +20,9 @@ Note that the ordering is significant. In the above example, values from the Zoo
 You also do not need to enable both plugins; for example you may just want to retrieve values for your templates from zookeeper, but continue to use files to store your actual template content.
 
 # Configuring
-Configuration for this plugin is placed inside a "zookeeper" block; this can either be included in the main `common.yaml` file, or in a per-environment file inside the `common` block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this. 
+Configuration for this plugin is placed inside a "zookeeper" block; this can either be included in the main `common.yaml` file, or in a per-environment file inside the `common:` block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this. 
 
-A sample configuration (showing the defaults for most items) is as follows :
+A sample configuration (showing the defaults for most parameters) is as follows :
 ```yaml
  zookeeper:
    uri: 'zk.example.com:2181'
@@ -43,11 +43,12 @@ At a bare minimum, you need to specify a URI for the plugins to connect to. This
 
 The default timeout is 5 seconds; if a connection to a Zookeeper server/cluster takes longer than this, the connection will abort and Tiller will stop with an exception.
 
-Note that as you can specify `common:` blocks in each environment file, you can specify a different URI per environment. If you do not specify any of the other parameters (`timeout`,`templates` and so on), they will default to the values shown above. These will be explained in the next section.
+Note that as you can specify `common:` blocks in each environment file, you can specify a different URI per environment. 
+
+If you omit the other parameters (`timeout`,`templates` and so on), they will default to the values shown above. These will be explained in the next section.
 
 # Paths
-
-There are 4 configuration items that tell Tiller where to look for templates and values inside your Zookeeper cluster. As Zookeeper is a hierarchical store, these "nodes" can be thought of as directories in a filesystem. The default expected structure is as follows, using MongoDB configuration as an example again :
+As Zookeeper is a hierarchical store, it's "nodes" can be thought of as directories in a filesystem. The default expected structure (reflected by the defaults shown above) is as follows, using MongoDB configuration as an example again :
 
  	   /tiller
  	    ├── globals
@@ -95,7 +96,14 @@ The following screenshot using the ZooInspector GUI illustrates how a template n
 
 You can however change this hierarchy to suit your environment or working practices.
 
-The paths may include the following placeholders :
+There are 4 parameters that tell Tiller where to look for templates and values inside your Zookeeper cluster :
+
+* `templates` : where to find the templates. It is expected that there will be one node per template under this path.
+* `values.global` : where to find the global values that are the usually the same across all environments and templates
+* `values.template` : where to find values for a specific template
+* `values.target` : where to find target values for a specific template, e.g. the path it should be installed to, the owner and permissions and so on.
+
+The paths specified for these parameters may include the following placeholders :
 
 * `%e` : This will be replaced with the value of the current environment
 * `%t` : This will be replaced with the value of the current template
