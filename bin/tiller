@@ -4,7 +4,7 @@
 # didn't have an existing gem named after it!
 # Mark Dastmalchi-Round <github@markround.com>
 
-VERSION = '0.5.2'
+VERSION = '0.6.0'
 
 require 'erb'
 require 'ostruct'
