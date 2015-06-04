@@ -1,7 +1,7 @@
 # What is it?
 Tiller is a tool that generates configuration files. It takes a set of templates, fills them in with values from a variety of sources (such as environment variables or YAML files), installs them in a specified location and then optionally spawns a child process.
 
-You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container. However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
+You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container. You can also pass values in from environment variables or other sources to create paramterized containers. However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
 
 It's available as a [Ruby Gem](http://https://rubygems.org/gems/tiller), so installation should be a simple `gem install tiller`.
 
