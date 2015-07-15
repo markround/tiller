@@ -22,7 +22,7 @@ You may find a lot of the flexibility that Tiller offers overwhelming at first. 
 
 
 ## Changes
-See [CHANGELOG.md](https://github.com/markround/tiller/blob/master/CHANGELOG.md)
+See [CHANGELOG.md](CHANGELOG.md)
 
 # Background
 I had a number of Docker containers that I wanted to run with a slightly different configuration, depending on the environment I was launching them. For example, a web application might connect to a different database in a staging environment, a MongoDB replica set name might be different, or I might want to allocate a different amount of memory to a Java process. This meant my options basically looked like:
@@ -267,10 +267,10 @@ In addition to specifying values in the environment files, there are other plugi
 These provide data from YAML environment files, and templates from ERB files (see above).
 
 ### HTTP plugins
-These allow you to retrieve your templates and values from a HTTP server. Full documentation for this plugin is available in [README-HTTP.md](https://github.com/markround/tiller/blob/master/README-HTTP.md)
+These allow you to retrieve your templates and values from a HTTP server. Full documentation for this plugin is available in [README-HTTP.md](README-HTTP.md)
 
 ### ZooKeeper plugins
-These allow you to store your templates and values in a [ZooKeeper](http://zookeeper.apache.org) cluster. Full documentation for this plugin is available in [README-zookeeper.md](https://github.com/markround/tiller/blob/master/README-zookeeper.md)
+These allow you to store your templates and values in a [ZooKeeper](http://zookeeper.apache.org) cluster. Full documentation for this plugin is available in [README-zookeeper.md](README-zookeeper.md)
 
 ### Defaults plugin
 If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. These defaults are sourced from `/etc/tiller/defaults.yaml`, and any individual `.yaml` files under `/etc/tiller/defaults.d/`. Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example:
@@ -447,10 +447,7 @@ Not a "gotcha" as such, but worth noting. Since version 0.4.0, Tiller catches th
 
 # Future improvements
 
-* Tests
-* Clean up my gnarly code
-* Add more plugins, including an etcd backend.
-* Anything else ?
+* Please open an [issue](https://github.com/markround/tiller/issues) for any improvements you'd like to see!
 
 # License
 
