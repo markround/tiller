@@ -257,6 +257,9 @@ In addition to specifying values in the environment files, there are other plugi
 ### File plugins
 These provide data from YAML environment files, and templates from ERB files (see above).
 
+### HTTP plugins
+These allow you to retrieve your templates and values from a HTTP server. Full documentation for this plugin is available in [README-HTTP.md](https://github.com/markround/tiller/blob/master/README-HTTP.md)
+
 ### ZooKeeper plugins
 These allow you to store your templates and values in a [ZooKeeper](http://zookeeper.apache.org) cluster. Full documentation for this plugin is available in [README-zookeeper.md](https://github.com/markround/tiller/blob/master/README-zookeeper.md)
 

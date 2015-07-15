@@ -39,7 +39,7 @@ http:
     target: '/tiller/templates/%t/target_values/%e'
 ```
 
-At a bare minimum, you need to specify a URI for the plugins to connect to. This takes the form of a standard HTTP/HTTPS connection string (including the scheme). For example, `http://tiller.example.com`. This will be prepended to any of the other paths, so for example, Tiller will look for global values at `http://tiller.example.com/tiller/globals`. 
+At a bare minimum, you need to specify a URI for the plugins to connect to. This takes the form of a standard HTTP/HTTPS connection string (including the scheme). For example, `http://tiller.example.com`. This will be prepended to any of the other paths, so in the above example, Tiller will look for global values at `http://tiller.example.com/tiller/globals`. 
 
 The default timeout is 5 seconds; if a connection to a HTTP server takes longer than this, the connection will abort and Tiller will stop with an exception.
 
@@ -68,22 +68,31 @@ http:
 
 
 # Paths
-You can use any URI layout, but the default is expected to look like the following :
+You can use any URI hierarchy, but the default is expected to look like the following (again, using MongoDB configuration as an example):
 
 	/tiller
 	 ├── environments
-	 │   └── development
-	 │       └── templates
+	 │   ├── development
+	 │   │   └── templates
+	 │   │
+	 │   ├── production
+	 │   │   └── templates
+	 │   │
+	 │   ... more environments here...
 	 │
 	 ├── globals
 	 │
 	 └── templates
-	     └── mongod.erb
-	         ├── content
-	         ├── target_values
-	         │   └── development
-	         └── values
-	             └── development
+	     ├── mongod.erb
+	     │   ├── content
+	     │   ├── target_values
+	     │   │   ├── development
+	     │   │   └── production
+	     │   └── values
+	     │       ├── development
+	     │       └── production
+	     │
+	     ... more templates here ...
 
 This also has the advantage that it is easy to implement using flat files. So, you can obtain the values for the "mongod.erb" template in the development environment via `http://tiller.example.com/tiller/templates/mongod.erb/values/development`. An example curl request (piped through [jq](http://stedolan.github.io/jq/) for formatting) might look like :
 
@@ -103,6 +112,14 @@ The paths specified for any of the parameters listed above may include the follo
 
 * `%e` : This will be replaced with the value of the current environment
 * `%t` : This will be replaced with the value of the current template
+
+There are 5 parameters that tell Tiller where to look for templates and values inside your ZooKeeper cluster :
+
+* `templates` : where to find the list templates of templates for the given environment. 
+* `template_content` : where to fetch the actual template content. This is expected to be returned as plain text, whereas the other paths should return structured data (currently only JSON format is supported) 
+* `values.global` : where to find the global values that are the usually the same across all environments and templates
+* `values.template` : where to find values for a specific template
+* `values.target` : where to find target values for a specific template, e.g. the path it should be installed to, the owner and permissions and so on.
 
 
 So, if you wanted to fetch your template values using a scheme such as `'http://tiller.example.com/tiller/values.php?template=mongodb.erb&environment=production'`, you could use something like:
