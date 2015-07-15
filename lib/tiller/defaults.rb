@@ -39,14 +39,14 @@ module Tiller::Http
   Defaults = {
       'timeout'   => 5,
       'proxy'     => '',
-      'templates' => '/tiller/templates',
-      'template_content' => '/tiller/%t/content',
+      'templates' => '/tiller/environments/%e/templates',
+      'template_content' => '/tiller/templates/%t/content',
       'parser'    => 'json',
 
       'values'    => {
           'global'    => '/tiller/globals',
-          'template'  => '/tiller/%t/values/%e',
-          'target'    => '/tiller/%t/target_values/%e'
+          'template'  => '/tiller/templates/%t/values/%e',
+          'target'    => '/tiller/templates/%t/target_values/%e'
       }
   }
 
