@@ -113,7 +113,7 @@ The paths specified for any of the parameters listed above may include the follo
 * `%e` : This will be replaced with the value of the current environment
 * `%t` : This will be replaced with the value of the current template
 
-There are 5 parameters that tell Tiller where to look for templates and values inside your ZooKeeper cluster :
+There are 5 parameters that tell Tiller where to look for templates and values from your webserver :
 
 * `templates` : where to find the list templates of templates for the given environment. 
 * `template_content` : where to fetch the actual template content. This is expected to be returned as plain text, whereas the other paths should return structured data (currently only JSON format is supported) 
