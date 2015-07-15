@@ -75,6 +75,7 @@ Tiller understands the following *optional* command-line arguments (mostly used 
 
 * `-n` / `--no-exec` : Do not execute a child process (e.g. you only want to generate the templates)
 * `-v` / `--verbose` : Display verbose output, useful for debugging and for seeing what templates are being parsed
+* `-d` / `--debug` : Enable additional debug output
 * `-b` / `--base-dir` : Specify the tiller_base directory for configuration files
 * `-l` / `--lib-dir` : Specify the tiller_lib directory for user-provided plugins
 * `-e` / `--environment` : Specify the tiller environment. This is usually set by the 'environment' environment variable, but this may be useful for debugging/switching between environments on the command line.
@@ -134,7 +135,7 @@ CMD ["/usr/local/bin/tiller" , "-v"]
 Note that the configuration directory was added later on in the Dockerfile; this is because `ADD` commands cause the Docker build cache to become invalidated so it's a good idea to put them as far as possible towards the end of the Dockerfile.
 
 ## Common configuration
-`common.yaml` contains the `exec`, `data_sources`, `template_sources` and `default_environment` parameters.
+`common.yaml` contains the `exec`, `data_sources`, `template_sources` and `default_environment` parameters. It may can also take optional blocks of configuration for some plugins (for example, the [HTTP Plugins](README-HTTP.md)). Settings defined here can also be overridden on a per-environment basis (see below)
 
 * `exec`: This is simply what will be executed after the configuration files have been generated. If you omit this (or use the `-n` / `--no-exec` arguments) then no child process will be executed. As of 0.5.1, you can also specify the command and arguments as an array, e.g.
 
@@ -241,12 +242,20 @@ And if the `development` environment is used (it's the default, so will also get
 
 Of course, this means you need an environment file for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered in the next section.
 
-As of Tiller 0.5.0, you can also override defaults from common.yaml if you specify them in a `common` block in an environment file. This means you can specify a different `exec` or enable the API on a per-environment basis, e.g.
+### Overriding common settings
+As of Tiller 0.5.0, you can also override defaults from common.yaml if you specify them in a `common` block in an environment file. This means you can specify a different `exec`, enable the API, or configure various plugins to use different settings on a per-environment basis, e.g.
 
 ```yaml
 common:
   api_enable: true
   api_port: 1234
+  
+  # configuration for HTTP plugin (https://github.com/markround/tiller/blob/master/README-HTTP.md)
+  http:
+    uri: 'http://tiller.dev.example.com'
+    ...
+    ...
+    ...
 ```
 
 
