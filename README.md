@@ -1,7 +1,9 @@
 # What is it?
-Tiller is a tool that generates configuration files. It takes a set of templates, fills them in with values from a variety of sources (such as environment variables or YAML files), installs them in a specified location and then optionally spawns a child process.
+Tiller is a tool that generates configuration files. It takes a set of templates, fills them in with values from a variety of sources (such as environment variables, YAML files, JSON from a webservice...), installs them in a specified location and then optionally spawns a child process.
 
-You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container. You can also pass values in from environment variables or other sources to create parameterized containers. However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
+You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container, and easily build "parameterized containers" which users can easily configure at runtime. 
+
+However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
 
 It's available as a [Ruby Gem](http://https://rubygems.org/gems/tiller), so installation should be a simple `gem install tiller`.
 
@@ -22,7 +24,7 @@ You may find a lot of the flexibility that Tiller offers overwhelming at first. 
 
 
 ## Changes
-See [CHANGELOG.md](https://github.com/markround/tiller/blob/master/CHANGELOG.md)
+See [CHANGELOG.md](CHANGELOG.md)
 
 # Background
 I had a number of Docker containers that I wanted to run with a slightly different configuration, depending on the environment I was launching them. For example, a web application might connect to a different database in a staging environment, a MongoDB replica set name might be different, or I might want to allocate a different amount of memory to a Java process. This meant my options basically looked like:
@@ -41,7 +43,7 @@ So I knocked up a quick Ruby script (originally called "Runner.rb") that I could
 * Optionally executes a child process once it's finished (e.g. mongod, nginx, supervisord, etc.)
 * Now provides a pluggable architecture, so you can define additional data or template sources. For example, you can create a DataSource that looks up values from an LDAP store, or a TemplateSource that pulls things from a database. 
 
-This way I can keep all my configuration together in the container, and just tell Docker which environment to use when I start it. 
+This way I can keep all my configuration together in the container, and just tell Docker which environment to use when I start it. I can also use it to dynamically alter configuration at runtime ("parameterized containers").
 
 ## Why "Tiller" ?
 Docker-related projects all seem to have shipyard-related names, and this was the first ship-building related term I could find that didn't have an existing gem or project named after it! And a tiller is the thing that steers a boat, so it sounded appropriate for something that generates configuration files.
@@ -75,6 +77,7 @@ Tiller understands the following *optional* command-line arguments (mostly used 
 
 * `-n` / `--no-exec` : Do not execute a child process (e.g. you only want to generate the templates)
 * `-v` / `--verbose` : Display verbose output, useful for debugging and for seeing what templates are being parsed
+* `-d` / `--debug` : Enable additional debug output
 * `-b` / `--base-dir` : Specify the tiller_base directory for configuration files
 * `-l` / `--lib-dir` : Specify the tiller_lib directory for user-provided plugins
 * `-e` / `--environment` : Specify the tiller environment. This is usually set by the 'environment' environment variable, but this may be useful for debugging/switching between environments on the command line.
@@ -134,7 +137,7 @@ CMD ["/usr/local/bin/tiller" , "-v"]
 Note that the configuration directory was added later on in the Dockerfile; this is because `ADD` commands cause the Docker build cache to become invalidated so it's a good idea to put them as far as possible towards the end of the Dockerfile.
 
 ## Common configuration
-`common.yaml` contains the `exec`, `data_sources`, `template_sources` and `default_environment` parameters.
+`common.yaml` contains the `exec`, `data_sources`, `template_sources` and `default_environment` parameters. It may can also take optional blocks of configuration for some plugins (for example, the [HTTP Plugins](README-HTTP.md)). Settings defined here can also be overridden on a per-environment basis (see [below](#overriding-common-settings))
 
 * `exec`: This is simply what will be executed after the configuration files have been generated. If you omit this (or use the `-n` / `--no-exec` arguments) then no child process will be executed. As of 0.5.1, you can also specify the command and arguments as an array, e.g.
 
@@ -241,12 +244,20 @@ And if the `development` environment is used (it's the default, so will also get
 
 Of course, this means you need an environment file for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered in the next section.
 
-As of Tiller 0.5.0, you can also override defaults from common.yaml if you specify them in a `common` block in an environment file. This means you can specify a different `exec` or enable the API on a per-environment basis, e.g.
+### Overriding common settings
+As of Tiller 0.5.0, you can also override defaults from common.yaml if you specify them in a `common` block in an environment file. This means you can specify a different `exec`, enable the API, or configure various plugins to use different settings on a per-environment basis, e.g.
 
 ```yaml
 common:
   api_enable: true
   api_port: 1234
+  
+  # configuration for HTTP plugin (https://github.com/markround/tiller/blob/master/README-HTTP.md)
+  http:
+    uri: 'http://tiller.dev.example.com'
+    ...
+    ...
+    ...
 ```
 
 
@@ -257,8 +268,11 @@ In addition to specifying values in the environment files, there are other plugi
 ### File plugins
 These provide data from YAML environment files, and templates from ERB files (see above).
 
+### HTTP plugins
+These allow you to retrieve your templates and values from a HTTP server. Full documentation for this plugin is available in [README-HTTP.md](README-HTTP.md)
+
 ### ZooKeeper plugins
-These allow you to store your templates and values in a [ZooKeeper](http://zookeeper.apache.org) cluster. Full documentation for this plugin is available in [README-zookeeper.md](https://github.com/markround/tiller/blob/master/README-zookeeper.md)
+These allow you to store your templates and values in a [ZooKeeper](http://zookeeper.apache.org) cluster. Full documentation for this plugin is available in [README-zookeeper.md](README-zookeeper.md)
 
 ### Defaults plugin
 If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. These defaults are sourced from `/etc/tiller/defaults.yaml`, and any individual `.yaml` files under `/etc/tiller/defaults.d/`. Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example:
@@ -435,10 +449,7 @@ Not a "gotcha" as such, but worth noting. Since version 0.4.0, Tiller catches th
 
 # Future improvements
 
-* Tests
-* Clean up my gnarly code
-* Add more plugins, including an etcd backend.
-* Anything else ?
+* Please open an [issue](https://github.com/markround/tiller/issues) for any improvements you'd like to see!
 
 # License
 

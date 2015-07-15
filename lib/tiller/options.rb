@@ -6,6 +6,9 @@ def parse_options(config)
     opts.on('-v', '--verbose', 'Display verbose output') do
       config[:verbose] = true
     end
+    opts.on('-d', '--debug', 'Display debug output') do
+      config[:debug] = true
+    end
     opts.on('-a', '--api', 'Enable HTTP API') do
       config['api_enable'] = true
     end

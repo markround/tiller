@@ -1,10 +1,14 @@
 #!/usr/bin/env ruby
-# Tiller - Dynamic configuration generator, intended for use in Dockerfiles
+# A tool to create configuration files from a variety of sources, particularly 
+# useful for Docker containers. See https://github.com/markround/tiller for 
+# examples and documentation.
+#
 # Named from the first ship-building (Docker) related term I could find that
 # didn't have an existing gem named after it!
+#
 # Mark Dastmalchi-Round <github@markround.com>
 
-VERSION = '0.6.0'
+VERSION = '0.6.1'
 
 require 'erb'
 require 'ostruct'
