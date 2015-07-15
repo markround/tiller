@@ -1,7 +1,9 @@
 # What is it?
-Tiller is a tool that generates configuration files. It takes a set of templates, fills them in with values from a variety of sources (such as environment variables or YAML files), installs them in a specified location and then optionally spawns a child process.
+Tiller is a tool that generates configuration files. It takes a set of templates, fills them in with values from a variety of sources (such as environment variables, YAML files, JSON from a webservice...), installs them in a specified location and then optionally spawns a child process.
 
-You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container. However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
+You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container, and easily build "parameterized containers" which users can easily configure at runtime. 
+
+However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
 
 It's available as a [Ruby Gem](http://https://rubygems.org/gems/tiller), so installation should be a simple `gem install tiller`.
 
@@ -41,7 +43,7 @@ So I knocked up a quick Ruby script (originally called "Runner.rb") that I could
 * Optionally executes a child process once it's finished (e.g. mongod, nginx, supervisord, etc.)
 * Now provides a pluggable architecture, so you can define additional data or template sources. For example, you can create a DataSource that looks up values from an LDAP store, or a TemplateSource that pulls things from a database. 
 
-This way I can keep all my configuration together in the container, and just tell Docker which environment to use when I start it. 
+This way I can keep all my configuration together in the container, and just tell Docker which environment to use when I start it. I can also use it to dynamically alter configuration at runtime ("parameterized containers").
 
 ## Why "Tiller" ?
 Docker-related projects all seem to have shipyard-related names, and this was the first ship-building related term I could find that didn't have an existing gem or project named after it! And a tiller is the thing that steers a boat, so it sounded appropriate for something that generates configuration files.
