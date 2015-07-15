@@ -32,3 +32,23 @@ module Tiller::Zookeeper
 
 end
 
+
+# Defaults for the HTTP data and template sources
+module Tiller::Http
+
+  Defaults = {
+      'timeout'   => 5,
+      'proxy'     => '',
+      'templates' => '/tiller/templates',
+      'template_content' => '/tiller/%t/content',
+      'parser'    => 'json',
+
+      'values'    => {
+          'global'    => '/tiller/globals',
+          'template'  => '/tiller/%t/values/%e',
+          'target'    => '/tiller/%t/target_values/%e'
+      }
+  }
+
+end
+
