@@ -115,12 +115,14 @@ The paths specified for any of the parameters listed above may include the follo
 
 There are 5 parameters that tell Tiller where to look for templates and values from your webserver :
 
-* `templates` : where to find the list templates of templates for the given environment. 
+* `templates` : where to find the list templates of templates for the given environment. This URL should return a JSON array of templates, e.g. `[ "mongodb.erb" , "another_template.erb" , .... ]`
 * `template_content` : where to fetch the actual template content. This is expected to be returned as plain text, whereas the other paths should return structured data (currently only JSON format is supported) 
-* `values.global` : where to find the global values that are the usually the same across all environments and templates
-* `values.template` : where to find values for a specific template
-* `values.target` : where to find target values for a specific template, e.g. the path it should be installed to, the owner and permissions and so on.
 
+The following whould all return a JSON hash of `key:value` pairs (see above for an example):
+
+* `values.global` : where to find the global values that are the usually the same across all environments and templates. 
+* `values.template` : where to find values for a specific template. 
+* `values.target` : where to find target values for a specific template, e.g. the path it should be installed to, the owner and permissions and so on. 
 
 So, if you wanted to fetch your template values using a scheme such as `'http://tiller.example.com/tiller/values.php?template=mongodb.erb&environment=production'`, you could use something like:
 
