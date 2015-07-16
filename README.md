@@ -22,6 +22,7 @@ You may find a lot of the flexibility that Tiller offers overwhelming at first. 
 
 * Using the Defaults data source : [http://www.markround.com/blog/2014/12/05/tiller-0.3.0-and-new-defaults-datasource](http://www.markround.com/blog/2014/12/05/tiller-0.3.0-and-new-defaults-datasource)
 
+See the [Tiller category](http://www.markround.com/blog/categories/tiller/) on my blog for a full list of articles and other information.
 
 ## Changes
 See [CHANGELOG.md](CHANGELOG.md)
