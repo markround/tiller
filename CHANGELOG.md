@@ -1,5 +1,6 @@
 # Changelog
 
+* 0.6.2 : Bug-fix: Handle empty defaults YAML files
 * 0.6.1 : Added HTTP plugins to retrieve templates and values from a webserver.
 * 0.6.0 : Internal changes and optimisations. Added ZooKeeper data and template sources.
 * 0.5.2 : Author name change; I got married :)
