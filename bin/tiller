@@ -168,6 +168,12 @@ module Tiller
     Thread.start{ tiller_api(tiller_api_hash) }
   end
 
+  # Override the exec if run with -x (see options.rb)
+  if config.has_key?(:alt_exec)
+    puts "Overriding exec parameter [#{config['exec']}] with [#{config[:alt_exec]}]" if config[:verbose]
+    config['exec']=config[:alt_exec]
+  end
+
   if config[:no_exec] == false && config.key?('exec')
     # All templates created, so let's start the replacement process
     puts "Executing #{config['exec'].to_s}..."

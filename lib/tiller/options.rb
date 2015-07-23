@@ -24,6 +24,9 @@ def parse_options(config)
     opts.on('-e', '--environment [ENV]', 'Override the \'environment\' environment variable') do |environment|
       config[:environment] = environment
     end
+    opts.on('-x', '--exec [EXEC]', 'Override the \'exec\' variable from common.yaml') do |exec|
+      config[:alt_exec] = exec
+    end
 
     opts.on('-h', '--help', 'Display this screen') do
       puts opts
