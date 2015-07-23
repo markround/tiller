@@ -8,7 +8,7 @@
 #
 # Mark Dastmalchi-Round <github@markround.com>
 
-VERSION = '0.6.3'
+VERSION = '0.6.4'
 
 require 'erb'
 require 'ostruct'
@@ -166,6 +166,12 @@ module Tiller
 
   if config['api_enable']
     Thread.start{ tiller_api(tiller_api_hash) }
+  end
+
+  # Override the exec if run with -x (see options.rb)
+  if config.has_key?(:alt_exec)
+    puts "Overriding exec parameter [#{config['exec']}] with [#{config[:alt_exec]}]" if config[:verbose]
+    config['exec']=config[:alt_exec]
   end
 
   if config[:no_exec] == false && config.key?('exec')
