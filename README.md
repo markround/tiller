@@ -84,6 +84,7 @@ Tiller understands the following *optional* command-line arguments (mostly used 
 * `-e` / `--environment` : Specify the tiller environment. This is usually set by the 'environment' environment variable, but this may be useful for debugging/switching between environments on the command line.
 * `-a` / `--api` : Enable the HTTP API (See below)
 * `-p` / `--api-port` : Set the port the API listens on (Default: 6275)
+* `-x` / `--exec` : Specify an alternate command to execute, overriding the exec: parameter from your config files
 * `-h` / `--help` : Show a short help screen
 
 # Setup
