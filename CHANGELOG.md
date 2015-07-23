@@ -1,6 +1,6 @@
 # Changelog
 
-* 0.6.3 : Bug-fix: 0.6.2 introduced a nasty type that stopped defaults.d merging. Thanks to weiyinteo for reporting this!
+* 0.6.3 : Bug-fix: 0.6.2 introduced a nasty typo that stopped defaults.d merging. Thanks to weiyinteo for reporting this!
 * 0.6.2 : Bug-fix: Handle empty defaults YAML files
 * 0.6.1 : Added HTTP plugins to retrieve templates and values from a webserver.
 * 0.6.0 : Internal changes and optimisations. Added ZooKeeper data and template sources.
