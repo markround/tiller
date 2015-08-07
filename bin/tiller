@@ -92,15 +92,17 @@ module Tiller
   # values for each one.
   all_templates = {}
   templates.each do |template, content|
-    values = {}
+
+    # Start with a hash of our global values
+    tiller = global_values
     target_values = {}
 
-    # Now we populate the hash with values from each DataSource, warning if we
+    # Now we add to the 'tiller' hash with values from each DataSource, warning if we
     # get duplicate values.
     data_classes.each do |data_class|
       dc = data_class.new(config)
       if dc.values(template) != nil
-        values.merge!(dc.values(template)) do |key, old, new|
+        tiller.merge!(dc.values(template)) do |key, old, new|
           warn_merge(key, old, new, 'data', data_class.to_s)
         end
       end
@@ -118,10 +120,7 @@ module Tiller
 
     # Now, we build the template
     puts "Building template #{template}" if config[:verbose]
-    tiller = values.merge(global_values) do |key, old, new|
-      warn_merge(key, old, new, 'global and local', 'merged configuration')
-    end
-
+  
     # Use an OpenStruct namespace, as it's way easier than faffing around with
     # manual binding, and also non-existing values just get replaced by <nil>
     # instead of failing on errors.
