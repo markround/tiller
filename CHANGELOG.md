@@ -1,5 +1,6 @@
 # Changelog
 
+* 0.6.5 : Bug fix for [issues/14](https://github.com/markround/tiller/issues/14). Thanks to [gnomff](https://github.com/gnomff) for spotting and reporting this.
 * 0.6.4 : Added -x/--exec flag to override the default exec parameter. Thanks Navin Desai for the suggestion!
 * 0.6.3 : Bug-fix: 0.6.2 introduced a nasty typo that stopped defaults.d merging. Thanks to weiyinteo for reporting this!
 * 0.6.2 : Bug-fix: Handle empty defaults YAML files.
