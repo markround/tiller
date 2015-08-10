@@ -8,7 +8,7 @@
 #
 # Mark Dastmalchi-Round <github@markround.com>
 
-VERSION = '0.6.4'
+VERSION = '0.6.5'
 
 require 'erb'
 require 'ostruct'
@@ -92,15 +92,17 @@ module Tiller
   # values for each one.
   all_templates = {}
   templates.each do |template, content|
-    values = {}
+
+    # Start with a hash of our global values
+    tiller = global_values
     target_values = {}
 
-    # Now we populate the hash with values from each DataSource, warning if we
+    # Now we add to the 'tiller' hash with values from each DataSource, warning if we
     # get duplicate values.
     data_classes.each do |data_class|
       dc = data_class.new(config)
       if dc.values(template) != nil
-        values.merge!(dc.values(template)) do |key, old, new|
+        tiller.merge!(dc.values(template)) do |key, old, new|
           warn_merge(key, old, new, 'data', data_class.to_s)
         end
       end
@@ -118,9 +120,6 @@ module Tiller
 
     # Now, we build the template
     puts "Building template #{template}" if config[:verbose]
-    tiller = values.merge(global_values) do |key, old, new|
-      warn_merge(key, old, new, 'global and local', 'merged configuration')
-    end
 
     # Use an OpenStruct namespace, as it's way easier than faffing around with
     # manual binding, and also non-existing values just get replaced by <nil>
@@ -137,7 +136,7 @@ module Tiller
     target.close
 
     # config is redundant in target_values, remove it for the final status hash.
-    all_templates[template]={
+    all_templates[template] = {
         'merged_values' => tiller,
         'target_values' => target_values.reject{|k,v| k=='config'}
     }
@@ -162,7 +161,7 @@ module Tiller
   puts 'Template generation completed'
 
   # Final status structure for API
-  tiller_api_hash={'config' => config, 'global_values' => global_values, 'templates' => all_templates}
+  tiller_api_hash = {'config' => config, 'global_values' => global_values, 'templates' => all_templates}
 
   if config['api_enable']
     Thread.start{ tiller_api(tiller_api_hash) }
@@ -171,7 +170,7 @@ module Tiller
   # Override the exec if run with -x (see options.rb)
   if config.has_key?(:alt_exec)
     puts "Overriding exec parameter [#{config['exec']}] with [#{config[:alt_exec]}]" if config[:verbose]
-    config['exec']=config[:alt_exec]
+    config['exec'] = config[:alt_exec]
   end
 
   if config[:no_exec] == false && config.key?('exec')
