@@ -8,6 +8,7 @@ However, its use is not just limited to Docker; you may also find it useful as a
 It's available as a [Ruby Gem](http://https://rubygems.org/gems/tiller), so installation should be a simple `gem install tiller`.
 
 [![Gem Version](https://badge.fury.io/rb/tiller.svg)](http://badge.fury.io/rb/tiller)
+![](http://ruby-gem-downloads-badge.herokuapp.com/tiller?type=total)
 
 ## More information
 You may find a lot of the flexibility that Tiller offers overwhelming at first. I have written a few blog tutorials that provide a good overview of what Tiller can do, with practical examples; I strongly recommend that if you're new to all this, you read the following articles through for an introduction :  
