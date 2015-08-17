@@ -4,6 +4,7 @@ Feature: Tiller HTTP plugin
     Given I use a fixture named "http"
     Then  a file named "environments/development.yaml" should exist
 
+  @debug
   Scenario: Data and templates from HTTP test server
     Given I use a fixture named "http"
     When I successfully run `tiller -b . -v -n`
