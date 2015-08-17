@@ -1,0 +1,2 @@
+test.erb:
+  target: test.txt

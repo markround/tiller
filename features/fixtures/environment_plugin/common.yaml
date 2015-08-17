@@ -1,0 +1,7 @@
+data_sources:
+  - defaults
+  - file
+  - environment
+template_sources:
+  - file
+exec: date
