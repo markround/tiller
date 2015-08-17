@@ -23,5 +23,11 @@ Feature: Command line arguments
     Then the output should contain:
         """
         "api_port"=>"1234"
-        """ 
+        """
 
+  Scenario: Set environment
+    When I run `tiller -e test -h`
+    Then the output should contain:
+    """
+:environment=>"test"
+"""

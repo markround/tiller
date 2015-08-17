@@ -1,0 +1,4 @@
+test.erb:
+  target: test.txt
+  config:
+    env_test: 'This value overwrites the global value provided by the environment plugin'
