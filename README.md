@@ -443,8 +443,8 @@ This seems to crop up mostly on Ruby 1.9 installations, and happens when convert
 ## Signal handling
 Not a "gotcha" as such, but worth noting. Since version 0.4.0, Tiller catches the `INT`,`TERM` and `HUP` signals and passes them on to the child process spawned through `exec`. This helps avoid the ["PID 1"](http://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/) problem by making sure that if Tiller is killed then the child process should also exit.
 
-## Global and local value precedence 
-A "global" value will be over-written by a local value (e.g. a value specified for a template in a `config:` block). This may cause you unexpected behaviour when you attempt to use a value from a data source such as `environment_json` or `environment` which exposes its values as global values.
+## Global and template-specific value precedence 
+A "global" value will be over-written by a template-specific value (e.g. a value specified for a template in a `config:` block). This may cause you unexpected behaviour when you attempt to use a value from a data source such as `environment_json` or `environment` which exposes its values as global values.
 
 For example, if you have the following in an environment file :
 
