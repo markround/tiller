@@ -1,0 +1,6 @@
+data_sources:
+  - file
+  - http
+template_sources:
+  - http
+  - file
