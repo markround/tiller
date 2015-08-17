@@ -1,0 +1,10 @@
+common:
+  exec: sleep 10
+  api_enable: true
+  api_port: 1234
+
+app.conf.erb:
+  target: app.conf
+  config:
+    port: '8081'
+    database: 'stg-db-1.dev.example.com'

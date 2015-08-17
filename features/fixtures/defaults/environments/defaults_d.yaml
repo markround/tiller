@@ -1,0 +1,2 @@
+defaults_d.erb:
+  target: defaults_d.txt
