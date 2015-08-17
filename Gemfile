@@ -5,5 +5,8 @@ group :development do
   gem 'rspec'
   gem 'aruba'
   gem 'tiller'
+  gem 'httpclient'
+  gem 'oj'
+  gem 'zk'
 end
 
