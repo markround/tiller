@@ -27,6 +27,7 @@ class DefaultsDataSource < Tiller::DataSource
     if File.directory? defaults_dir
       Dir.glob(File.join(defaults_dir,'*.yaml')).each do |d|
         yaml = YAML.load(open(d))
+        puts "Loading defaults from #{d}" if @config[:debug]
         @defaults_hash.deep_merge!(yaml) if yaml != false
       end
     end

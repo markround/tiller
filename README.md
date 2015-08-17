@@ -8,6 +8,7 @@ However, its use is not just limited to Docker; you may also find it useful as a
 It's available as a [Ruby Gem](http://https://rubygems.org/gems/tiller), so installation should be a simple `gem install tiller`.
 
 [![Gem Version](https://badge.fury.io/rb/tiller.svg)](http://badge.fury.io/rb/tiller)
+[![Build Status](https://travis-ci.org/markround/tiller.svg?branch=develop)](https://travis-ci.org/markround/tiller)
 ![](http://ruby-gem-downloads-badge.herokuapp.com/tiller?type=total)
 
 ## More information
