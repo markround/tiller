@@ -1,2 +1,2 @@
 language: ruby
-script: bundle exec rake
+script: bundle exec rake test
