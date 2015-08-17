@@ -1,0 +1,7 @@
+data_sources:
+  - defaults
+  - file
+  - environment_json
+template_sources:
+  - file
+exec: sleep 600
