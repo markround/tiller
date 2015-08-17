@@ -7,5 +7,5 @@ Cucumber::Rake::Task.new(:features) do |t|
   t.cucumber_opts = "features --format pretty"
 end
 
-task :default => [ :build , :install , :features ]
+task :default => [ :build , 'install:local' , :features ]
 task :test => :features
