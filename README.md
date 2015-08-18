@@ -347,62 +347,8 @@ The API responds to the following GET requests:
 * **/v1/template/{template_name}** : Return a hash of merged values and target values for the named template.
 
 
-# Plugin architecture
-Well, "architecture" is probably too grand a word, but as discussed above, you can get data into your template files from a multitude of sources, or even grab your template files from a source such as a database or from a HTTP server. I've included some examples under the `examples/` directory, including dummy sources that return dummy data and templates, and a NetworkDataSource that provides the host's FQDN and a hash of IP address details, which templates can use. Have a look at those for a fuller example, but here's a quick overview:
-
-##Template sources
-These are modules that provide a list of templates, and return the template contents. The code for the `FileTemplateSource` module is really simple. It pretty much just does this to return a list of templates :
-```ruby
-    Dir.glob(File.join(@template_dir , '**' , '*.erb')).each do |t|
-      t.sub!(@template_dir , '')
-    end
-```  
-And then to return an individual template, it just does :
-```ruby 
-    open(File.join(@template_dir , template_name)).read
-``` 
-You can create your own template provider by extending the `Tiller::TemplateSource` class and providing two methods :
-
-* `templates` : Return an array of templates available
-* `template(template_name)` : Return a string containing an ERB template for the given `template_name`
-
-If you create a `setup` method, it will get called straight after initialization. This can be useful for connecting to a database, parsing configuration files and so on.
-
-When the class is created, it gets passed a hash containing various variables you can use to return different templates based on environment etc. Or you can read any values from `common.yaml` yourself, as it's accessible from the instance variable `@config`.
-
-##Data sources
-These provide values that templates can use. There are 3 kinds of values:
- 
-* global values which all templates can use (`environment` is provided like this), and could be things like a host's IP address, FQDN, or any other value.
-* local values which are values provided for each template
-* target values which provide information about where a template should be installed to, what permissions it should have, and so on.
-
-You can create your own datasources by inheriting `Tiller::DataSource` and providing any of the following 3 methods :
- 
-* `values(template_name)` : Return a hash of keys/values for the given template name
-* `target_values(template_name)` : Return a hash of values for the given template name, which must include:
-	* `target` : The full path that the populated template should be installed to (directories will be created if they do not exist)
-	* `user` : The user that the file should be owned by (e.g. root)
-	* `group` : The group that the file should be owned by (e.g. bin)
-	* `perms`: The octal permissions the file should have (e.g. 0644)
-* `global_values` : Return a hash of global values. 
-
-As with template sources, if you need to connect to a database or do any other post-initialisation work, create a `setup` method.
-
-## Naming
-Assuming you had created a pair of template and data source plugins called `ExampleTemplateSource` and `ExampleDataSource`, you'd drop them under `/usr/local/lib/tiller/template/example.rb` and `/usr/local/lib/tiller/data/example.rb` respectively, and then add them to `common.yaml` :
-
-```yaml
-data_sources:
-  - file
-  - example
-  - random
-template_sources:
-  - file
-  - example
-```
-
-If you don't want to use the default directory of `/usr/local/lib/tiller`, you can specify an alternate location by setting the `tiller_lib` environment variable, or by using the `-l`/`--libdir` flag on the command line.
+# Developer information
+If you want to build your own plugins, or generally hack on Tiller, see [DEVELOPERS.md](DEVELOPERS.md)
 
 # Gotchas
 ## Merging values
