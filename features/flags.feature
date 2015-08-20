@@ -3,14 +3,10 @@ Feature: Command line arguments
   @debug
   Scenario: Display executable path
     When I run `tiller -d`
-  
+
   Scenario: Run tiller with no arguments
     When I run `tiller`
-    Then the output should contain:
-    """
-    Error : Could not open common configuration file!
-    No such file or directory @ rb_sysopen - /etc/tiller/common.yaml
-    """
+    Then the output should contain "Error : Could not open common configuration file!"
 
   Scenario: Run tiller with -h
     When I successfully run `tiller -h`
