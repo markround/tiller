@@ -37,7 +37,13 @@ module Tiller
   $LOAD_PATH.unshift(config[:tiller_lib]) unless $LOAD_PATH.include?(config[:tiller_lib])
 
   # Load the common YAML configuration file
-  config.merge!(YAML.load(open(File.join(config[:tiller_base], 'common.yaml'))))
+  begin
+    common_file=File.join(config[:tiller_base], 'common.yaml')
+    config.merge!(YAML.load(open(common_file)))
+  rescue Exception => e
+    abort "Error : Could not open common configuration file!\n#{e}"
+  end
+
 
   # Set the environment if not already done through ENV or -e flag
   config[:environment] = config['default_environment'] if config[:environment].nil?
