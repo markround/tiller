@@ -40,7 +40,7 @@ module Tiller
 
   # Load the common YAML configuration file
   begin
-    common_file=File.join(config[:tiller_base], 'common.yaml')
+    common_file = File.join(config[:tiller_base], 'common.yaml')
     config.merge!(YAML.load(open(common_file)))
   rescue Exception => e
     abort "Error : Could not open common configuration file!\n#{e}"
