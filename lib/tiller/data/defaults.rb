@@ -16,18 +16,25 @@ class DefaultsDataSource < Tiller::DataSource
     defaults_dir  = File.join(@config[:tiller_base], 'defaults.d')
     @defaults_hash = Hash.new
 
-    # Read defaults in from defaults file
-    # Handle empty files - if YAML didn't parse, it returns false so we skip them
-    if File.file? defaults_file
-      yaml = YAML.load(open(defaults_file))
-      @defaults_hash.deep_merge!(yaml) if yaml != false
+    # First, try and load defaults from v2 config
+    if @config.has_key?('defaults')
+      @log.debug("#{self} : Using values from v2 format common.yaml")
+      @defaults_hash.deep_merge!(@config['defaults'])
+    else
+      # Read defaults in from defaults file if no v2 config
+      # Handle empty files - if YAML didn't parse, it returns false so we skip them
+      if File.file? defaults_file
+        yaml = YAML.load(open(defaults_file))
+        @defaults_hash.deep_merge!(yaml) if yaml != false
+      end
     end
 
     # If we have YAML files in defaults.d, also merge them
+    # We do this even if the main defaults were loaded from the v2 format config
     if File.directory? defaults_dir
       Dir.glob(File.join(defaults_dir,'*.yaml')).each do |d|
         yaml = YAML.load(open(d))
-        puts "Loading defaults from #{d}" if @config[:debug]
+        @log.debug("Loading defaults from #{d}")
         @defaults_hash.deep_merge!(yaml) if yaml != false
       end
     end
