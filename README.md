@@ -294,6 +294,8 @@ environments:
 		mongodb.erb:
   			target: /etc/mongodb.conf
 ```
+Note that instead of the YAML one-per-line list format for enabling plugins, I used the shorthand array format ( `[ 'item1' , 'item2', .....]` ).
+
 
 ### Overriding common settings
 As of Tiller 0.5.0, you can also override defaults from common.yaml if you specify them in a `common` block in an environment file. This means you can specify a different `exec`, enable the API, or configure various plugins to use different settings on a per-environment basis, e.g.
