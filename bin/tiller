@@ -111,10 +111,6 @@ module Tiller
     tiller = Hash.new.merge(global_values)
     target_values = {}
 
-    pp tiller
-
-    # Todo: add in our values from common.yaml here if they exist
-
     # Now we add to the 'tiller' hash with values from each DataSource, warning if we
     # get duplicate values.
     data_classes.each do |data_class|
