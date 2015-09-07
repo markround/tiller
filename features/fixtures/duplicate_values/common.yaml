@@ -1,0 +1,16 @@
+data_sources: [ 'file' ]
+template_sources: [ 'file' ]
+
+environments:
+
+  development:
+
+    test1.erb:
+      target: test1.txt
+      config:
+        test_value: 'This is test1.txt'
+
+    test2.erb:
+      target: test2.txt
+      config:
+        test_value: 'This is test2.txt'
