@@ -264,6 +264,7 @@ And if the `development` environment is used (it's the default, so will also get
 
 Of course, this means you need an environment file for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered in the next section.
 
+### Complete example
 For reference, the complete configuration file for this example is as follows:
 
 ```yaml
@@ -298,21 +299,33 @@ Note that instead of the YAML one-per-line list format for enabling plugins, I u
 
 
 ### Overriding common settings
-As of Tiller 0.5.0, you can also override defaults from common.yaml if you specify them in a `common` block in an environment file. This means you can specify a different `exec`, enable the API, or configure various plugins to use different settings on a per-environment basis, e.g.
+As of Tiller 0.5.0, you can also override defaults from common.yaml if you specify them in a `common` block in an environment section. This means you can specify a different `exec`, enable the API, or configure various plugins to use different settings on a per-environment basis, e.g.
 
 ```yaml
-common:
-  api_enable: true
-  api_port: 1234
-  
-  # configuration for HTTP plugin (https://github.com/markround/tiller/blob/master/README-HTTP.md)
-  http:
-    uri: 'http://tiller.dev.example.com'
-    ...
-    ...
-    ...
+environments:
+
+	development:
+		
+		# Only enable API for development environment, and
+		# also specify HTTP plugin values	
+		common:
+		  api_enable: true
+		  api_port: 1234
+		  
+		  # configuration for HTTP plugin (https://github.com/markround/tiller/blob/master/README-HTTP.md)
+		  http:
+		    uri: 'http://tiller.dev.example.com'
+		    ...
+		    ...
+		    ... rest of config file snipped
+		    ...
+		    ...
 ```
 
+
+## Separate configuration files per environment
+
+Instead of placing all your environment configuration in `common.yaml`, you can split things out into separate files. This was the default behaviour of Tiller < 0.7.0, and will remain supported. To do this, create a `environments` directory, and then a yaml file named after your environment. For example, if you had a `common.yaml` that looked like the example 
 
 ## Plugins
 
@@ -328,13 +341,17 @@ These allow you to retrieve your templates and values from a HTTP server. Full d
 These allow you to store your templates and values in a [ZooKeeper](http://zookeeper.apache.org) cluster. Full documentation for this plugin is available in [README-zookeeper.md](README-zookeeper.md)
 
 ### Defaults plugin
-If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. These defaults are sourced from `/etc/tiller/defaults.yaml`, and any individual `.yaml` files under `/etc/tiller/defaults.d/`. Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example:
+If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. These defaults are sourced from a `defaults:` block in your `common.yaml`, or from `/etc/tiller/defaults.yaml` if you are using the old-style configuration. For both styles, any individual `.yaml` files under `/etc/tiller/defaults.d/` are also loaded and parsed. Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example, in your common.yaml add something like:
+
 ```yaml
-global:
-  domain_name: 'example.com'
+data_sources: [ 'defaults' , 'file' , 'environment' ]
+defaults:
+
+	global:
+  		domain_name: 'example.com'
 	  
-application.properties.erb:
-  java_version: 'jdk8'
+	application.properties.erb:
+  		java_version: 'jdk8'
 ```
 
 ### Environment plugin
@@ -439,7 +456,7 @@ Not a "gotcha" as such, but worth noting. Since version 0.4.0, Tiller catches th
 ## Global and template-specific value precedence 
 A "global" value will be over-written by a template-specific value (e.g. a value specified for a template in a `config:` block). This may cause you unexpected behaviour when you attempt to use a value from a data source such as `environment_json` or `environment` which exposes its values as global values.
 
-For example, if you have the following in an environment file :
+For example, if you have the following in an environment configuration block :
 
 ```yaml
 my_template.erb:

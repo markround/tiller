@@ -36,3 +36,20 @@ Feature: Tiller v2 config
     Default value : This is a default value, overwritten from the template config
     Defaults.d value: Value from defaults.d
     """
+
+  Scenario: Load http fixture
+    Given I use a fixture named "http_v2"
+    Then  a file named "common.yaml" should exist
+
+  Scenario: Data and templates from HTTP test server
+    Given I use a fixture named "http_v2"
+    When I successfully run `tiller -b . -v -d -n`
+    Then a file named "http.txt" should exist
+    And the file "http.txt" should contain:
+"""
+The HTTP Value is : This came from the development environment.
+Some globals, now.
+
+ * This is a value from HTTP 
+ * Another global value 
+"""
