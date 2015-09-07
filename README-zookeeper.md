@@ -20,7 +20,7 @@ Note that the ordering is significant. In the above example, values from the Zoo
 You also do not need to enable both plugins; for example you may just want to retrieve values for your templates from ZooKeeper, but continue to use files to store your actual template content.
 
 # Configuring
-Configuration for this plugin is placed inside a "zookeeper" block. This can either be included in the main `common.yaml` file, or in a per-environment file inside the `common:` block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this. 
+Configuration for this plugin is placed inside a "zookeeper" block. This can either be included in the main `common.yaml` file, or in a per-environment configuration block inside a `common:` block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this. 
 
 A sample configuration (showing the defaults for most parameters) is as follows :
 ```yaml
@@ -43,7 +43,7 @@ At a bare minimum, you need to specify a URI for the plugins to connect to. This
 
 The default timeout is 5 seconds; if a connection to a ZooKeeper server/cluster takes longer than this, the connection will abort and Tiller will stop with an exception.
 
-Note that as you can specify `common:` blocks in each environment file, you can specify a different URI per environment. 
+Note that as you can specify `common:` blocks in each environment block, you can specify a different URI per environment. 
 
 If you omit the other parameters (`timeout`,`templates` and so on), they will default to the values shown above. These will be explained in the next section.
 
