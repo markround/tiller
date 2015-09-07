@@ -11,4 +11,4 @@ Feature: Miscellaneous bug fixes
     And the file "test1.txt" should contain "This is test1.txt"
     Then a file named "test2.txt" should exist
     And the file "test2.txt" should contain "This is test2.txt"
-    And the output should not contain "Warning, merging duplicate data values"
+    And the output should not contain "merging"
