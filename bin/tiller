@@ -100,7 +100,7 @@ module Tiller
     end
   end
 
-  log.info("Templates to build #{templates.keys}")
+  log.info("Available templates : #{templates.keys}")
 
   # Now we go through each template we've identified, and get the
   # values for each one.
@@ -108,8 +108,10 @@ module Tiller
   templates.each do |template, content|
 
     # Start with a hash of our global values
-    tiller = global_values
+    tiller = Hash.new.merge(global_values)
     target_values = {}
+
+    pp tiller
 
     # Todo: add in our values from common.yaml here if they exist
 
