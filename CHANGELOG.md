@@ -1,5 +1,6 @@
 # Changelog
 
+* 0.7.1 : Small bug-fix; hash was not being cleared in a loop due to not being initialised properly.
 * 0.7.0 : Lots of changes!
   * Added support to read all configuration from a single common.yaml file
   * Switched to Logger for debug/verbose messages
