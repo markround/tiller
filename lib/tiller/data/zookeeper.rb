@@ -36,7 +36,7 @@ class ZookeeperDataSource < Tiller::DataSource
 
   def global_values
     path = @zk_config['values']['global'].gsub('%e',@config[:environment])
-    puts "Fetching Zookeeper globals from #{path}" if @config[:verbose]
+    @log.info("Fetching Zookeeper globals from #{path}")
     get_values(path)
   end
 

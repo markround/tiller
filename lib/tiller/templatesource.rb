@@ -1,3 +1,5 @@
+require 'tiller/logger'
+
 # Tiller template source base class
 module Tiller
   # Subclasses provide templates (an array), and individual template contents
@@ -9,6 +11,7 @@ module Tiller
 
     def initialize(config)
       @config = config
+      @log = Tiller::Logger.new(config)
       setup
     end
 

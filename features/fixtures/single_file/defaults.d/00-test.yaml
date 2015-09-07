@@ -1,0 +1,2 @@
+global:
+  defaults_d_value: "Value from defaults.d"
