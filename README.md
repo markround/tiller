@@ -327,7 +327,7 @@ environments:
 
 Instead of placing all your environment configuration in `common.yaml`, you can split things out into separate files. This was the default behaviour of Tiller < 0.7.0, and will remain supported. To do this, create a `environments` directory, and then a yaml file named after your environment. 
 
-For example, if you had a `common.yaml` that looked like the [example above](#Complete example), you would create a `environments/staging.yaml` file with the following content:
+For example, if you had a `common.yaml` that looked like the [example above](#complete-example), you would create a `environments/staging.yaml` file with the following content:
 
 ```yaml
 mongodb.erb:
