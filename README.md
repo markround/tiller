@@ -132,7 +132,7 @@ Tiller expects a directory structure like this (using /etc/tiller as its base, a
 	        ... other configuration file templates go here
 	        ...
 
-It is suggested that you add all this under your Docker definition in a `data/tiller` base directory (e.g. data/tiller/common.yaml, data/tiller/environments and so on...) and then add it in your Dockerfile. This would therefore now look like:
+It is suggested that you add all this under your Docker definition in a `data/tiller` base directory (e.g. data/tiller/common.yaml, data/tiller/templates and so on...) and then add it in your Dockerfile. This would therefore now look like:
 ```dockerfile
 CMD gem install tiller
 ...
@@ -165,7 +165,7 @@ This means that a shell will not be spawned to run the command, and no shell exp
 * `template_sources` Where the templates come from, again a list of plugins.
 * `default_environment` : Sets the default environment file to load if none is specified (either using the -e flag, or via the `environment` environment variable). This defaults to 'development', but you may want to set this to 'production' to mimic the old, pre-0.4.0 behaviour.
 
-So for a simple use-case where you're just generating everything from files or environment variables and then spawning MongoDB, you'd have a common.yaml looking like this:
+So for a simple use-case where you're just generating everything from files or environment variables and then spawning MongoDB, you'd have a common.yaml with this at the top:
 ```yaml
 exec: [ "/usr/bin/mongod" , "--config" , "/etc/mongodb.conf" , "--rest" ]
 data_sources:
@@ -188,7 +188,7 @@ Note also that template-specific values take priority over global values (see th
 
 ## Template files
 
-These files under `/etc/tiller/templates` are simply the ERB templates for your configuration files, and are populated with values from the selected environment file. When the environment configuration is parsed (see below), key:value pairs are made available to the template. 
+These files under `/etc/tiller/templates` are simply the ERB templates for your configuration files, and are populated with values from the selected environment configuration blocks (see below). When the environment configuration is parsed (see below), key:value pairs are made available to the template. 
 
 Here's a practical example, again using MongoDB. Let's assume that you're setting up a "MongoDB" container for your platform to use, and you want to have it configured so it can run in 3 environments: 
 
@@ -208,11 +208,11 @@ replSet = <%= replSet %>
 ... (rest of content snipped) ...
 ```
 
-Now it will only contain the `replSet = (whatever)` line when there is a variable "`replSet`" defined. How that gets defined is (usually) the job of the environment files - these are covered next.
+Now it will only contain the `replSet = (whatever)` line when there is a variable "`replSet`" defined. How that gets defined is (usually) the job of the environment configuration blocks - these are covered next.
 
 ## Environment configuration
 
-These headings in `common.yaml` are named after the environment variable `environment` that you pass in (by using `docker run -e`, or from the command line). Alternatively, you can set the environment by using the `-e` flag from the command line. 
+These headings in `common.yaml` (underneath the `environments:` key) are named after the environment variable `environment` that you pass in (usually by using `docker run -e environment=<whatever>`, which sets the environment variable). Alternatively, you can set the environment by using the `tiller -e` flag from the command line. 
 
 When you're using the default `FileDataSource`, these environment blocks in `common.yaml` define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and also a set of key:value pairs that are made available to the template via the usual `<%= key %>` ERB syntax.
 
@@ -241,7 +241,7 @@ environments:
 
 Note that if you omit the user/group/perms parameters - as shown above for the production environment - the defaults are whatever Docker runs as (usually root). Also, if you don't run the script as root, it will skip setting these.
 
-The `development.yaml` can be even simpler, as we don't actually define a replica set, so we can skip the whole `config` block :
+The development environment definition can be even simpler, as we don't actually define a replica set, so we can skip the whole `config` block :
 
 ```yaml
 	development:
@@ -262,7 +262,7 @@ Or, if the production environment is specified :
 
 And if the `development` environment is used (it's the default, so will also get used if no environment is specified), then the config file will get installed but with the line relating to replica set name left out.
 
-Of course, this means you need an environment file for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered in the next section.
+Of course, this means you need an environment block for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered in the next section.
 
 ### Complete example
 For reference, the complete configuration file for this example is as follows:
@@ -355,7 +355,9 @@ These allow you to retrieve your templates and values from a HTTP server. Full d
 These allow you to store your templates and values in a [ZooKeeper](http://zookeeper.apache.org) cluster. Full documentation for this plugin is available in [README-zookeeper.md](README-zookeeper.md)
 
 ### Defaults plugin
-If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. These defaults are sourced from a `defaults:` block in your `common.yaml`, or from `/etc/tiller/defaults.yaml` if you are using the old-style configuration. For both styles, any individual `.yaml` files under `/etc/tiller/defaults.d/` are also loaded and parsed. Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example, in your common.yaml add something like:
+If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. 
+
+These defaults are sourced from a `defaults:` block in your `common.yaml`, or from `/etc/tiller/defaults.yaml` if you are using the old-style configuration. For both styles, any individual `.yaml` files under `/etc/tiller/defaults.d/` are also loaded and parsed. Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example, in your `common.yaml` you could add something like:
 
 ```yaml
 data_sources: [ 'defaults' , 'file' , 'environment' ]
