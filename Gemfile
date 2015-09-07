@@ -4,9 +4,9 @@ group :development do
   gem 'rake'
   gem 'rspec'
   gem 'aruba'
-  gem 'tiller'
   gem 'httpclient'
   gem 'oj'
   gem 'zk'
+  gem 'tiller'
 end
 
