@@ -13,14 +13,14 @@ environments:
       exec: who
 
     test.erb:
-      target: /tmp/test.txt
+      target: test.txt
       config:
         test_value: 'This value came from a single config file'
 
   production:
 
     test.erb:
-      target: /tmp/test.txt
+      target: test.txt
       config:
         test_value: 'This is again a value from a single config file, this time the production environment.'
         default_value: 'This is a default value, overwritten from the template config'

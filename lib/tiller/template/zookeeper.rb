@@ -23,7 +23,7 @@ class ZookeeperTemplateSource < Tiller::TemplateSource
 
   def templates
     path = @zk_config['templates'].gsub('%e',@config[:environment])
-    puts "Fetching Zookeeper templates from #{path}" if @config[:verbose]
+    @log.info("Fetching Zookeeper templates from #{path}")
     templates = []
     if @zk.exists?(path)
       templates = @zk.children(path)

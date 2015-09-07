@@ -23,14 +23,14 @@ module Tiller::HttpCommon
 
     # Basic auth for resource
     if @http_config.has_key?('username')
-      puts 'HTTP: Using basic authentication' if @config[:debug]
+      @log.debug('HTTP: Using basic authentication')
       raise 'HTTP: Missing password for authentication' unless @http_config.has_key?('password')
       @client.set_auth(nil, @http_config['username'], @http_config['password'])
     end
 
     # Basic auth for proxy
     if @http_config.has_key?('proxy_username')
-      puts 'HTTP: Using proxy basic authentication' if @config[:debug]
+      @log.debug('HTTP: Using proxy basic authentication')
       raise 'HTTP: Missing password for proxy authentication' unless @http_config.has_key?('proxy_password')
       @client.set_proxy_auth(@http_config['proxy_username'], @http_config['proxy_password'])
     end
@@ -42,7 +42,7 @@ module Tiller::HttpCommon
     uri.gsub!('%e', @config[:environment])
     uri.gsub!('%t', interpolate[:template]) if interpolate[:template]
 
-    puts "HTTP: Fetching #{uri}" if @config[:debug]
+    @log.debug("HTTP: Fetching #{uri}")
     resp = @client.get(uri, :follow_redirect => true)
     raise "HTTP: Server responded with status #{resp.status} for #{uri}" if resp.status != 200
     resp.body
@@ -53,7 +53,7 @@ module Tiller::HttpCommon
   def parse(content)
     case @http_config['parser']
       when 'json'
-        puts 'HTTP: Using JSON parser' if @config[:debug]
+        @log.debug("HTTP: Using JSON parser")
         JSON.parse(content)
       else
         raise "HTTP: Unsupported parser '#{@http_config['parser']}'"
