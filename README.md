@@ -75,6 +75,17 @@ It looks at an environment variable called "environment" (or the argument to the
 
 If no environment is specified, it will default to using "development". Prior to version 0.4.0, this used to be "production", but as was quite rightly pointed out, this is a bit scary. You can always change the default anyway - see below. 
 
+## A word about configuration
+Tiller uses YAML for configuration files. If you're unfamiliar with YAML, don't worry - it's very easy to pick up. A good introduction is here : ["Complete idiot's introduction to YAML"](https://github.com/Animosity/CraftIRC/wiki/Complete-idiot's-introduction-to-yaml)
+
+Prior to Tiller v0.7, configuration was spread out over several files. If you had 3 environments (e.g. dev, stage and prod), you'd have a `common.yaml` for main configuration, one yaml file for each of your environments (`dev.yaml`,`stage.yaml` and so on), and possibly more depending on which plugins you'd enabled (`defaults.yaml` etc.)
+
+However, 0.7 and later versions allow you to place most configuration inside a single `common.yaml` file, which can make things a lot clearer - you have a single place to view your configuration at once. I have therefore updated the documentation to cover this new style as the preferred example.
+
+Of course, you can always use the old "one file for each environment" approach if you prefer. Tiller is 100% backwards compatible with the old approach, and I have no intention of removing support for it. The only thing to be aware of is that you can't mix the two configuration styles: If you configure some environments in `common.yaml`, Tiller will ignore any separate environment configuration files.
+
+	    
+
 ## Arguments
 Tiller understands the following *optional* command-line arguments (mostly used for debugging purposes) :
 
@@ -114,13 +125,6 @@ Tiller expects a directory structure like this (using /etc/tiller as its base, a
 	└── tiller
 	    ├── common.yaml
 	    │
-	    ├── environments
-	    │   ├── production.yaml
-	    │   ├── staging.yaml
-	    │   ...
-	    │   ... other environments defined here
-	    │   ...
-	    │
 	    └── templates
 	        ├── sensu_client.erb
 	        ├── mongodb.erb
@@ -128,7 +132,7 @@ Tiller expects a directory structure like this (using /etc/tiller as its base, a
 	        ... other configuration file templates go here
 	        ...
 
-It is suggested that you add all this under your Docker definition in a `data/tiller` base directory (e.g. data/tiller/common.yaml, data/tiller/environments and so on...) and then add it in your Dockerfile. This would therefore now look like:
+It is suggested that you add all this under your Docker definition in a `data/tiller` base directory (e.g. data/tiller/common.yaml, data/tiller/templates and so on...) and then add it in your Dockerfile. This would therefore now look like:
 ```dockerfile
 CMD gem install tiller
 ...
@@ -141,7 +145,9 @@ CMD ["/usr/local/bin/tiller" , "-v"]
 Note that the configuration directory was added later on in the Dockerfile; this is because `ADD` commands cause the Docker build cache to become invalidated so it's a good idea to put them as far as possible towards the end of the Dockerfile.
 
 ## Common configuration
-`common.yaml` contains the `exec`, `data_sources`, `template_sources` and `default_environment` parameters. It can also take optional blocks of configuration for some plugins (for example, the [HTTP Plugins](README-HTTP.md)). Settings defined here can also be overridden on a per-environment basis (see [below](#overriding-common-settings))
+`common.yaml` contains most of the configuration for Tiller. It contains top-level `exec`, `data_sources`, `template_sources` and `default_environment` parameters, along with sections for each environment. 
+
+It can also take optional blocks of configuration for some plugins (for example, the [HTTP Plugins](README-HTTP.md)). Settings defined here can also be overridden on a per-environment basis (see [below](#overriding-common-settings))
 
 * `exec`: This is simply what will be executed after the configuration files have been generated. If you omit this (or use the `-n` / `--no-exec` arguments) then no child process will be executed. As of 0.5.1, you can also specify the command and arguments as an array, e.g.
 
@@ -159,14 +165,14 @@ This means that a shell will not be spawned to run the command, and no shell exp
 * `template_sources` Where the templates come from, again a list of plugins.
 * `default_environment` : Sets the default environment file to load if none is specified (either using the -e flag, or via the `environment` environment variable). This defaults to 'development', but you may want to set this to 'production' to mimic the old, pre-0.4.0 behaviour.
 
-So for a simple use-case where you're just generating everything from files or environment variables and then spawning MongoDB, you'd have a common.yaml looking like this:
+So for a simple use-case where you're just generating everything from files or environment variables and then spawning MongoDB, you'd have a common.yaml with this at the top:
 ```yaml
-	exec: [ "/usr/bin/mongod" , "--config" , "/etc/mongodb.conf" , "--rest" ]
-	data_sources:
-		- file
-		- environment
-	template_sources:
-		- file
+exec: [ "/usr/bin/mongod" , "--config" , "/etc/mongodb.conf" , "--rest" ]
+data_sources:
+	- file
+	- environment
+template_sources:
+	- file
 ```
 
 ### Ordering
@@ -182,7 +188,7 @@ Note also that template-specific values take priority over global values (see th
 
 ## Template files
 
-These files under `/etc/tiller/templates` are simply the ERB templates for your configuration files, and are populated with values from the selected environment file. When the environment configuration is parsed (see below), key:value pairs are made available to the template. 
+These files under `/etc/tiller/templates` are simply the ERB templates for your configuration files, and are populated with values from the selected environment configuration blocks (see below). When the environment configuration is parsed (see below), key:value pairs are made available to the template. 
 
 Here's a practical example, again using MongoDB. Let's assume that you're setting up a "MongoDB" container for your platform to use, and you want to have it configured so it can run in 3 environments: 
 
@@ -202,38 +208,46 @@ replSet = <%= replSet %>
 ... (rest of content snipped) ...
 ```
 
-Now it will only contain the `replSet = (whatever)` line when there is a variable "`replSet`" defined. How that gets defined is (usually) the job of the environment files - these are covered next.
+Now it will only contain the `replSet = (whatever)` line when there is a variable "`replSet`" defined. How that gets defined is (usually) the job of the environment configuration blocks - these are covered next.
 
 ## Environment configuration
 
-These files live under `/etc/tiller/environments` and are named after the environment variable `environment` that you pass in (by using `docker run -e`, or from the command line). Alternatively, you can set the environment by using the `-e` flag from the command line.
+These headings in `common.yaml` (underneath the `environments:` key) are named after the environment variable `environment` that you pass in (usually by using `docker run -e environment=<whatever>`, which sets the environment variable). Alternatively, you can set the environment by using the `tiller -e` flag from the command line. 
 
-When you're using the default `FileDataSource`, these environment files define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and also a set of key:value pairs that are made available to the template via the usual `<%= key %>` ERB syntax.
+When you're using the default `FileDataSource`, these environment blocks in `common.yaml` define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and also a set of key:value pairs that are made available to the template via the usual `<%= key %>` ERB syntax.
 
-Carrying on with the MongoDB example, here's how you might set the replica set name in your `staging.yaml` environment file :
+Carrying on with the MongoDB example, here's how you might set the replica set name in your staging and production environments (add the following to `common.yaml`):
+
 ```yaml
-mongodb.erb:
-  target: /etc/mongodb.conf
-  user: root
-  group: root
-  perms: 0644
-  config:
-    replSet: 'staging'
+environments:
+
+	staging:
+
+		mongodb.erb:
+  			target: /etc/mongodb.conf
+  			user: root
+  			group: root
+  			perms: 0644
+			config:
+				replSet: 'staging'
+
+	production:
+	
+		mongodb.erb:
+  			target: /etc/mongodb.conf
+ 			config:
+    			replSet: 'production'
 ```
-And then your `production.yaml` might look like the following :
-```yaml
-mongodb.erb:
-  target: /etc/mongodb.conf
-  config:
-    replSet: 'production'
-```
-Note that if you omit the user/group/perms parameters, the defaults are whatever Docker runs as (usually root). Also, if you don't run the script as root, it will skip setting these.
 
-The `development.yaml` can be even simpler, as we don't actually define a replica set, so we can skip the whole `config` block :
+Note that if you omit the user/group/perms parameters - as shown above for the production environment - the defaults are whatever Docker runs as (usually root). Also, if you don't run Tiller as root, it will skip setting these.
+
+The development environment definition can be even simpler, as we don't actually define a replica set, so we can skip the whole `config` block :
 
 ```yaml
-mongodb.erb:
-  target: /etc/mongodb.conf
+	development:
+
+		mongodb.erb:
+  			target: /etc/mongodb.conf
 ```
 
 So now, when run through Tiller/Docker with `-e environment=staging`, the template will be installed to /etc/mongodb.conf with the following content :
@@ -248,23 +262,83 @@ Or, if the production environment is specified :
 
 And if the `development` environment is used (it's the default, so will also get used if no environment is specified), then the config file will get installed but with the line relating to replica set name left out.
 
-Of course, this means you need an environment file for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered in the next section.
+Of course, this means you need an environment block for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered in the next section.
 
-### Overriding common settings
-As of Tiller 0.5.0, you can also override defaults from common.yaml if you specify them in a `common` block in an environment file. This means you can specify a different `exec`, enable the API, or configure various plugins to use different settings on a per-environment basis, e.g.
+### Complete example
+For reference, the complete configuration file for this example is as follows:
 
 ```yaml
-common:
-  api_enable: true
-  api_port: 1234
-  
-  # configuration for HTTP plugin (https://github.com/markround/tiller/blob/master/README-HTTP.md)
-  http:
-    uri: 'http://tiller.dev.example.com'
-    ...
-    ...
-    ...
+exec: [ "/usr/bin/mongod" , "--config" , "/etc/mongodb.conf" , "--rest" ]
+data_sources: [ 'file' , 'environment' ]
+template_sources: [ 'file' ]
+environments:
+
+	staging:
+
+		mongodb.erb:
+  			target: /etc/mongodb.conf
+  			user: root
+  			group: root
+  			perms: 0644
+			config:
+				replSet: 'staging'
+
+	production:
+	
+		mongodb.erb:
+  			target: /etc/mongodb.conf
+ 			config:
+    			replSet: 'production'
+    			
+	development:
+
+		mongodb.erb:
+  			target: /etc/mongodb.conf
 ```
+Note that instead of the YAML one-per-line list format for enabling plugins, I used the shorthand array format ( `[ 'item1' , 'item2', .....]` ).
+
+
+### Overriding common settings
+As of Tiller 0.5.0, you can also override defaults from common.yaml if you specify them in a `common` block in an environment section. This means you can specify a different `exec`, enable the API, or configure various plugins to use different settings on a per-environment basis, e.g.
+
+```yaml
+environments:
+
+	development:
+		
+		# Only enable API for development environment, and
+		# also specify HTTP plugin values	
+		common:
+		  api_enable: true
+		  api_port: 1234
+		  
+		  # configuration for HTTP plugin (https://github.com/markround/tiller/blob/master/README-HTTP.md)
+		  http:
+		    uri: 'http://tiller.dev.example.com'
+		    ...
+		    ...
+		    ... rest of config file snipped
+		    ...
+		    ...
+```
+
+
+## Separate configuration files per environment
+
+Instead of placing all your environment configuration in `common.yaml`, you can split things out into separate files. This was the default behaviour of Tiller < 0.7.0, and will remain supported. To do this, create a `environments` directory, and then a yaml file named after your environment. 
+
+For example, if you had a `common.yaml` that looked like the [example above](#complete-example), you would create a `environments/staging.yaml` file with the following content:
+
+```yaml
+mongodb.erb:
+	target: /etc/mongodb.conf
+	user: root
+	group: root
+	perms: 0644
+	config:
+		replSet: 'staging'
+```
+And so on, one for each environment. You would then remove the `environments:` block from `common.yaml`, and Tiller will switch to loading these individual files.
 
 
 ## Plugins
@@ -281,13 +355,21 @@ These allow you to retrieve your templates and values from a HTTP server. Full d
 These allow you to store your templates and values in a [ZooKeeper](http://zookeeper.apache.org) cluster. Full documentation for this plugin is available in [README-zookeeper.md](README-zookeeper.md)
 
 ### Defaults plugin
-If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. These defaults are sourced from `/etc/tiller/defaults.yaml`, and any individual `.yaml` files under `/etc/tiller/defaults.d/`. Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example:
+If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. 
+
+These defaults are sourced from a `defaults:` block in your `common.yaml`, or from `/etc/tiller/defaults.yaml` if you are using the old-style configuration. For both styles, any individual `.yaml` files under `/etc/tiller/defaults.d/` are also loaded and parsed. 
+
+Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example, in your `common.yaml` you could add something like:
+
 ```yaml
-global:
-  domain_name: 'example.com'
+data_sources: [ 'defaults' , 'file' , 'environment' ]
+defaults:
+
+	global:
+  		domain_name: 'example.com'
 	  
-application.properties.erb:
-  java_version: 'jdk8'
+	application.properties.erb:
+  		java_version: 'jdk8'
 ```
 
 ### Environment plugin
@@ -392,7 +474,7 @@ Not a "gotcha" as such, but worth noting. Since version 0.4.0, Tiller catches th
 ## Global and template-specific value precedence 
 A "global" value will be over-written by a template-specific value (e.g. a value specified for a template in a `config:` block). This may cause you unexpected behaviour when you attempt to use a value from a data source such as `environment_json` or `environment` which exposes its values as global values.
 
-For example, if you have the following in an environment file :
+For example, if you have the following in an environment configuration block :
 
 ```yaml
 my_template.erb:

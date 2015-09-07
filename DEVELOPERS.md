@@ -28,6 +28,8 @@ And then install the locally produced package :
 	tiller 0.6.5 built to pkg/tiller-0.6.5.gem.
 	tiller (0.6.5) installed.
 
+I recommend Bundler version 1.10.6 or later; older versions may not have the 'install:local' job available.
+
 ## Tests
 
 There are quite a few tests under the `features/` directory which use Cucumber and Aruba. Again, you can run these through a Rake task :
@@ -104,7 +106,7 @@ You can create your own datasources by inheriting `Tiller::DataSource` and provi
 	* `perms`: The octal permissions the file should have (e.g. 0644)
 * `global_values` : Return a hash of global values. 
 
-As with template sources, if you need to connect to a database or do any other post-initialisation work, create a `setup` method. 
+As with template sources, if you need to connect to a database or do any other post-initialisation work, create a `setup` method. You also have the `@config` instance variable available, which is a hash of the Tiller configuration (`common.yaml`).
 
 The simplest possible example data source that returns one global value ("example") for all templates would look something like :
 
@@ -131,3 +133,21 @@ template_sources:
 ```
 
 If you don't want to use the default directory of `/usr/local/lib/tiller`, you can specify an alternate location by setting the `tiller_lib` environment variable, or by using the `-l`/`--libdir` flag on the command line.
+
+## Logging
+Both `Tiller::DataSource` and `Tiller::TemplateSource` have a log instance object available through `@log`. The verbosity is set to WARN by default but can be set to `INFO` when Tiller is called with the `-v` flag, and `DEBUG` when the `-d` flag is used. EG:
+
+```ruby
+class ExampleDataSource < Tiller::DataSource
+  def setup
+    @log.info('You will see this if you have run tiller with the -v flag')
+    @log.debug('You will only see this if you have run tiller with the -d flag')
+  end 
+  ...
+  ... Rest of file
+  ...
+end
+```
+
+## Configuration
+If your plugin requires configuration, it's preferable that it reads it from a top-level configuration block in `common.yaml`, instead of requiring a separate configuration file.

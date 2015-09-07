@@ -1,3 +1,5 @@
 *.gem
 .idea
 *.sh
+.rspec
+Gemfile.lock

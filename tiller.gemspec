@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = 'tiller'
-  s.version = '0.6.5'
-  s.date = '2015-08-07'
+  s.version = '0.7.0'
+  s.date = '2015-09-07'
   s.summary = 'Dynamic configuration file generation'
   s.description = 'A tool to create configuration files from a variety of sources, particularly useful for Docker containers. See https://github.com/markround/tiller for examples and documentation.'
   s.authors = ['Mark Dastmalchi-Round']
@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
     lib/tiller/api/handlers/templates.rb
     lib/tiller/api/handlers/template.rb
     lib/tiller/loader.rb
+    lib/tiller/logger.rb
     lib/tiller/options.rb
     lib/tiller/util.rb
     lib/tiller/defaults.rb

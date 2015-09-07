@@ -1,0 +1,19 @@
+data_sources:
+  - file
+  - http
+template_sources:
+  - http
+  - file
+environments:
+  development:
+    common:
+      http:
+        uri: 'http://markround.github.io/http_test'
+        timeout: 10
+        templates: '/environments/%e/templates'
+        template_content: '/templates/%t/content'
+
+        values:
+          global: '/globals'
+          template: '/templates/%t/values/%e'
+          target: '/templates/%t/target_values/%e'

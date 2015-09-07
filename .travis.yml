@@ -1,2 +1,5 @@
 language: ruby
-script: bundle exec rake test
+script: bundle exec rake
+before_install:
+  - gem update bundler
+  - bundler --version

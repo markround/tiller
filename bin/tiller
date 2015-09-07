@@ -8,7 +8,7 @@
 #
 # Mark Dastmalchi-Round <github@markround.com>
 
-VERSION = '0.6.5'
+VERSION = '0.7.0'
 
 require 'erb'
 require 'ostruct'
@@ -25,6 +25,7 @@ require 'tiller/options'
 require 'tiller/util'
 require 'tiller/templatesource'
 require 'tiller/datasource'
+require 'tiller/logger'
 
 # And we're on our way...
 module Tiller
@@ -32,8 +33,10 @@ module Tiller
   puts "tiller v#{VERSION} (https://github.com/markround/tiller) <github@markround.com>"
 
   config = parse_options(Tiller::Defaults)
+  log = Tiller::Logger.new(config)
 
-  puts "Executable: #{__FILE__}" if config[:debug]
+  log.debug("Executable: #{__FILE__}")
+
 
   # Add tiller_lib to the LOAD PATH so we can pull in user-defined plugins
   $LOAD_PATH.unshift(config[:tiller_lib]) unless $LOAD_PATH.include?(config[:tiller_lib])
@@ -46,24 +49,27 @@ module Tiller
     abort "Error : Could not open common configuration file!\n#{e}"
   end
 
+  # Check for keys only present in v2 format (everything in one common.yaml)
+  if [ 'environments' , 'defaults'].any? { |k| config.has_key?(k) }
+    log.info("Using common.yaml v2 format configuration file")
+    config[:config_version] = 2
+  else
+    config[:config_version] = 1
+  end
 
   # Set the environment if not already done through ENV or -e flag
   config[:environment] = config['default_environment'] if config[:environment].nil?
 
-  if config[:verbose]
-    puts "Using configuration from #{config[:tiller_base]}"
-    puts "Using plugins from #{config[:tiller_lib]}/tiller"
-    puts "Using environment #{config[:environment]}"
-  end
+  log.info("Using configuration from #{config[:tiller_base]}")
+  log.info("Using plugins from #{config[:tiller_lib]}/tiller")
+  log.info("Using environment #{config[:environment]}")
 
   # Now load all our plugins
   data_classes      = loader(DataSource, config['data_sources'])
   template_classes  = loader(TemplateSource, config['template_sources'])
 
-  if config[:verbose]
-    puts 'Template sources loaded ' + template_classes.to_s
-    puts 'Data sources loaded ' + data_classes.to_s
-  end
+  log.info('Template sources loaded ' + template_classes.to_s)
+  log.info('Data sources loaded ' + data_classes.to_s)
 
   # Now go through all our data sources and start to assemble our global_values
   # hash. As hashes are getting merged, new values will take precedence over
@@ -94,7 +100,7 @@ module Tiller
     end
   end
 
-  puts "Templates to build #{templates.keys}" if config[:verbose]
+  log.info("Templates to build #{templates.keys}")
 
   # Now we go through each template we've identified, and get the
   # values for each one.
@@ -104,6 +110,8 @@ module Tiller
     # Start with a hash of our global values
     tiller = global_values
     target_values = {}
+
+    # Todo: add in our values from common.yaml here if they exist
 
     # Now we add to the 'tiller' hash with values from each DataSource, warning if we
     # get duplicate values.
@@ -127,7 +135,7 @@ module Tiller
     next if target_values.empty?
 
     # Now, we build the template
-    puts "Building template #{template}" if config[:verbose]
+    log.info("Building template #{template}")
 
     # Use an OpenStruct namespace, as it's way easier than faffing around with
     # manual binding, and also non-existing values just get replaced by <nil>
@@ -151,7 +159,7 @@ module Tiller
 
     # Set permissions if we are running as root
     if Process::Sys.geteuid == 0
-      puts "Setting ownership/permissions on #{target_values['target']}" if config[:verbose]
+      log.info("Setting ownership/permissions on #{target_values['target']}")
       if target_values.key?('perms')
         FileUtils.chmod(target_values['perms'], target_values['target'])
       end
@@ -160,8 +168,8 @@ module Tiller
       FileUtils.chown(target_values['user'], target_values['group'],
                       target_values['target'])
     else
-      puts 'Not running as root, so not setting ownership/permissions on ' \
-        "#{target_values['target']}" if config[:verbose]
+      log.info('Not running as root, so not setting ownership/permissions on ' \
+        "#{target_values['target']}")
     end
 
   end
@@ -177,7 +185,7 @@ module Tiller
 
   # Override the exec if run with -x (see options.rb)
   if config.has_key?(:alt_exec)
-    puts "Overriding exec parameter [#{config['exec']}] with [#{config[:alt_exec]}]" if config[:verbose]
+    log.info("Overriding exec parameter [#{config['exec']}] with [#{config[:alt_exec]}]")
     config['exec'] = config[:alt_exec]
   end
 
@@ -188,7 +196,7 @@ module Tiller
     # Spawn and wait so API can continue to run
     child_pid = launch(config['exec'], :verbose => config[:verbose])
 
-    puts "Child process forked with PID #{child_pid}." if config[:verbose]
+    log.info("Child process forked with PID #{child_pid}.")
 
     # Catch signals and send them on to the child process
     [ :INT, :TERM, :HUP ].each do |sig|
@@ -197,7 +205,7 @@ module Tiller
 
     Process.wait(child_pid)
 
-    puts 'Child process finished, Tiller is stopping.' if config[:verbose]
+    log.info('Child process finished, Tiller is stopping.')
   end
 
 end

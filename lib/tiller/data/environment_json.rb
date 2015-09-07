@@ -13,7 +13,7 @@ class EnvironmentJsonDataSource < Tiller::DataSource
         json_structure = JSON.parse(ENV['tiller_json'])
         json_structure if json_structure.is_a?(Hash)
       rescue JSON::ParserError
-        puts "Warning : Error parsing tiller_json environment variable"
+        @log.warn('Warning : Error parsing tiller_json environment variable')
         Hash.new
       end
     else
