@@ -24,6 +24,9 @@ You may find a lot of the flexibility that Tiller offers overwhelming at first. 
 
 * Using the Defaults data source : [http://www.markround.com/blog/2014/12/05/tiller-0.3.0-and-new-defaults-datasource](http://www.markround.com/blog/2014/12/05/tiller-0.3.0-and-new-defaults-datasource)
 
+* Tiller 0.7.0 and single-file configuration : [http://www.markround.com/blog/2015/09/07/tiller-0-dot-7-0-and-simpler-configuration-files/](http://www.markround.com/blog/2015/09/07/tiller-0-dot-7-0-and-simpler-configuration-files/)
+
+
 See the [Tiller category](http://www.markround.com/blog/categories/tiller/) on my blog for a full list of articles and other information.
 
 ## Changes
@@ -80,9 +83,9 @@ Tiller uses YAML for configuration files. If you're unfamiliar with YAML, don't 
 
 Prior to Tiller v0.7, configuration was spread out over several files. If you had 3 environments (e.g. dev, stage and prod), you'd have a `common.yaml` for main configuration, one yaml file for each of your environments (`dev.yaml`,`stage.yaml` and so on), and possibly more depending on which plugins you'd enabled (`defaults.yaml` etc.)
 
-However, 0.7 and later versions allow you to place most configuration inside a single `common.yaml` file, which can make things a lot clearer - you have a single place to view your configuration at once. I have therefore updated the documentation to cover this new style as the preferred example.
+However, 0.7 and later versions allow you to place most configuration inside a single `common.yaml` file, which can make things a lot clearer - you have a single place to view your configuration at once. I have therefore updated the documentation to cover this new style as the preferred approach. See [this blog post](http://www.markround.com/blog/2015/09/07/tiller-0-dot-7-0-and-simpler-configuration-files/) for an example.
 
-Of course, you can always use the old "one file for each environment" approach if you prefer. Tiller is 100% backwards compatible with the old approach, and I have no intention of removing support for it. The only thing to be aware of is that you can't mix the two configuration styles: If you configure some environments in `common.yaml`, Tiller will ignore any separate environment configuration files.
+Of course, you can always use the old "one file for each environment" approach if you prefer. Tiller is 100% backwards compatible with the old approach, and I have no intention of removing support for it as it's very useful in certain circumstances. The only thing to be aware of is that you can't mix the two configuration styles: If you configure some environments in `common.yaml`, Tiller will ignore any separate environment configuration files.
 
 	    
 
@@ -498,7 +501,7 @@ You'll find that you won't see the "From JSON!" string appear in your template, 
 * [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) - Demonstration of using the JSON datasource, and shows how you can use it to over-ride default values or provide images that can be configured dynamically by end-users.
 * [http://www.markround.com/blog/2014/10/20/querying-tiller-configuration-from-a-running-docker-container/](http://www.markround.com/blog/2014/10/20/querying-tiller-configuration-from-a-running-docker-container/) - Demonstration of querying the Tiller API to extract the information on generated templates.
 * [http://www.markround.com/blog/2014/12/05/tiller-0.3.0-and-new-defaults-datasource](http://www.markround.com/blog/2014/12/05/tiller-0.3.0-and-new-defaults-datasource) - Shows how you can use the Defaults data source, and covers the changes in plugin loading behaviour.
-
+* [http://www.markround.com/blog/2015/09/07/tiller-0-dot-7-0-and-simpler-configuration-files/](http://www.markround.com/blog/2015/09/07/tiller-0-dot-7-0-and-simpler-configuration-files/) - A quick demonstration of the benefits of using single-file configuration.
 
 # Future improvements
 
