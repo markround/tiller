@@ -1,0 +1,32 @@
+exec: date
+data_sources: [ file, xml_file ]
+template_sources: [ file ]
+
+defaults:
+  global:
+    default_value : 'This is a default value'
+
+# Global XML values
+xml_file_path: pom-global.xml
+xml_file_var: xml
+
+environments:
+  global:
+
+    test.erb:
+      target: test.txt
+
+  template:
+
+    test.erb:
+      target: test.txt
+      xml_file_path: pom-template.xml
+      xml_file_var: xml
+
+  broken:
+
+    test.erb:
+      target: test.txt
+      xml_file_path: pom-nonexist.xml
+      xml_file_var: xml
+

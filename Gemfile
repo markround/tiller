@@ -7,6 +7,7 @@ group :development do
   gem 'httpclient'
   gem 'oj'
   gem 'zk'
+  gem 'crack'
   gem 'tiller'
 end
 

@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
     lib/tiller/data/environment_json.rb
     lib/tiller/data/random.rb
     lib/tiller/data/defaults.rb
+    lib/tiller/data/xml_file.rb
     lib/tiller/template/file.rb
     lib/tiller/template/zookeeper.rb
     lib/tiller/template/http.rb
