@@ -410,7 +410,7 @@ For example, assuming the following XML :
 </project>
 ```
 
-If you specify its path vi `xml_file_path` and set `xml_file_var: maven_pom`, you would then be able to reference elements in your templates like so :
+If you specify its path using `xml_file_path` and set `xml_file_var: maven_pom`, you would then be able to reference elements in your templates like so :
 
 ```erb
 ArtifactID: <%= maven_pom['project']['artifactId'] %>
