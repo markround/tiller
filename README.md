@@ -394,7 +394,7 @@ If you add `  - random` to your list of data sources in `common.yaml`, you'll be
 	 "random_uuid"=>"147acac8-7229-44af-80c1-246cf08910f5"}
 
 ### XML File plugin
-This plugin parses the contents of an XML file (for example, a Maven POM) and makes the resulting structure available to your templates. You can enable this plugin by adding `xml_file` to your list of datasources in `common.yaml`. One this has been done, you can specify two further parameters; either at the top-level of `common.yaml`, or per-template. These parameters are :
+This plugin parses the contents of an XML file (for example, a Maven POM) and makes the resulting structure available to your templates. You can enable this plugin by adding `xml_file` to your list of datasources in `common.yaml`. Once this has been done, you can specify two further parameters; either at the top-level of `common.yaml`, or per-template. These parameters are :
 
 * `xml_file_path` : Path to the XML file
 * `xml_file_var` : Variable name that your templates will use to access the structure.
