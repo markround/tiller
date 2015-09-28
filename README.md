@@ -393,6 +393,28 @@ If you add `  - random` to your list of data sources in `common.yaml`, you'll be
 	 "random_urlsafe_base64"=>"MU9UP8lEOVA3Nsb0OURkrw",
 	 "random_uuid"=>"147acac8-7229-44af-80c1-246cf08910f5"}
 
+### XML File plugin
+This plugin parses the contents of an XML file (for example, a Maven POM) and makes the resulting structure available to your templates. You can enable this plugin by adding `xml_file` to your list of datasources in `common.yaml`. Once this has been done, you can specify two further parameters; either at the top-level of `common.yaml`, or per-template. These parameters are :
+
+* `xml_file_path` : Path to the XML file
+* `xml_file_var` : Variable name that your templates will use to access the structure.
+
+For example, assuming the following XML :
+
+```xml
+<project>
+        <modelVersion>4.0.0</modelVersion>
+        <groupId>com.mycompany.app</groupId>
+        <artifactId>my-app</artifactId>
+        <version>1</version>
+</project>
+```
+
+If you specify its path using `xml_file_path` and set `xml_file_var: maven_pom`, you would then be able to reference elements in your templates like so :
+
+```erb
+ArtifactID: <%= maven_pom['project']['artifactId'] %>
+```
 
 # API
 There is a HTTP API provided for debugging purposes. This may be useful if you want a way of extracting and examining the configuration from a running container. Note that this is a *very* simple implementation, and should never be exposed to the internet or untrusted networks. Consider it as a tool to help debug configuration issues, and nothing more. Also see the "Gotchas" section if you experience any `Encoding::UndefinedConversionError` exceptions.
