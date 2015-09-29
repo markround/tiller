@@ -148,6 +148,9 @@ CMD ["/usr/local/bin/tiller" , "-v"]
 Note that the configuration directory was added later on in the Dockerfile; this is because `ADD` commands cause the Docker build cache to become invalidated so it's a good idea to put them as far as possible towards the end of the Dockerfile.
 
 ## Common configuration
+
+If you're impatient, you can skip ahead to see a [full example configuration](#complete-example), but I'll cover each section and parameter in the following paragraphs.
+
 `common.yaml` contains most of the configuration for Tiller. It contains top-level `exec`, `data_sources`, `template_sources` and `default_environment` parameters, along with sections for each environment. 
 
 It can also take optional blocks of configuration for some plugins (for example, the [HTTP Plugins](README-HTTP.md)). Settings defined here can also be overridden on a per-environment basis (see [below](#overriding-common-settings))
