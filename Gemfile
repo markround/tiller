@@ -8,6 +8,6 @@ group :development do
   gem 'oj'
   gem 'zk'
   gem 'crack'
-  gem 'tiller'
+  gem 'tiller', :path => '.'
 end
 
