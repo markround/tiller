@@ -16,6 +16,12 @@ Feature: xml_file config
     Then a file named "test.txt" should exist
     And the file "test.txt" should contain "ArtifactID: my-app-template"
 
+  Scenario: Test per-environment override 
+    Given I use a fixture named "xml_file"
+    When I successfully run `tiller -b . -d -v -n -e override`
+    Then a file named "test.txt" should exist
+    And the file "test.txt" should contain "ArtifactID: my-app-template"
+
   Scenario: Test missing XML file
     Given I use a fixture named "xml_file"
     When I run `tiller -b . -d -v -n -e broken`

@@ -30,3 +30,11 @@ environments:
       xml_file_path: pom-nonexist.xml
       xml_file_var: xml
 
+  override:
+
+    common:
+      xml_file_path: pom-template.xml
+      xml_file_var: xml
+
+    test.erb:
+      target: test.txt
