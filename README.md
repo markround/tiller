@@ -418,7 +418,7 @@ If you set `xml_file_var: maven_pom`, you would then be able to reference elemen
 ArtifactID: <%= maven_pom['project']['artifactId'] %>
 ```
 
-See the [test fixtures](https://github.com/markround/tiller/tree/master/features/fixtures/xml_file) under the features/ directory for full examples.
+See the [test fixtures](https://github.com/markround/tiller/tree/master/features/fixtures/xml_file) and corresponding [test scenario](https://github.com/markround/tiller/blob/master/features/xml_file.feature) under the features/ directory for full examples.
 
 # API
 There is a HTTP API provided for debugging purposes. This may be useful if you want a way of extracting and examining the configuration from a running container. Note that this is a *very* simple implementation, and should never be exposed to the internet or untrusted networks. Consider it as a tool to help debug configuration issues, and nothing more. Also see the "Gotchas" section if you experience any `Encoding::UndefinedConversionError` exceptions.
