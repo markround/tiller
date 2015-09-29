@@ -7,6 +7,7 @@ group :development do
   gem 'httpclient'
   gem 'oj'
   gem 'zk'
-  gem 'tiller'
+  gem 'crack'
+  gem 'tiller', :path => '.'
 end
 
