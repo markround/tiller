@@ -107,7 +107,7 @@ Tiller understands the following *optional* command-line arguments (mostly used 
 All of the following assumes you're using Tiller with Docker. So, firstly install the Tiller gem and set your Dockerfile to use it (assuming you're pulling in a suitable version of Ruby already) :
 
 ```dockerfile
-CMD gem install tiller
+RUN gem install tiller
 ...
 ... Rest of Dockerfile here
 ...
@@ -137,7 +137,7 @@ Tiller expects a directory structure like this (using /etc/tiller as its base, a
 
 It is suggested that you add all this under your Docker definition in a `data/tiller` base directory (e.g. data/tiller/common.yaml, data/tiller/templates and so on...) and then add it in your Dockerfile. This would therefore now look like:
 ```dockerfile
-CMD gem install tiller
+RUN gem install tiller
 ...
 ... Rest of Dockerfile here
 ...
