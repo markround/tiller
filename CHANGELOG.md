@@ -1,5 +1,6 @@
 # Changelog
 
+* 0.7.3 : Added target_values support to defaults datasource. Now makes it easy to install a template in all environments.
 * 0.7.2 : Added xml_file datasource. Thanks to Anthony Burns at clearme.com for the suggestion!
 * 0.7.1 : Small bug-fix; hash was not being cleared in a loop due to not being initialised properly.
 * 0.7.0 : Lots of changes!
