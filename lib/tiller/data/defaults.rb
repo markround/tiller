@@ -45,7 +45,26 @@ class DefaultsDataSource < Tiller::DataSource
   end
 
   def values(template_name)
-    @defaults_hash.key?(template_name) ? @defaults_hash[template_name] : Hash.new
+    # Backwards compatibility stuff here. This datasource didn't use to return target_values, so
+    # all values were just stored as top-level keys instead of under a separate config: block
+    # If a config: block exists, we should use that in preference to the top-level keys, but
+    # if not we still return them all so we don't break anything using the old behaviour.
+
+    if @defaults_hash.key?(template_name)
+      values = @defaults_hash[template_name]
+      values.key?('config') ? values['config'] : values
+    else
+      Hash.new
+    end
+  end
+
+  def target_values(template_name)
+    if @defaults_hash.key?(template_name)
+      values = @defaults_hash[template_name]
+      values.key?('target') ? values : Hash.new
+    else
+      Hash.new
+    end
   end
 
 end

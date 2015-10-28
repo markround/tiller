@@ -1,0 +1,11 @@
+global:
+  domain_name: 'example.com'
+
+app.conf.erb:
+  config:
+    port: '8080'
+
+target.erb:
+  target: target.txt
+  config:
+    value: 'This is a value from defaults.yaml'
