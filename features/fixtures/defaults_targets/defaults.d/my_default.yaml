@@ -1,0 +1,3 @@
+---
+global:
+  defaults_d: "This is a default from defaults.d"
