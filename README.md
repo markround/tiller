@@ -361,7 +361,7 @@ These allow you to retrieve your templates and values from a HTTP server. Full d
 These allow you to store your templates and values in a [ZooKeeper](http://zookeeper.apache.org) cluster. Full documentation for this plugin is available in [README-zookeeper.md](README-zookeeper.md)
 
 ### Defaults plugin
-If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. 
+If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. You can also (as of Tiller 0.7.3) use it to install a template across all environments.
 
 These defaults are sourced from a `defaults:` block in your `common.yaml`, or from `/etc/tiller/defaults.yaml` if you are using the old-style configuration. For both styles, any individual `.yaml` files under `/etc/tiller/defaults.d/` are also loaded and parsed. 
 
@@ -375,8 +375,12 @@ defaults:
   		domain_name: 'example.com'
 	  
 	application.properties.erb:
-  		java_version: 'jdk8'
+	    target: /etc/application.properties
+	    config:
+  		    java_version: 'jdk8'
 ```
+
+This would make the variable `domain_name` availabale to all templates, and would also ensure that the `application.properties.erb` template gets installed across all environments.
 
 ### Environment plugin
 If you activated the `EnvironmentDataSource` (as shown by adding `  - environment` to the list of data sources in the example `common.yaml` above), you'll also be able to access environment variables within your templates. These are all converted to lower-case, and prefixed with `env_`. So for example, if you had the environment variable `LOGNAME` set, you could reference this in your template with `<%= env_logname %>`
