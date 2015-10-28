@@ -107,7 +107,7 @@ Tiller understands the following *optional* command-line arguments (mostly used 
 All of the following assumes you're using Tiller with Docker. So, firstly install the Tiller gem and set your Dockerfile to use it (assuming you're pulling in a suitable version of Ruby already) :
 
 ```dockerfile
-CMD gem install tiller
+RUN gem install tiller
 ...
 ... Rest of Dockerfile here
 ...
@@ -137,7 +137,7 @@ Tiller expects a directory structure like this (using /etc/tiller as its base, a
 
 It is suggested that you add all this under your Docker definition in a `data/tiller` base directory (e.g. data/tiller/common.yaml, data/tiller/templates and so on...) and then add it in your Dockerfile. This would therefore now look like:
 ```dockerfile
-CMD gem install tiller
+RUN gem install tiller
 ...
 ... Rest of Dockerfile here
 ...
@@ -148,6 +148,9 @@ CMD ["/usr/local/bin/tiller" , "-v"]
 Note that the configuration directory was added later on in the Dockerfile; this is because `ADD` commands cause the Docker build cache to become invalidated so it's a good idea to put them as far as possible towards the end of the Dockerfile.
 
 ## Common configuration
+
+If you're impatient, you can skip ahead to see a [full example configuration](#complete-example), but I'll cover each section and parameter in the following paragraphs.
+
 `common.yaml` contains most of the configuration for Tiller. It contains top-level `exec`, `data_sources`, `template_sources` and `default_environment` parameters, along with sections for each environment. 
 
 It can also take optional blocks of configuration for some plugins (for example, the [HTTP Plugins](README-HTTP.md)). Settings defined here can also be overridden on a per-environment basis (see [below](#overriding-common-settings))
@@ -417,6 +420,8 @@ If you set `xml_file_var: maven_pom`, you would then be able to reference elemen
 ```erb
 ArtifactID: <%= maven_pom['project']['artifactId'] %>
 ```
+
+See the [test fixtures](https://github.com/markround/tiller/tree/master/features/fixtures/xml_file) and corresponding [test scenario](https://github.com/markround/tiller/blob/master/features/xml_file.feature) under the features/ directory for full examples.
 
 # API
 There is a HTTP API provided for debugging purposes. This may be useful if you want a way of extracting and examining the configuration from a running container. Note that this is a *very* simple implementation, and should never be exposed to the internet or untrusted networks. Consider it as a tool to help debug configuration issues, and nothing more. Also see the "Gotchas" section if you experience any `Encoding::UndefinedConversionError` exceptions.
