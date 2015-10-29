@@ -1,0 +1,9 @@
+---
+engines:
+  rubocop:
+    enabled: true
+ratings:
+  paths:
+  - &quot;**.rb&quot;
+exclude_paths:
+- features/**/*
