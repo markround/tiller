@@ -24,7 +24,7 @@ class FileDataSource < Tiller::DataSource
                              "#{@config[:environment]}.yaml")
         @config_hash = YAML.load(open(env_file))
       rescue
-        abort ("Error : Could not load environment file #{env_file}")
+        abort("Error : Could not load environment file #{env_file}")
       end
     end
   end

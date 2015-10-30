@@ -23,7 +23,7 @@ def signal(sig, pid, options={})
 end
 
 # Launch the replacement process.
-def launch(cmd, options={})
+def launch(cmd, _options={})
   # If an array, then we use a different form of spawn() which
   # avoids a subshell. See https://github.com/markround/tiller/issues/8
   if cmd.is_a?(Array)

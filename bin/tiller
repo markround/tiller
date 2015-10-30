@@ -45,7 +45,7 @@ module Tiller
   begin
     common_file = File.join(config[:tiller_base], 'common.yaml')
     config.merge!(YAML.load(open(common_file)))
-  rescue Exception => e
+  rescue StandardError => e
     abort "Error : Could not open common configuration file!\n#{e}"
   end
 
@@ -152,7 +152,7 @@ module Tiller
     # config is redundant in target_values, remove it for the final status hash.
     all_templates[template] = {
         'merged_values' => tiller,
-        'target_values' => target_values.reject{|k,v| k=='config'}
+        'target_values' => target_values.reject{|k,_v| k=='config'}
     }
 
     # Set permissions if we are running as root
@@ -189,7 +189,7 @@ module Tiller
 
   if config[:no_exec] == false && config.key?('exec')
     # All templates created, so let's start the replacement process
-    puts "Executing #{config['exec'].to_s}..."
+    puts "Executing #{config['exec']}..."
 
     # Spawn and wait so API can continue to run
     child_pid = launch(config['exec'], :verbose => config[:verbose])

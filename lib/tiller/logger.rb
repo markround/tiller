@@ -10,7 +10,7 @@ module Tiller
       self.level = Logger::INFO if config[:verbose]
       self.level = Logger::DEBUG if config[:debug]
 
-      self.formatter = proc do |severity, datetime, progname, msg|
+      self.formatter = proc do |_severity, _datetime, _progname, msg|
         "#{msg}\n"
       end
 

@@ -25,7 +25,7 @@ def tiller_api(tiller_api_hash)
     begin
       socket = server.accept
       request = socket.gets
-      (method, uri, http_version) = request.split
+      (method, uri, _http_version) = request.split
 
       if uri =~ /^\/v([0-9]+)\//
         api_version = uri.split('/')[1]

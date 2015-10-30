@@ -20,7 +20,7 @@ class XmlFileDataSource < Tiller::DataSource
       @log.info('Opening XML file : ' + path)
       begin
         xml = Crack::XML.parse(File.open(path))
-      rescue Exception => e
+      rescue StandardError => e
         abort "Error : Could not parse XML file #{path}\n#{e}"
       end
       struct = {}
