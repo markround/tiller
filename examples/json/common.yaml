@@ -1,6 +1,0 @@
-data_sources:
-  - environment_json
-  - file
-template_sources:
-  - file
-exec: sleep 600

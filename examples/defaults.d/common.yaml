@@ -1,9 +1,0 @@
-exec: date
-
-data_sources:
-  - defaults
-  - file
-  - environment
-
-template_sources:
-  - file

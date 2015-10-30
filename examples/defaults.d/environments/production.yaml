@@ -1,4 +1,0 @@
-app.conf.erb:
-  target: /tmp/app.conf
-  config:
-    database: 'prd-db-1.example.com'

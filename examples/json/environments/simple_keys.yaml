@@ -1,4 +1,0 @@
-simple_keys.erb:
-  target: /tmp/simple_keys.txt
-  config:
-    default_value: 'This may be overridden by the JSON data source'

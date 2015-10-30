@@ -1,4 +1,0 @@
-array.erb:
-  target: /tmp/array.txt
-  config:
-    default_value: 'This may be overridden by the JSON data source'
