@@ -52,7 +52,12 @@ class DefaultsDataSource < Tiller::DataSource
 
     if @defaults_hash.key?(template_name)
       values = @defaults_hash[template_name]
-      values.key?('config') ? values['config'] : values
+      if values.is_a? Hash
+        values.key?('config') ? values['config'] : values
+      else
+        @log.warn("Warning, empty config for #{template_name}")
+        Hash.new
+      end
     else
       Hash.new
     end
@@ -61,7 +66,12 @@ class DefaultsDataSource < Tiller::DataSource
   def target_values(template_name)
     if @defaults_hash.key?(template_name)
       values = @defaults_hash[template_name]
-      values.key?('target') ? values : Hash.new
+      if values.is_a? Hash
+        values.key?('target') ? values : Hash.new
+      else
+        @log.warn("Warning, empty config for #{template_name}")
+        Hash.new
+      end
     else
       Hash.new
     end
