@@ -84,8 +84,18 @@ mail_domain_name=example.com
 db.host=stg-db-1.dev.example.com
 """
 
-   Scenario: Check that target.txt is created
-     Given I use a fixture named "defaults_targets"
-     When I successfully run `tiller -b . -v -e production -n`
-     Then a file named "target.txt" should exist
-     And the file "target.txt" should contain "This is a value from defaults.yaml"
+  Scenario: Check that target.txt is created
+   Given I use a fixture named "defaults_targets"
+   When I successfully run `tiller -b . -v -e production -n`
+   Then a file named "target.txt" should exist
+   And the file "target.txt" should contain "This is a value from defaults.yaml"
+
+
+  # Not strictly a feature, but previous versions of Tiller didn't throw an error when we had an empty
+  # template config definition in a defaults file. Tiller 0.7.3 "broke" this, so while it's arguably the
+  # correct thing to bail out, in the interests of backwards-compatibility, we now instead log a warning and continue.
+  Scenario: Check that empty defaults are handled
+    Given I use a fixture named "empty_defaults"
+    When I successfully run `tiller -b . -v -e -n`
+    Then a file named "application.properties" should exist
+    And the file "application.properties" should contain "app.text=This is application.properties"

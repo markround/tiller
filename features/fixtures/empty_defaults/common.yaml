@@ -1,0 +1,12 @@
+exec: [ "/usr/bin/supervisord" , "-n" ]
+
+data_sources:
+  - defaults
+  - file
+  - environment
+
+template_sources:
+  - file
+
+api_enable: true
+api_port: 6275

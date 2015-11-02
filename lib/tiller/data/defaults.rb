@@ -55,6 +55,9 @@ class DefaultsDataSource < Tiller::DataSource
       if values.is_a? Hash
         values.key?('config') ? values['config'] : values
       else
+        # Previous versions of Tiller didn't throw an error when we had an empty
+        # template config definition in a defaults file. Tiller 0.7.3 "broke" this, so while it's arguably the
+        # correct thing to bail out, in the interests of backwards-compatibility, we now instead log a warning and continue.
         @log.warn("Warning, empty config for #{template_name}")
         Hash.new
       end
@@ -69,6 +72,7 @@ class DefaultsDataSource < Tiller::DataSource
       if values.is_a? Hash
         values.key?('target') ? values : Hash.new
       else
+        # See comments for values function.
         @log.warn("Warning, empty config for #{template_name}")
         Hash.new
       end

@@ -1,0 +1,4 @@
+application.properties.erb:
+  target: application.properties
+  config:
+    text: 'This is application.properties'

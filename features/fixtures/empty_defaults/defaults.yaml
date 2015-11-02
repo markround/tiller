@@ -1,0 +1,6 @@
+application.properties.erb:
+
+log4j2.xml.erb:
+  target: etc/log4j2.xml
+  config:
+    root_level: ERROR
