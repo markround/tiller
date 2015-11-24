@@ -8,7 +8,7 @@
 #
 # Mark Dastmalchi-Round <github@markround.com>
 
-VERSION = '0.7.3'
+VERSION = '0.7.4'
 
 require 'erb'
 require 'ostruct'
