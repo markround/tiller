@@ -11,6 +11,9 @@ It's available as a [Ruby Gem](http://https://rubygems.org/gems/tiller), so inst
 [![Build Status](https://travis-ci.org/markround/tiller.svg?branch=develop)](https://travis-ci.org/markround/tiller)
 ![](http://ruby-gem-downloads-badge.herokuapp.com/tiller?type=total)
 
+## Quickstart
+A simple tutorial which produces a 'parameterized' NginX container with Tiller is on my blog : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/). It also provides a downloadable archive of the files used in the example, so if you want to get up and running very quickly before diving into the rest of the documentation, then this is probably the best place to start.
+
 ## More information
 You may find a lot of the flexibility that Tiller offers overwhelming at first. I have written a few blog tutorials that provide a good overview of what Tiller can do, with practical examples; I strongly recommend that if you're new to all this, you read the following articles through for an introduction :  
 
