@@ -152,7 +152,42 @@ Note that the configuration directory was added later on in the Dockerfile; this
 
 ## Common configuration
 
-If you're impatient, you can skip ahead to see a [full example configuration](#complete-example), but I'll cover each section and parameter in the following paragraphs.
+### Complete example
+I'll cover each part of this in detail, but to give you an idea of where we're going with this, here's the complete configuration file I discuss in the examples below :
+
+```yaml
+exec: [ "/usr/bin/mongod" , "--config" , "/etc/mongodb.conf" , "--rest" ]
+data_sources: [ 'file' , 'environment' ]
+template_sources: [ 'file' ]
+environments:
+
+	staging:
+
+		mongodb.erb:
+  			target: /etc/mongodb.conf
+  			user: root
+  			group: root
+  			perms: 0644
+			config:
+				replSet: 'staging'
+
+	production:
+	
+		mongodb.erb:
+  			target: /etc/mongodb.conf
+ 			config:
+    			replSet: 'production'
+    			
+	development:
+
+		mongodb.erb:
+  			target: /etc/mongodb.conf
+```
+Note that instead of the YAML one-per-line list format for enabling plugins, I used the shorthand array format ( `[ 'item1' , 'item2', .....]` ).
+
+I'll now cover each section and parameter in the following paragraphs.
+
+### Main configuration values
 
 `common.yaml` contains most of the configuration for Tiller. It contains top-level `exec`, `data_sources`, `template_sources` and `default_environment` parameters, along with sections for each environment. 
 
@@ -272,39 +307,6 @@ Or, if the production environment is specified :
 And if the `development` environment is used (it's the default, so will also get used if no environment is specified), then the config file will get installed but with the line relating to replica set name left out.
 
 Of course, this means you need an environment block for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered in the next section.
-
-### Complete example
-For reference, the complete configuration file for this example is as follows:
-
-```yaml
-exec: [ "/usr/bin/mongod" , "--config" , "/etc/mongodb.conf" , "--rest" ]
-data_sources: [ 'file' , 'environment' ]
-template_sources: [ 'file' ]
-environments:
-
-	staging:
-
-		mongodb.erb:
-  			target: /etc/mongodb.conf
-  			user: root
-  			group: root
-  			perms: 0644
-			config:
-				replSet: 'staging'
-
-	production:
-	
-		mongodb.erb:
-  			target: /etc/mongodb.conf
- 			config:
-    			replSet: 'production'
-    			
-	development:
-
-		mongodb.erb:
-  			target: /etc/mongodb.conf
-```
-Note that instead of the YAML one-per-line list format for enabling plugins, I used the shorthand array format ( `[ 'item1' , 'item2', .....]` ).
 
 
 ### Overriding common settings
