@@ -234,6 +234,8 @@ Note also that template-specific values take priority over global values (see th
 
 These files under `/etc/tiller/templates` are simply the ERB templates for your configuration files, and are populated with values from the selected environment configuration blocks (see below). When the environment configuration is parsed (see below), key:value pairs are made available to the template. 
 
+**IMPORTANT: **These files must be named with a suffix of `.erb`. Any files without an ending of `.erb` will be ignored.
+
 Here's a practical example, again using MongoDB. Let's assume that you're setting up a "MongoDB" container for your platform to use, and you want to have it configured so it can run in 3 environments: 
 
 * A local "development" environment (e.g. your own laptop), where you don't want to use it in a replica set.
