@@ -1,0 +1,16 @@
+exec: date
+
+data_sources: [ file, defaults, environment ]
+
+template_sources: [ file ]
+
+environments:
+  development:
+
+    common:
+      defaults:
+        global:
+          global_default: 'A global value'
+
+    test.erb:
+      target: test.txt

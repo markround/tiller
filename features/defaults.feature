@@ -99,3 +99,11 @@ db.host=stg-db-1.dev.example.com
     When I successfully run `tiller -b . -v -e -n`
     Then a file named "application.properties" should exist
     And the file "application.properties" should contain "app.text=This is application.properties"
+
+
+  Scenario: Check that defaults can be loaded form a common: block in an environment
+    Given I use a fixture named "common_defaults"
+    When I successfully run `tiller -b . -v -e -n`
+    Then a file named "test.txt" should exist
+    And the file "test.txt" should contain "This is a global default : A global value"
+
