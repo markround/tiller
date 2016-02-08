@@ -33,8 +33,10 @@ def parse_options(config)
       puts 'Tiller also uses the environment variables tiller_base, environment'
       puts 'and tiller_lib (or they can be provided using the arguments shown above).'
       puts 'See https://github.com/markround/tiller for documentation and usage.'
-      puts 'Current configuration hash follows :'
-      pp config
+      if config[:debug] == true
+        puts 'Current configuration hash follows :'
+        pp config 
+      end
       exit
     end
   end

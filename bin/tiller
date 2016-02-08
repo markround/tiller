@@ -8,7 +8,7 @@
 #
 # Mark Dastmalchi-Round <github@markround.com>
 
-VERSION = '0.7.4'
+VERSION = '0.7.5'
 
 require 'erb'
 require 'ostruct'
@@ -203,7 +203,13 @@ module Tiller
 
     Process.wait(child_pid)
 
+    # Capture the child process status, so we can also exit with this code
+    exit_status = $?.exitstatus
+
+    log.info("Child process exited with status #{exit_status}")
     log.info('Child process finished, Tiller is stopping.')
+    exit exit_status
+
   end
 
 end
