@@ -395,6 +395,20 @@ If you activated the `EnvironmentDataSource` (as shown by adding `  - environmen
 ### Environment JSON
 If you add `  - environment_json` to your list of data sources in `common.yaml`, you'll be able to make complex JSON data structures available to your templates. Just pass your JSON in the environment variable `tiller_json`. See [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for some practical examples.
 
+As of Tiller 0.7.6, you can use this to also handle per-template variables, instead of treating everything as a "global" variable. To do this, make sure you have a key `_version` with a value of `2`. You can then separate values into global and per-template blocks, for example :
+
+```json
+{
+  "_version" : 2,
+  "global" : {
+    "global_value" : "This is a global value available to all templates"
+  },
+  "template.erb" : {
+    "local_value" : "This will create the 'local_value' only on template.erb"
+  }
+}
+```
+
 ### Random plugin
 If you add `  - random` to your list of data sources in `common.yaml`, you'll be able to use randomly-generated values and strings in your templates, e.g. `<%= random_uuid %>`. This may be useful for generating random UUIDs, server IDs and so on. An example hash with demonstration values is as follows : 
 
@@ -530,7 +544,11 @@ And then use the environment_json plugin to try and over-ride this value, like s
 
 `$ tiller_json='{ "test" : "From JSON!" }' tiller -n -v ......`
 
-You'll find that you won't see the "From JSON!" string appear in your template, no matter what order you load the plugins. This is because the `test` value in your environment configuration is a local, per-template value and thus will always take priority over a global value. If you want to provide a default, but allow it to be over-ridden, the trick is to use the `defaults` plugin to provide the default values (so all global data sources are merged in the correct order). See [This blog post](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for an example.
+You'll find that you won't see the "From JSON!" string appear in your template, no matter what order you load the plugins. This is because the `test` value in your environment configuration is a local, per-template value and thus will always take priority over a global value.
+
+If this isn't what you want, for the `environment_json` plugin, you can use the new v2 JSON format (as described above) to split your values into global and per-template local values. 
+
+Another solution is to provide a default, but allow it to be over-ridden, by using the `defaults` plugin to provide the default values (so all global data sources are merged in the correct order). See [This blog post](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for an example.
 
 
 

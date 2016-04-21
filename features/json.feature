@@ -25,6 +25,35 @@ Default value : This overrides the global value from the JSON data source
  * Key 2 is : value2
 """
 
+  Scenario: Simple data from environment v2 format
+    Given I use a fixture named "json"
+    Given I set the environment variables exactly to:
+      | variable    | value                                                                      |
+      | tiller_json | { "_version" : 2 , "global" : { "default_value" : "from JSON!" , "key1" : "value1" , "key2" : "value2" } } |
+    When I successfully run `tiller -b . -v -n -e simple_keys`
+    Then a file named "simple_keys.txt" should exist
+    And the file "simple_keys.txt" should contain:
+"""
+Default value : This overrides the global value from the JSON data source
+
+ * Key 1 is : value1
+ * Key 2 is : value2
+"""
+
+  Scenario: Simple template data from environment v2 format
+    Given I use a fixture named "json"
+    Given I set the environment variables exactly to:
+      | variable    | value                                                                      |
+      | tiller_json | { "_version" : 2 , "simple_keys.erb" : { "default_value" : "from JSON!" , "key1" : "value1" , "key2" : "value2" } } |
+    When I successfully run `tiller -b . -v -n -e simple_keys`
+    Then a file named "simple_keys.txt" should exist
+    And the file "simple_keys.txt" should contain:
+"""
+Default value : from JSON!
+
+ * Key 1 is : value1
+ * Key 2 is : value2
+"""
 
   Scenario: Array data from environment
     Given I use a fixture named "json"
