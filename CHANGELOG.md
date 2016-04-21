@@ -1,5 +1,6 @@
 # Changelog
 
+* 0.7.6 : The environment_json plugin now supports splitting the JSON structure into global and per-template local values.
 * 0.7.5 : Tiller now returns with the status code of the child command. Otherwise, Tiller always exited with status 0, even if the child process itself failed.
 * 0.7.4 :  Not strictly a feature, but previous versions of Tiller didn't throw an error when we had an empty template config definition in a defaults file. Tiller 0.7.3 "broke" this, so while it's arguably the correct thing to bail out, in the interests of backwards-compatibility, we now instead log a warning and continue.
 * 0.7.3 : Added target_values support to defaults datasource. Now makes it easy to install a template in all environments.
