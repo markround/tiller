@@ -10,6 +10,7 @@ It's available as a [Ruby Gem](http://https://rubygems.org/gems/tiller), so inst
 [![Gem Version](https://badge.fury.io/rb/tiller.svg)](http://badge.fury.io/rb/tiller)
 [![Build Status](https://travis-ci.org/markround/tiller.svg?branch=develop)](https://travis-ci.org/markround/tiller)
 ![](http://ruby-gem-downloads-badge.herokuapp.com/tiller?type=total)
+ [![Join the chat at https://gitter.im/markround/tiller](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/markround/tiller)
 
 ## Quickstart
 A simple tutorial which produces a 'parameterized' NginX container with Tiller is on my blog : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/). It also provides a downloadable archive of the files used in the example, so if you want to get up and running very quickly before diving into the rest of the documentation, then this is probably the best place to start.
@@ -34,6 +35,10 @@ See the [Tiller category](http://www.markround.com/blog/categories/tiller/) on m
 
 ## Changes
 See [CHANGELOG.md](CHANGELOG.md)
+
+## Support
+
+For problems and improvements, feel free to open an [issue](https://github.com/markround/tiller/issues), or drop by the [Gitter channel](https://gitter.im/markround/tiller) to chat.
 
 # Background
 I had a number of Docker containers that I wanted to run with a slightly different configuration, depending on the environment I was launching them. For example, a web application might connect to a different database in a staging environment, a MongoDB replica set name might be different, or I might want to allocate a different amount of memory to a Java process. This meant my options basically looked like:
