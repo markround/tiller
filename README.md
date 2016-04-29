@@ -38,7 +38,7 @@ See [CHANGELOG.md](CHANGELOG.md)
 
 ## Support
 
-For problems and improvements, feel free to open an [issue](https://github.com/markround/tiller/issues), or drop by the [Gitter channel](https://gitter.im/markround/tiller) to chat.
+For problems and improvements, feel free to open an [issue](https://github.com/markround/tiller/issues), or drop by the [Gitter channel](https://gitter.im/markround/tiller) to chat. These are the preferred options, as then others can see and benefit from any solutions. Alternatively, send me an email : github@markround.com and I'll do my best to help.
 
 # Background
 I had a number of Docker containers that I wanted to run with a slightly different configuration, depending on the environment I was launching them. For example, a web application might connect to a different database in a staging environment, a MongoDB replica set name might be different, or I might want to allocate a different amount of memory to a Java process. This meant my options basically looked like:
