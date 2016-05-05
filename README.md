@@ -391,7 +391,7 @@ defaults:
   		    java_version: 'jdk8'
 ```
 
-This would make the variable `domain_name` availabale to all templates, and would also ensure that the `application.properties.erb` template gets installed across all environments.
+This would make the variable `domain_name` available to all templates, and would also ensure that the `application.properties.erb` template gets installed across all environments.
 
 #### Defaults per environment
 
