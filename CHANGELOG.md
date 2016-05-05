@@ -1,5 +1,6 @@
 # Changelog
 
+* 0.7.7 : a nice feature suggested by [kydorn](https://github.com/kydorn) in [markround/tiller#18](https://github.com/markround/tiller/issues/18). Now the file datasource supports a global_values: block, so you can create defaults per environment (and use the defaults datasource to provide a default for all environments). Thanks for the suggestion!
 * 0.7.6 : The environment_json plugin now supports splitting the JSON structure into global and per-template local values.
 * 0.7.5 : Tiller now returns with the status code of the child command. Otherwise, Tiller always exited with status 0, even if the child process itself failed.
 * 0.7.4 :  Not strictly a feature, but previous versions of Tiller didn't throw an error when we had an empty template config definition in a defaults file. Tiller 0.7.3 "broke" this, so while it's arguably the correct thing to bail out, in the interests of backwards-compatibility, we now instead log a warning and continue.
