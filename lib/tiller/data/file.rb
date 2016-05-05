@@ -29,6 +29,10 @@ class FileDataSource < Tiller::DataSource
     end
   end
 
+  def global_values
+    @config_hash.key?('global_values') ? @config_hash['global_values'] : {}
+  end
+
   def common
     @config_hash.key?('common') ? @config_hash['common'] : {}
   end

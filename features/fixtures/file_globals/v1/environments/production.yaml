@@ -1,0 +1,6 @@
+---
+test.erb:
+  target: test.txt
+  config:
+    some_local_value: 'This is the production environment'
+

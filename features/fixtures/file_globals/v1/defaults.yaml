@@ -1,0 +1,5 @@
+---
+global:
+  some_global_value: 'This is available to all environments'
+  per_env: 'This is the default for the per-env global'
+
