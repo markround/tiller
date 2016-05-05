@@ -1,0 +1,15 @@
+---
+global_values:
+  per_env: 'This is a per-env global for the development environment'
+
+test.erb:
+  target: test.txt
+  config:
+    some_local_value: 'This is the development environment'
+
+test2.erb:
+  target: test2.txt
+  config:
+    some_local_value: 'This is the development environment'
+    per_env: 'This is the per-env global overwritten by the local value'
+

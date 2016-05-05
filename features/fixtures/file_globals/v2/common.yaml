@@ -1,0 +1,33 @@
+exec: ['date']
+data_sources: [ 'defaults','file','environment' ]
+template_sources: [ 'file' ]
+
+defaults:
+  global:
+    some_global_value: 'This is available to all environments'
+    per_env: 'This is the default for the per-env global'
+
+environments:
+
+  development:
+    global_values:
+      per_env: 'This is a per-env global for the development environment'
+
+    test.erb:
+      target: test.txt
+      config:
+        some_local_value: 'This is the development environment'
+
+    test2.erb:
+      target: test2.txt
+      config:
+        some_local_value: 'This is the development environment'
+        per_env: 'This is the per-env global overwritten by the local value'
+
+  production:
+
+    test.erb:
+      target: test.txt
+      config:
+        some_local_value: 'This is the production environment'
+  
