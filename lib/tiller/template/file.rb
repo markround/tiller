@@ -1,5 +1,4 @@
-# File template datasource for Tiller. This works the same way that Runner.rb
-# used to - it returns templates files present under /etc/tiller/templates
+# File template datasource for Tiller. It returns templates files present under /etc/tiller/templates
 # (or wherever the tiller_base environment is set).
 class FileTemplateSource < Tiller::TemplateSource
   def initialize(config)

@@ -1,10 +1,6 @@
 require 'yaml'
-# File datasource for Tiller. This works the same way as the default behaviour
-# in Runner.rb - it loads your <environment>.yaml file and pulls data from it.
-# See examples/etc/tiller/environments/production.yaml to see what this file
-# looks like.
-#
-# We also don't provide any global values, just ones specific to a template.
+# File datasource for Tiller.
+
 class FileDataSource < Tiller::DataSource
   # Open and parse the environment file. Tries from v2 format common.yaml first, if that
   # failes, then it looks for separate environment files.
