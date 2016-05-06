@@ -10,6 +10,7 @@ When(/^I have downloaded consul "(.+)" to "(.+)"$/) do |version, path|
     fail!("Unsupported platform for consul")
   end
   puts "Downloading #{uri}"
+
   download = open(uri)
-  write_file(path, download)
+  IO.copy_stream(download, expand_path(path))
 end
