@@ -7,7 +7,7 @@ When(/^I have downloaded consul "(.+)" to "(.+)"$/) do |version, path|
   if RUBY_PLATFORM =~ /darwin/
     uri = "https://releases.hashicorp.com/consul/#{version}/consul_#{version}_darwin_amd64.zip"
   elsif RUBY_PLATFORM =~ /linux/
-    uri = "https://releases.hashicorp.com/consul/#{version}/consul_#{version}_darwin_amd64.zip"
+    uri = "https://releases.hashicorp.com/consul/#{version}/consul_#{version}_linux_amd64.zip"
   else
     fail!("Unsupported platform for consul")
   end
