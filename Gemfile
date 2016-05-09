@@ -8,6 +8,7 @@ group :development do
   gem 'oj'
   gem 'zk'
   gem 'crack'
+  gem 'rubyzip'
   gem 'tiller', :path => '.'
 end
 
