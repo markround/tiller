@@ -13,3 +13,7 @@ Feature: Consul plugin
     Given an empty consul data directory
     When I start my daemon with "/tmp/consul agent -server -bootstrap -client=0.0.0.0 -data-dir=/tmp/tiller-consul-data -advertise=127.0.0.1"
     Then a daemon called "consul" should be running
+
+  Scenario: Populate consul with test data
+    Given I have populated consul with test data
+    Then the consul key "tiller/globals/all/consul_global" should exist
