@@ -1,0 +1,9 @@
+---
+exec: ["date"]
+data_sources: ["consul"]
+template_sources: [ "consul" ]
+
+consul:
+  url: "http://192.168.99.100:8500"
+  register_services: true
+  register_nodes: true

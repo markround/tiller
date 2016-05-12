@@ -1,5 +1,4 @@
 module Tiller
-
   Defaults = {
     :tiller_base          => (ENV['tiller_base'].nil?)  ? '/etc/tiller' : ENV['tiller_base'],
     :tiller_lib           => (ENV['tiller_lib'].nil?)   ? '/usr/local/lib' : ENV['tiller_lib'],
@@ -13,12 +12,10 @@ module Tiller
     'api_enable'          => false,
     'api_port'            => 6275
   }
-
 end
 
 # Defaults for the Zookeeper data and template sources
 module Tiller::Zookeeper
-
   Defaults = {
     'timeout'   => 5,
     'templates' => '/tiller/%e',
@@ -29,14 +26,13 @@ module Tiller::Zookeeper
         'target'    => '/tiller/%e/%t/target_values'
     }
   }
-
 end
 
 
 # Defaults for the HTTP data and template sources
 module Tiller::Http
-
-  Defaults = {
+  def self.defaults
+    {
       'timeout'   => 5,
       'proxy'     => '',
       'templates' => '/tiller/environments/%e/templates',
@@ -48,7 +44,27 @@ module Tiller::Http
           'template'  => '/tiller/templates/%t/values/%e',
           'target'    => '/tiller/templates/%t/target_values/%e'
       }
-  }
+    }
+  end
+end
 
+module Tiller::Consul
+  def self.defaults
+    {
+      'dc'                => 'dc1',
+      'acl_token'         => nil,
+      'register_services' => false,
+      'register_nodes'    => false,
+
+      'templates' => '/tiller/templates',
+
+      'values'    => {
+          'global'    => '/tiller/globals/all',
+          'per_env'   => '/tiller/globals/%e',
+          'template'  => '/tiller/values/%e/%t',
+          'target'    => '/tiller/target_values/%t/%e'
+      }
+    }
+  end
 end
 

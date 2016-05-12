@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
     lib/tiller/datasource.rb
     lib/tiller/json.rb
     lib/tiller/http.rb
+    lib/tiller/consul.rb
     lib/tiller/templatesource.rb
     lib/tiller/data/file.rb
     lib/tiller/data/zookeeper.rb
@@ -31,9 +32,11 @@ Gem::Specification.new do |s|
     lib/tiller/data/random.rb
     lib/tiller/data/defaults.rb
     lib/tiller/data/xml_file.rb
+    lib/tiller/data/consul.rb
     lib/tiller/template/file.rb
     lib/tiller/template/zookeeper.rb
     lib/tiller/template/http.rb
+    lib/tiller/template/consul.rb
   )
   s.executables << 'tiller'
   s.homepage =
