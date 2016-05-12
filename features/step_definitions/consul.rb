@@ -1,7 +1,6 @@
 require 'open-uri'
 require 'diplomat'
 require 'pp'
-require_relative './consul_test_data.rb'
 
 CONSUL_DATA_DIR="/tmp/tiller-consul-data"
 
