@@ -18,6 +18,7 @@ Feature: Consul plugin
     Given I have populated consul with test data
     Then the consul key "tiller/globals/all/consul_global" should exist
 
+  @debug @slow
   Scenario: Test dev environment template generation with Consul
     When I successfully run `tiller -b . -v -n`
     Then a file named "template1.txt" should exist
@@ -40,6 +41,7 @@ Feature: Consul plugin
     This is a per-environment global : per-env global for development enviroment
     """
 
+  @debug @slow
   Scenario: Test prod environment template generation with Consul
     When I successfully run `tiller -b . -v -n -e production`
     Then a file named "template1.txt" should exist
