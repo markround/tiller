@@ -1,8 +1,5 @@
 Feature: Consul plugin
 
-  Background:
-    Given I use a fixture named "consul"
-
   Scenario: Download Consul
     When I have downloaded consul "0.6.4" to "/tmp/consul.zip"
     And I have unzipped the archive "/tmp/consul.zip"
@@ -24,6 +21,7 @@ Feature: Consul plugin
 
   @debug @slow
   Scenario: Test dev environment template generation with Consul
+    Given I use a fixture named "consul"
     When I successfully run `tiller -b . -v -n`
     Then a file named "template1.txt" should exist
     And the file "template1.txt" should contain:
@@ -47,6 +45,7 @@ Feature: Consul plugin
 
   @debug @slow
   Scenario: Test prod environment template generation with Consul
+    Given I use a fixture named "consul"
     When I successfully run `tiller -b . -v -n -e production`
     Then a file named "template1.txt" should exist
     And the file "template1.txt" should contain:
