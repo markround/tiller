@@ -18,6 +18,11 @@ Feature: Consul plugin
     Given I have populated consul with test data
     Then the consul key "tiller/globals/all/consul_global" should exist
 
+  @debug
+  Scenario: Test consul with curl
+    When I successfully run `curl -D - http://127.0.0.1:8500/v1/kv/tiller/globals/all/consul_global`
+    Then the output should contain "HTTP/1.1 200 OK"
+
   @debug @slow
   Scenario: Test dev environment template generation with Consul
     When I successfully run `tiller -b . -v -n`

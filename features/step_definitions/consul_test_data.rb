@@ -3,7 +3,7 @@
 require 'diplomat'
 require 'pp'
 
-def populate_consul_test_data(url="http://localhost:8500")
+def populate_consul_test_data(url="http://127.0.0.1:8500")
   Diplomat.configure do |config|
     config.url = url
   end

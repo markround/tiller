@@ -8,7 +8,7 @@ CONSUL_DATA_DIR="/tmp/tiller-consul-data"
 # Consul configuration
 
 Diplomat.configure do |config|
-  config.url = "http://localhost:8500"
+  config.url = "http://127.0.0.1:8500"
 end
 
 
