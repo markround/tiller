@@ -19,7 +19,7 @@ Feature: Consul plugin
     When I successfully run `curl -D - http://127.0.0.1:8500/v1/kv/tiller/globals/all/consul_global`
     Then the output should contain "HTTP/1.1 200 OK"
 
-  @debug @slow
+  @slow
   Scenario: Test dev environment template generation with Consul
     Given I use a fixture named "consul"
     When I successfully run `tiller -b . -v -n`
@@ -43,7 +43,7 @@ Feature: Consul plugin
     This is a per-environment global : per-env global for development enviroment
     """
 
-  @debug @slow
+  @slow
   Scenario: Test prod environment template generation with Consul
     Given I use a fixture named "consul"
     When I successfully run `tiller -b . -v -n -e production`
