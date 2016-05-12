@@ -16,7 +16,7 @@ This is a per-environment global : <%= consul_per_env %>
 If we have enabled node and service registration, these follow.
 Nodes : <%= consul_nodes %>
 Services : <%= consul_services %>}
-  
+
   template2 = %{This is template2.
 This is a value from Consul : <%= consul_value %>
 This is a global value from Consul : <%= consul_global %>
