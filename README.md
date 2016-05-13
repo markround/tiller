@@ -1,5 +1,5 @@
 # What is it?
-Tiller is a tool that generates configuration files. It takes a set of templates, fills them in with values from a variety of sources (such as environment variables, YAML files, JSON from a webservice...), installs them in a specified location and then optionally spawns a child process.
+Tiller is a tool that generates configuration files. It takes a set of templates, fills them in with values from a variety of sources (such as environment variables, Consul, YAML files, JSON from a webservice...), installs them in a specified location and then optionally spawns a child process.
 
 You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container, and easily build "parameterized containers" which users can then configure at runtime. 
 
@@ -21,6 +21,8 @@ You may find a lot of the flexibility that Tiller offers overwhelming at first. 
 * Introducing Tiller : [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/). 
 
 * Walkthrough tutorial : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/)
+
+* Tiller with Consul : [http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller)]
 
 * Using the Environment JSON plugin : [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/)
 
@@ -368,6 +370,9 @@ These provide data from YAML environment files, and templates from ERB files (se
 ### HTTP plugins
 These allow you to retrieve your templates and values from a HTTP server. Full documentation for this plugin is available in [README-HTTP.md](README-HTTP.md)
 
+### Consul plugins
+These allow you to retrieve your templates and values from a [Consul](https://consul.io) cluster. Full documentation for this plugin is available in [README-consul.md](README-consul.md), and there's also a blog post with a walk-through example at [http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller).
+
 ### ZooKeeper plugins
 These allow you to store your templates and values in a [ZooKeeper](http://zookeeper.apache.org) cluster. Full documentation for this plugin is available in [README-zookeeper.md](README-zookeeper.md)
 
@@ -594,6 +599,7 @@ Another solution is to provide a default, but allow it to be over-ridden, by usi
 # Other examples, articles etc.
 
 * [http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/](http://www.markround.com/blog/2014/07/18/tiller-and-docker-container-configuration/) - Introductory blog post that provides a quick overview and shows an example DataSource at the end.
+* [http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller) - Introduction and walk-through of the Consul plugin
 * [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/) - Walkthrough tutorial showing how to use Tiller's environment plugin. Includes a Dockerfile and downloadable example.
 * [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) - Demonstration of using the JSON datasource, and shows how you can use it to over-ride default values or provide images that can be configured dynamically by end-users.
 * [http://www.markround.com/blog/2014/10/20/querying-tiller-configuration-from-a-running-docker-container/](http://www.markround.com/blog/2014/10/20/querying-tiller-configuration-from-a-running-docker-container/) - Demonstration of querying the Tiller API to extract the information on generated templates.

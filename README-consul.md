@@ -177,4 +177,4 @@ ServicePort : <%= consul_services['consul'][0].ServicePort %>
 ```
 
 # Further reading
-See [this](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller/) blog post for an introduction to this plugin with some examples.
+See [this](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller) blog post for an introduction to this plugin with some examples.
