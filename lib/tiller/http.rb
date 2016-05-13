@@ -10,7 +10,7 @@ module Tiller::HttpCommon
 
   def setup
     # Set our defaults if not specified
-    @http_config = Tiller::Http::Defaults
+    @http_config = Tiller::Http.defaults
 
     raise 'No HTTP configuration block' unless @config.has_key?('http')
     @http_config.merge!(@config['http'])
