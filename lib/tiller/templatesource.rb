@@ -21,10 +21,10 @@ module Tiller
     end
 
     def templates
-      {}
+      []
     end
 
-    def template
+    def template(_template_name)
       ""
     end
 
