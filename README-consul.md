@@ -106,7 +106,7 @@ You can use any K/V hierarchy inside Consul, but the default is expected to look
 	     │   └── development
 	     │           └── target (where to install the template in development)
 	     │
-	     └── template2.erb (don't install template2.erb in development)
+	     └── template1.erb (don't install template2.erb in development)
 	         └── production
 	                 └── target (where to install the template in production)
 	       
@@ -175,3 +175,6 @@ Node : <%= consul_services['consul'][0].Node %>
 Address : <%= consul_services['consul'][0].Address %>
 ServicePort : <%= consul_services['consul'][0].ServicePort %>
 ```
+
+# Further reading
+See [this](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller/) blog post for an introduction to this plugin with some examples.
