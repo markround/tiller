@@ -55,12 +55,12 @@ class ConsulDataSource < Tiller::DataSource
 
 
   def fetch_all_keys(path)
-    keys = Diplomat::Kv.get(path, { keys: true }, :return)
+    keys = Diplomat::Kv.get(path, { keys: true, :dc => @consul_config['dc'] }, :return)
     all_keys = {}
     if keys.is_a? Array
       keys.each do |k|
         @log.debug("#{self} : Fetching key #{k}")
-        all_keys[File.basename(k)] = Diplomat::Kv.get(k, { nil_values: true })
+        all_keys[File.basename(k)] = Diplomat::Kv.get(k, { nil_values: true, :dc => @consul_config['dc'] })
       end
       all_keys
     else
