@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
     lib/tiller/data/http.rb
     lib/tiller/data/environment.rb
     lib/tiller/data/environment_json.rb
+    lib/tiller/data/external_file.rb
     lib/tiller/data/random.rb
     lib/tiller/data/defaults.rb
     lib/tiller/data/xml_file.rb
