@@ -1,5 +1,6 @@
 # Changelog
 
+* 0.7.9 : Added external_file plugin.
 * 0.7.8 : Consul plugin! See [this blog post](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller) for an introduction and walk-through.
 * 0.7.7 : a nice feature suggested by [kydorn](https://github.com/kydorn) in [markround/tiller#18](https://github.com/markround/tiller/issues/18). Now the file datasource supports a global_values: block, so you can create defaults per environment (and use the defaults datasource to provide a default for all environments). Thanks for the suggestion!
 * 0.7.6 : The environment_json plugin now supports splitting the JSON structure into global and per-template local values.
