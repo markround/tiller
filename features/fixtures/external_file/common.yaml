@@ -1,0 +1,12 @@
+---
+exec: [ "true" ]
+data_sources: [ "file" , "external_file" ]
+template_sources: [ "file" ]
+external_files:
+  - external.yaml
+  - external.json
+
+environments:
+  development:
+    template1.erb:
+      target: template1.txt
