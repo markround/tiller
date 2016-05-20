@@ -151,3 +151,43 @@ end
 
 ## Configuration
 If your plugin requires configuration, it's preferable that it reads it from a top-level configuration block in `common.yaml`, instead of requiring a separate configuration file.
+
+## Documentation
+
+Documentation for your plugin should be included in a plugin_meta method at the top of the file. This should return a hash, e.g.
+
+```ruby
+def plugin_meta
+  {
+      id: "com.markround.tiller.data.example",
+      name: "Example plugin",
+      description: "A very cool plugin!",
+      documentation: <<_END_DOCUMENTATION
+# Example plugin
+
+Here's the documentation for this plugin, in Markdown format.
+
+_END_DOCUMENTATION
+  }
+end
+```
+
+This is useful for other users of your plugin, and will also be generated and added to the README.md when you run `./tools/plugin-docs.rb`. The keys in this hash are as follows :
+
+ * id: A unique ID for your plugin. I choose to use Java-style reverse FQDNs, but you can use any identifier you want as long as it's unique.
+ * title: The name of the plugin, as it will appear in the main README.md
+ * description: A short description that will appear in the main README.md
+ * documentation: Markdown documentation that will get generated and placed in docs/plugins/ as a separate file.
+
+
+If you want to point to another plugin for documentation (e.g. in the case of the Consul plugins, the documentation covers both data and template sources), just include a `documentation_link:` key, with a pointer to where the documentation lives, e.g.
+
+```ruby
+def plugin_meta
+  {
+      id: 'com.markround.tiller.data.file',
+      documentation_link: 'See main README.md'
+  }
+end
+```
+

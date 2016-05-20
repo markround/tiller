@@ -1,5 +1,11 @@
+def plugin_meta
+  {
+      id: 'com.markround.tiller.data.file',
+      documentation_link: 'See main README.md'
+  }
+end
+
 require 'yaml'
-# File datasource for Tiller.
 
 class FileDataSource < Tiller::DataSource
   # Open and parse the environment file. Tries from v2 format common.yaml first, if that

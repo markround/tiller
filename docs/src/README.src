@@ -364,16 +364,7 @@ And so on, one for each environment. You would then remove the `environments:` b
 
 In addition to specifying values in the environment files, there are other plugins that can also provide values to be used in your templates, and you can easily write your own. The plugins that ship with Tiller are :
 
- * [Consul](docs/plugins/consul.md) : These plugins allow you to retrieve your templates and values from a [Consul](https://consul.io) cluster. Full documentation for this plugin is available in [README-consul.md](README-consul.md), and there's also a blog post with a walk-through example at [http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller).
- * [Defaults](docs/plugins/defaults.md) : Make use of default values across your environments and templates - this can help avoid repeated definitions and makes for more efficient configuration.
- * [Environment variables](docs/plugins/environment.md) : Make use of environment variables in your templates.
- * [JSON environment variables](docs/plugins/environment_json.md) : Use complex JSON data structures from the environment in your templates. See [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for some practical examples.
- * [External files](docs/plugins/external_file.md) : Load external JSON or YAML files, and use their contents in your templates.
- * [HTTP plugins](docs/plugins/http.md) : These plugins let you retrieve your templates and values from a HTTP server
- * [Random data](docs/plugins/random.md) : Simple wrapper to provide random values to your templates.
- * [XML files](docs/plugins/xml_file.md) : Load and parse XML data for use in your templates.
- * [Zookeeper plugins](docs/plugins/zookeeper.md) : These plugins allow you to store your templates and values in a ZooKeeper cluster.
-
+__PLUGIN_LIST__
 
 
 # API

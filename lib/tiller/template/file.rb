@@ -1,5 +1,11 @@
-# File template datasource for Tiller. It returns templates files present under /etc/tiller/templates
-# (or wherever the tiller_base environment is set).
+def plugin_meta
+  {
+      id: 'com.markround.tiller.template.file',
+      documentation_link: 'See main README.md'
+  }
+end
+
+
 class FileTemplateSource < Tiller::TemplateSource
   def initialize(config)
     super

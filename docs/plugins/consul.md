@@ -5,16 +5,16 @@ As of version 0.7.8, Tiller includes plugins to retrieve templates, values, serv
 # Enabling the plugins
 Add the `consul` plugins in your `common.yaml`, e.g.
 
-```yaml 
+```yaml
 data_sources: [ "consul" ]
 template_sources: [ "consul" ]
 ```
 
-If you're fetching all your values and templates from Consul, those should be the only plugins you need. 
+If you're fetching all your values and templates from Consul, those should be the only plugins you need.
 
 However, you do not need to enable both plugins; for example you may just want to retrieve values for your templates from consul, but continue to use files to store your actual template content. For example :
 
-```yaml 
+```yaml
 data_sources: [ "consul", "environment" ]
 template_sources: [ "file" ]
 ```
@@ -23,7 +23,7 @@ The above example would use templates from files, and retrieve values from Consu
 
 
 # Configuring
-Configuration for this plugin is placed inside a "consul" block. This should be in the the top-level of `common.yaml` file, or in a per-environment block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this. 
+Configuration for this plugin is placed inside a "consul" block. This should be in the the top-level of `common.yaml` file, or in a per-environment block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this.
 
 A sample configuration (showing the defaults for most parameters) is as follows :
 
@@ -45,7 +45,7 @@ consul:
 
 At a bare minimum, you need to specify a URI for the plugins to connect to. This is the HTTP port of your Consul server, e.g. `http://localhost:8500`. If you omit the other parameters, they will default to the values shown above. If you're happy to accept the rest of the defaults, your configuration can therefore be as simple as this :
 
-```yaml 
+```yaml
 data_sources: [ "consul" ]
 template_sources: [ "consul" ]
 consul:
@@ -66,50 +66,50 @@ You can use any K/V hierarchy inside Consul, but the default is expected to look
 
 	/tiller
 	 ├── globals
-	 │   ├── all
-	 │   │   └── some_key_for_all_environments
-	 │   │
+	 │   ├── all
+	 │   │   └── some_key_for_all_environments
+	 │   │
 	 │   ├── production
-	 │   │   └── some_key_only_for_production_environment
-	 │   │
-	 │   ... more environments here...
+	 │   │   └── some_key_only_for_production_environment
+	 │   │
+	 │   ... more environments here...
 	 │
 	 ├── templates (each key contains the ERB template as its value)
-	 │   ├── template1.erb 
+	 │   ├── template1.erb
 	 │   ├── template2.erb
 	 │   ... more templates here ...
 	 │
 	 ├── values
-	 │   ├── production (keys and values for the 'production' environment)
-	 │   │       ├ template1.erb
-	 │   │       │     ├── some_key
-	 │   │       │     ├── some_other_key
-     │   │       ├ template2.erb
-	 │   │       │     ├── some_key
-	 │   │       │     ├── some_other_key
-     │   │       ...more templates and keys...
- 	 │   │   
- 	 │   └── development (keys and values for the 'development' environment)
-	 │           ├ template1.erb
-	 │           │     ├── some_key
-	 │           │     ├── some_other_key
-     │           ├ template2.erb
-	 │           │     ├── some_key
-	 │           │     ├── some_other_key
-     │           ...more templates and keys...
- 	 │     
+	 │   ├── production (keys and values for the 'production' environment)
+	 │   │       ├ template1.erb
+	 │   │       │     ├── some_key
+	 │   │       │     ├── some_other_key
+     │   │       ├ template2.erb
+	 │   │       │     ├── some_key
+	 │   │       │     ├── some_other_key
+     │   │       ...more templates and keys...
+ 	 │   │
+ 	 │   └── development (keys and values for the 'development' environment)
+	 │           ├ template1.erb
+	 │           │     ├── some_key
+	 │           │     ├── some_other_key
+     │           ├ template2.erb
+	 │           │     ├── some_key
+	 │           │     ├── some_other_key
+     │           ...more templates and keys...
+ 	 │
  	 │
      └── target_values (controls which templates get installed and where)
-	     ├── template1.erb 
-	     │   ├── production
-	     │   │       └── target (where to install the template in production)
-	     │   └── development
-	     │           └── target (where to install the template in development)
-	     │
-	     └── template1.erb (don't install template2.erb in development)
-	         └── production
-	                 └── target (where to install the template in production)
-	       
+	     ├── template1.erb
+	     │   ├── production
+	     │   │       └── target (where to install the template in production)
+	     │   └── development
+	     │           └── target (where to install the template in development)
+	     │
+	     └── template1.erb (don't install template2.erb in development)
+	         └── production
+	                 └── target (where to install the template in production)
+
 
 
 You can change this to any structure you like by altering the `templates` and `values` parameters. The paths specified for any of these parameters listed above may include the following placeholders :
@@ -133,7 +133,7 @@ This should only be present in production : <%= some_key_only_for_production_env
 ## Nodes
 To make the list of nodes registered with Consul available to your templates, set `register_nodes` to true in your `common.yaml` :
 
-```yaml 
+```yaml
 data_sources: [ "consul" ]
 template_sources: [ "consul" ]
 consul:
@@ -159,7 +159,7 @@ This is a list of all nodes :
 ## Services
 To make the list of services registered with Consul available to your templates, set `register_services` to true in your `common.yaml` :
 
-```yaml 
+```yaml
 data_sources: [ "consul" ]
 template_sources: [ "consul" ]
 consul:
@@ -178,3 +178,4 @@ ServicePort : <%= consul_services['consul'][0].ServicePort %>
 
 # Further reading
 See [this](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller) blog post for an introduction to this plugin with some examples.
+

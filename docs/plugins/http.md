@@ -1,4 +1,4 @@
-# HTTP plugins
+# HTTP Plugins
 
 As of version 0.6.1, Tiller includes plugins to retrieve templates and values from a HTTP server. These plugins rely on the `httpclient` gem to be present, so before proceeding ensure you have run `gem install httpclient` in your environment. This is not listed as a hard dependency of Tiller, as this would force the gem to be installed even on systems that would never use these plugins.
 
@@ -8,7 +8,7 @@ The plugins expect data to be returned in JSON format, apart from the template c
 # Enabling the plugin
 Add the `http` plugins in your `common.yaml`, e.g.
 
-```yaml 
+```yaml
 data_sources:
   - file
   - http
@@ -22,7 +22,7 @@ Note that the ordering is significant. In the above example, values from the HTT
 You also do not need to enable both plugins; for example you may just want to retrieve values for your templates from a web server, but continue to use files to store your actual template content.
 
 # Configuring
-Configuration for this plugin is placed inside a "http" block. This can either be included in the top-level of `common.yaml` file, or in a per-environment block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this. 
+Configuration for this plugin is placed inside a "http" block. This can either be included in the top-level of `common.yaml` file, or in a per-environment block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this.
 
 A sample configuration (showing the defaults for most parameters) is as follows :
 
@@ -39,13 +39,13 @@ http:
     target: '/tiller/templates/%t/target_values/%e'
 ```
 
-At a bare minimum, you need to specify a URI for the plugins to connect to. This takes the form of a standard HTTP/HTTPS connection string (including the scheme). For example, `http://tiller.example.com`. This will be prepended to any of the other paths, so in the above example, Tiller will look for global values at `http://tiller.example.com/tiller/globals`. 
+At a bare minimum, you need to specify a URI for the plugins to connect to. This takes the form of a standard HTTP/HTTPS connection string (including the scheme). For example, `http://tiller.example.com`. This will be prepended to any of the other paths, so in the above example, Tiller will look for global values at `http://tiller.example.com/tiller/globals`.
 
 The default timeout is 5 seconds; if a connection to a HTTP server takes longer than this, the connection will abort and Tiller will stop with an exception.
 
-Note that as you can specify `common:` blocks in each environment configuration block, you can specify a different URI per environment. 
+Note that as you can specify `common:` blocks in each environment configuration block, you can specify a different URI per environment.
 
-If you omit the other parameters (`timeout`,`templates` and so on), they will default to the values shown above. 
+If you omit the other parameters (`timeout`,`templates` and so on), they will default to the values shown above.
 
 ## Authentication
 If the HTTP server you are connecting to requires basic Authentication, you can include `username` and `password` keys in your configuration:
@@ -116,18 +116,18 @@ The paths specified for any of the parameters listed above may include the follo
 There are 5 parameters that tell Tiller where to look for templates and values from your webserver :
 
 * `templates` : where to find the list templates of templates for the given environment. This URL should return a JSON array of templates, e.g. `[ "mongodb.erb" , "another_template.erb" , .... ]`
-* `template_content` : where to fetch the actual template content. This is expected to be returned as plain text, whereas the other paths should return structured data (currently only JSON format is supported) 
+* `template_content` : where to fetch the actual template content. This is expected to be returned as plain text, whereas the other paths should return structured data (currently only JSON format is supported)
 
 The following whould all return a JSON hash of `key:value` pairs (see above for an example):
 
-* `values.global` : where to find the global values that are the usually the same across all environments and templates. 
-* `values.template` : where to find values for a specific template. 
-* `values.target` : where to find target values for a specific template, e.g. the path it should be installed to, the owner and permissions and so on. 
+* `values.global` : where to find the global values that are the usually the same across all environments and templates.
+* `values.template` : where to find values for a specific template.
+* `values.target` : where to find target values for a specific template, e.g. the path it should be installed to, the owner and permissions and so on.
 
 So, if you wanted to fetch your template values using a scheme such as `'http://tiller.example.com/tiller/values.php?template=mongodb.erb&environment=production'`, you could use something like:
 
 ```yaml
- http: 
+ http:
    values:
      template: '/tiller/values.php?template=%t&environment=%e'
 ```
