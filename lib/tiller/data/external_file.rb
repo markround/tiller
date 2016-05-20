@@ -5,7 +5,6 @@ require 'tiller/util'
 
 class ExternalFileDataSource < Tiller::DataSource
 
-
   def setup
     @merged_values = Hash.new
     if @config.has_key?('external_files')

@@ -3,7 +3,7 @@ Feature: Load data from external files
   Scenario: Load fixture
     Given I use a fixture named "external_file"
     Then  a file named "common.yaml" should exist
-    
+
   Scenario: Simple data from external files
     Given I use a fixture named "external_file"
     When I successfully run `tiller -b . -v -n`
