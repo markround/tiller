@@ -154,7 +154,7 @@ If your plugin requires configuration, it's preferable that it reads it from a t
 
 ## Documentation
 
-Documentation for your plugin should be included in a plugin_meta method at the top of the file. This should return a hash, e.g.
+If you want to get your plugin included with Tiller, documentation for your plugin should be included in a plugin_meta method at the top of the file. This should return a hash, e.g.
 
 ```ruby
 def plugin_meta

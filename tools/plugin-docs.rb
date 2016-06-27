@@ -7,8 +7,6 @@ if ! File.directory? PLUGIN_DIRS[0]
   die("Could not find plugin directories - please run this from the root of the repo.")
 end
 
-# todo : links to other documentation in template sources
-
 plugin_list = ""
 
 PLUGIN_DIRS.each do |dir|
@@ -41,6 +39,6 @@ PLUGIN_DIRS.each do |dir|
 end
 
 puts "Writing README.md"
-readme = File.read("docs/src/README.src")
+readme = File.read("docs/src/README.src.md")
 readme.sub!("__PLUGIN_LIST__" , plugin_list)
 File.write("README.md", readme)
