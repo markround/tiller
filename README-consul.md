@@ -29,7 +29,7 @@ A sample configuration (showing the defaults for most parameters) is as follows 
 
 ```yaml
 consul:
-  uri: 'http://localhost:8500'
+  url: 'http://localhost:8500'
   dc: 'dc1'
   acl_token: <empty>
   register_services: false
@@ -43,13 +43,13 @@ consul:
    target: '/tiller/target_values/%t/%e'
 ```
 
-At a bare minimum, you need to specify a URI for the plugins to connect to. This is the HTTP port of your Consul server, e.g. `http://localhost:8500`. If you omit the other parameters, they will default to the values shown above. If you're happy to accept the rest of the defaults, your configuration can therefore be as simple as this :
+At a bare minimum, you need to specify a URL for the plugins to connect to. This is the HTTP port of your Consul server, e.g. `http://localhost:8500`. If you omit the other parameters, they will default to the values shown above. If you're happy to accept the rest of the defaults, your configuration can therefore be as simple as this :
 
 ```yaml 
 data_sources: [ "consul" ]
 template_sources: [ "consul" ]
 consul:
-  uri: 'http://localhost:8500'
+  url: 'http://localhost:8500'
 ```
 
 ## Authentication
@@ -57,7 +57,7 @@ If the Consul cluster you are connecting to requires a token, you can include `a
 
 ```yaml
 consul:
-  uri: 'http://localhost:8500'
+  url: 'http://localhost:8500'
   acl_token: '11210C70-B257-4534-9655-E7D8A2C1E660'
 ```
 
@@ -137,7 +137,7 @@ To make the list of nodes registered with Consul available to your templates, se
 data_sources: [ "consul" ]
 template_sources: [ "consul" ]
 consul:
-  uri: 'http://localhost:8500'
+  url: 'http://localhost:8500'
   register_nodes: true
 ```
 
@@ -163,7 +163,7 @@ To make the list of services registered with Consul available to your templates,
 data_sources: [ "consul" ]
 template_sources: [ "consul" ]
 consul:
-  uri: 'http://localhost:8500'
+  url: 'http://localhost:8500'
   register_services: true
 ```
 
