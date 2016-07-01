@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 group :development do
+  gem 'json' , '~> 1.8.3'
   gem 'rake'
   gem 'rspec'
   gem 'aruba', '~> 0.13.0'
