@@ -1,10 +1,3 @@
-def plugin_meta
-  {
-      id: 'com.markround.tiller.data.file',
-      documentation_link: 'See main README.md'
-  }
-end
-
 require 'yaml'
 
 class FileDataSource < Tiller::DataSource

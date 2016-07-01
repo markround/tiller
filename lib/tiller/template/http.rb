@@ -1,10 +1,3 @@
-def plugin_meta
-  {
-      id: 'com.markround.tiller.plugin.template.http',
-      documentation_link: 'com.markround.tiller.data.http'
-  }
-end
-
 require 'pp'
 require 'httpclient'
 require 'timeout'

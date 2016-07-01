@@ -1,10 +1,3 @@
-def plugin_meta
-  {
-      id: 'com.markround.tiller.plugin.template.consul',
-      documentation_link: 'com.markround.tiller.data.consul'
-  }
-end
-
 require 'pp'
 require 'diplomat'
 require 'tiller/templatesource'

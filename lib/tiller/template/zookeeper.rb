@@ -1,10 +1,3 @@
-def plugin_meta
-  {
-      id: 'com.markround.tiller.plugin.template.zookeeper',
-      documentation_link: 'com.markround.tiller.data.zookeeper'
-  }
-end
-
 require 'tiller/templatesource'
 
 class ZookeeperTemplateSource < Tiller::TemplateSource
