@@ -424,6 +424,29 @@ If you want to build your own plugins, or generally hack on Tiller, see [docs/de
 ## Merging values
 Tiller will merge values from all sources - this is intended, as it allows you to over-ride values from one plugin with another. However, be careful as this may have undefined results. Particularly if you include two data sources that each provide target values - you may find that your templates end up getting installed in locations you didn't expect, or containing spurious values!
 
+## Global and template-specific value precedence 
+A "global" value will be over-written by a template-specific value (e.g. a value specified for a template in a `config:` block). This may cause you unexpected behaviour when you attempt to use a value from a data source such as `environment_json` or `environment` which exposes its values as global values.
+
+For example, if you have the following in an environment configuration block :
+
+```yaml
+my_template.erb:
+  target: /tmp/template.txt
+  config:
+    test: 'This is a default value'
+```
+
+And then use the environment_json plugin to try and over-ride this value, like so :
+
+`$ tiller_json='{ "test" : "From JSON!" }' tiller -n -v ......`
+
+You'll find that you won't see the "From JSON!" string appear in your template, no matter what order you load the plugins. This is because the `test` value in your environment configuration is a local, per-template value and thus will always take priority over a global value.
+
+If this isn't what you want, for the `environment_json` plugin, you can use the new v2 JSON format (as described above) to split your values into global and per-template local values. 
+
+Another solution is to provide a default, but allow it to be over-ridden, by using the `defaults` plugin to provide the default values (so all global data sources are merged in the correct order). See [This blog post](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for an example.
+
+
 ## Empty config
 If you are using the file datasource with Tiller < 0.2.5, you must provide a config hash, even if it's empty (e.g. you are using other data sources to provide all the values for your templates). For example:
 
@@ -458,28 +481,6 @@ This seems to crop up mostly on Ruby 1.9 installations, and happens when convert
 
 ## Signal handling
 Not a "gotcha" as such, but worth noting. Since version 0.4.0, Tiller catches the `INT`,`TERM` and `HUP` signals and passes them on to the child process spawned through `exec`. This helps avoid the ["PID 1"](http://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/) problem by making sure that if Tiller is killed then the child process should also exit.
-
-## Global and template-specific value precedence 
-A "global" value will be over-written by a template-specific value (e.g. a value specified for a template in a `config:` block). This may cause you unexpected behaviour when you attempt to use a value from a data source such as `environment_json` or `environment` which exposes its values as global values.
-
-For example, if you have the following in an environment configuration block :
-
-```yaml
-my_template.erb:
-  target: /tmp/template.txt
-  config:
-    test: 'This is a default value'
-```
-
-And then use the environment_json plugin to try and over-ride this value, like so :
-
-`$ tiller_json='{ "test" : "From JSON!" }' tiller -n -v ......`
-
-You'll find that you won't see the "From JSON!" string appear in your template, no matter what order you load the plugins. This is because the `test` value in your environment configuration is a local, per-template value and thus will always take priority over a global value.
-
-If this isn't what you want, for the `environment_json` plugin, you can use the new v2 JSON format (as described above) to split your values into global and per-template local values. 
-
-Another solution is to provide a default, but allow it to be over-ridden, by using the `defaults` plugin to provide the default values (so all global data sources are merged in the correct order). See [This blog post](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for an example.
 
 
 
