@@ -1,7 +1,4 @@
-# Environment JSON datasource for Tiller. This extracts all JSON from the
-# tiller_json environment variable and merges the resulting hash data
-# structure into the global_values available to templates.
-
+require 'tiller/datasource'
 require 'json'
 require 'pp'
 

@@ -2,6 +2,7 @@ require 'pp'
 require 'httpclient'
 require 'timeout'
 require 'tiller/http.rb'
+require 'tiller/datasource'
 
 
 class HttpDataSource < Tiller::DataSource

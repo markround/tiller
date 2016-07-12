@@ -1,5 +1,6 @@
 require 'yaml'
 require 'tiller/util'
+require 'tiller/datasource'
 
 # Defaults datasource for Tiller.
 

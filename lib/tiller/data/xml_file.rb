@@ -1,3 +1,4 @@
+require 'tiller/datasource'
 require 'crack'
 
 # This datasource reads an XML file (xml_file_path), parses it using the crack gem and then
