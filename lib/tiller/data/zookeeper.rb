@@ -2,6 +2,7 @@ require 'yaml'
 require 'zk'
 require 'pp'
 require 'timeout'
+require 'tiller/datasource'
 
 class ZookeeperDataSource < Tiller::DataSource
 

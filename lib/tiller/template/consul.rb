@@ -1,5 +1,6 @@
 require 'pp'
 require 'diplomat'
+require 'tiller/templatesource'
 require 'tiller/consul.rb'
 
 class ConsulTemplateSource < Tiller::TemplateSource
@@ -12,7 +13,7 @@ class ConsulTemplateSource < Tiller::TemplateSource
     templates = Diplomat::Kv.get(path, {:keys => true, :dc => @consul_config['dc']}, :return)
 
     if templates.is_a? Array
-      templates.map{|t| File.basename(t)}
+      templates.map { |t| File.basename(t) }
     else
       @log.warn("Consul : No templates could be fetched from #{path}")
       []

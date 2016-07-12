@@ -1,12 +1,12 @@
-# ZooKeeper plugins
+# ZooKeeper Plugins
 
 As of version 0.6.0, Tiller includes plugins to retrieve templates and values from a [ZooKeeper](http://zookeeper.apache.org/) cluster. These plugins rely on the `zk` gem to be present, so before proceeding ensure you have run `gem install zk` in your environment. This is not listed as a hard dependency of Tiller, as this would force the gem to be installed even on systems that would never use these plugins.
- 
+
 
 # Enabling the plugin
 Add the `zookeeper` plugins in your `common.yaml`, e.g.
 
-```yaml 
+```yaml
 data_sources:
   - file
   - zookeeper
@@ -20,7 +20,7 @@ Note that the ordering is significant. In the above example, values from the Zoo
 You also do not need to enable both plugins; for example you may just want to retrieve values for your templates from ZooKeeper, but continue to use files to store your actual template content.
 
 # Configuring
-Configuration for this plugin is placed inside a "zookeeper" block. This can either be included in the main `common.yaml` file, or in a per-environment configuration block inside a `common:` block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this. 
+Configuration for this plugin is placed inside a "zookeeper" block. This can either be included in the main `common.yaml` file, or in a per-environment configuration block inside a `common:` block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this.
 
 A sample configuration (showing the defaults for most parameters) is as follows :
 ```yaml
@@ -43,7 +43,7 @@ At a bare minimum, you need to specify a URI for the plugins to connect to. This
 
 The default timeout is 5 seconds; if a connection to a ZooKeeper server/cluster takes longer than this, the connection will abort and Tiller will stop with an exception.
 
-Note that as you can specify `common:` blocks in each environment block, you can specify a different URI per environment. 
+Note that as you can specify `common:` blocks in each environment block, you can specify a different URI per environment.
 
 If you omit the other parameters (`timeout`,`templates` and so on), they will default to the values shown above. These will be explained in the next section.
 
@@ -67,12 +67,12 @@ As ZooKeeper is a hierarchical store, its "nodes" can be thought of as directori
 	    │   │        ├── perms (contains the permissions for the file, e.g. 0644)
 	    │   │        ...
 	    │   │        ... Other target values go here
-	    │   │        ... 
+	    │   │        ...
 	    │   ...
 	    │   ... Other templates for this environment go here
 	    │   ...
 	    ├── prod (templates and values for your "prod" environment)
-	    │   ├── mongodb.erb 
+	    │   ├── mongodb.erb
 	    ...
 	    ... Other environments go here
 	    ...
@@ -92,7 +92,7 @@ mZxid = 0x2ed
 ...
 ```
 The following screenshot using the ZooInspector GUI illustrates how a template node can also contain the template content:
-![Zooinspector screenshot](zooinspector.png)
+![Zooinspector screenshot](assets/zooinspector.png)
 
 You can however change this hierarchy to suit your environment or working practices.
 
@@ -120,15 +120,4 @@ So, if you instead wanted your templates under the top-level /tiller directory, 
      template: '/tiller/%t/values/%e'
      target: '/tiller/%t/target_values/%e'
 ```
-
-
-
-
-
-    
-
-
-
-
-
 

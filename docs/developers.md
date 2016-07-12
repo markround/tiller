@@ -4,7 +4,7 @@ Tiller follows a fairly standard gem project layout and has a Rakefile, Gemfile 
 
 ## Setup
 
-To get started, simply run `bundle install` in the top-level directory to install all the development dependencies. You should see something similar to the following:
+To get started, ensure you have Ruby > 1.9 and the Bundler gem installed. Then run `bundle install` in the top-level directory to install all the development dependencies. You should see something similar to the following:
 
 	Using rake 10.4.2
 	Using ffi 1.9.10

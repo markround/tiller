@@ -1,6 +1,5 @@
-# Environment datasource for Tiller. This extracts all environment variables,
-# and makes them available to templates by converting to lowercase and
-# preceeding them with env_. E.G. env_home, env_logname and so on.
+require 'tiller/datasource'
+
 class EnvironmentDataSource < Tiller::DataSource
   def global_values
     values = Hash.new

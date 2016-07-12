@@ -1,5 +1,6 @@
 require 'pp'
 require 'diplomat'
+require 'tiller/datasource'
 require 'tiller/consul.rb'
 
 class ConsulDataSource < Tiller::DataSource

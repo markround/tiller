@@ -1,3 +1,5 @@
+require 'tiller/templatesource'
+
 class ZookeeperTemplateSource < Tiller::TemplateSource
 
   def setup

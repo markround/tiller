@@ -1,7 +1,7 @@
 # What is it?
 Tiller is a tool that generates configuration files. It takes a set of templates, fills them in with values from a variety of sources (such as environment variables, Consul, YAML files, JSON from a webservice...), installs them in a specified location and then optionally spawns a child process.
 
-You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container, and easily build "parameterized containers" which users can then configure at runtime. 
+You might find this particularly useful if you're using Docker, as you can ship a set of configuration files for different environments inside one container, and/or easily build "parameterized containers" which users can then configure at runtime. 
 
 However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
 
@@ -59,7 +59,7 @@ So I knocked up a quick Ruby script (originally called "Runner.rb") that I could
 * Optionally executes a child process once it's finished (e.g. mongod, nginx, supervisord, etc.)
 * Now provides a pluggable architecture, so you can define additional data or template sources. For example, you can create a DataSource that looks up values from an LDAP store, or a TemplateSource that pulls things from a database. 
 
-This way I can keep all my configuration together in the container, and just tell Docker which environment to use when I start it. I can also use it to dynamically alter configuration at runtime ("parameterized containers").
+This way I can keep all my configuration together in the container, and just tell Docker which environment to use when I start it. I can also use it to dynamically alter configuration at runtime ("parameterized containers") by passing in configuration from environment variables, external files, or a datastore such as Consul. 
 
 ## Why "Tiller" ?
 Docker-related projects all seem to have shipyard-related names, and this was the first ship-building related term I could find that didn't have an existing gem or project named after it! And a tiller is the thing that steers a boat, so it sounded appropriate for something that generates configuration files.
@@ -68,7 +68,9 @@ Docker-related projects all seem to have shipyard-related names, and this was th
 # Usage
 Tiller can be used to dynamically generate configuration files before passing execution over to a daemon process. 
 
-It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `exec`. Usually, when running a container that uses Tiller, all you need to do is pass the environment to it, e.g. 
+It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `exec`. 
+
+In a basic use-case, when you are bundling your templates and configuration inside the container, all you need to do is tell Tiller which environment you want to use e.g. 
 
 	# docker run -t -i -e environment=staging markround/demo_container:latest
 	tiller v0.3.1 (https://github.com/markround/tiller) <github@markround.com>
@@ -88,6 +90,21 @@ It looks at an environment variable called "environment" (or the argument to the
 
 If no environment is specified, it will default to using "development". Prior to version 0.4.0, this used to be "production", but as was quite rightly pointed out, this is a bit scary. You can always change the default anyway - see below. 
 
+## Plugins
+
+In addition to specifying values in YAML environment files, there are other plugins that can also provide values to be used in your templates, and you can easily [write your own](docs/developers.md). The plugins that ship with Tiller are :
+
+ * File : The default plugins which read templates from ERB files on disk, and values from YAML file(s). This use-case is discussed below in this main document. You normally will want to enable this plugin unless you are fetching *everything* from another data source.
+ * [Consul](docs/plugins/consul.md) : These plugins allow you to retrieve your templates and values from a [Consul](https://consul.io) cluster. Full documentation for this plugin is available in [consul.md](docs/plugins/consul.md), and there's also a blog post with a walk-through example at [http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller).
+ * [Defaults](docs/plugins/defaults.md) : Make use of default values across your environments and templates - this can help avoid repeated definitions and makes for more efficient configuration.
+ * [Environment variables](docs/plugins/environment.md) : Make use of environment variables in your templates.
+ * [JSON environment variables](docs/plugins/environment_json.md) : Use complex JSON data structures from the environment in your templates. See [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for some practical examples.
+ * [External files](docs/plugins/external_file.md) : Load external JSON or YAML files, and use their contents in your templates.
+ * [HTTP plugins](docs/plugins/http.md) : These plugins let you retrieve your templates and values from a HTTP server
+ * [Random data](docs/plugins/random.md) : Simple wrapper to provide random values to your templates.
+ * [XML files](docs/plugins/xml_file.md) : Load and parse XML data for use in your templates.
+ * [Zookeeper plugins](docs/plugins/zookeeper.md) : These plugins allow you to store your templates and values in a ZooKeeper cluster.
+
 ## A word about configuration
 Tiller uses YAML for configuration files. If you're unfamiliar with YAML, don't worry - it's very easy to pick up. A good introduction is here : ["Complete idiot's introduction to YAML"](https://github.com/Animosity/CraftIRC/wiki/Complete-idiot's-introduction-to-yaml)
 
@@ -98,7 +115,6 @@ However, 0.7 and later versions allow you to place most configuration inside a s
 Of course, you can always use the old "one file for each environment" approach if you prefer. Tiller is 100% backwards compatible with the old approach, and I have no intention of removing support for it as it's very useful in certain circumstances. The only thing to be aware of is that you can't mix the two configuration styles: If you configure some environments in `common.yaml`, Tiller will ignore any separate environment configuration files.
 
 	    
-
 ## Arguments
 Tiller understands the following *optional* command-line arguments (mostly used for debugging purposes) :
 
@@ -114,6 +130,9 @@ Tiller understands the following *optional* command-line arguments (mostly used 
 * `-h` / `--help` : Show a short help screen
 
 # Setup
+
+This section will show how you can bundle configuration and templates inside a container so you can switch between them at run-time, using just the "file" plugin.
+
 All of the following assumes you're using Tiller with Docker. So, firstly install the Tiller gem and set your Dockerfile to use it (assuming you're pulling in a suitable version of Ruby already) :
 
 ```dockerfile
@@ -164,7 +183,7 @@ I'll cover each part of this in detail, but to give you an idea of where we're g
 
 ```yaml
 exec: [ "/usr/bin/mongod" , "--config" , "/etc/mongodb.conf" , "--rest" ]
-data_sources: [ 'file' , 'environment' ]
+data_sources: [ 'file' ]
 template_sources: [ 'file' ]
 environments:
 
@@ -198,7 +217,7 @@ I'll now cover each section and parameter in the following paragraphs.
 
 `common.yaml` contains most of the configuration for Tiller. It contains top-level `exec`, `data_sources`, `template_sources` and `default_environment` parameters, along with sections for each environment. 
 
-It can also take optional blocks of configuration for some plugins (for example, the [HTTP Plugins](README-HTTP.md)). Settings defined here can also be overridden on a per-environment basis (see [below](#overriding-common-settings))
+It can also take optional blocks of configuration for some plugins (for example, the [Consul Plugins](docs/plugins/consul.md)). Settings defined here can also be overridden on a per-environment basis (see [below](#overriding-common-settings))
 
 * `exec`: This is simply what will be executed after the configuration files have been generated. If you omit this (or use the `-n` / `--no-exec` arguments) then no child process will be executed. As of 0.5.1, you can also specify the command and arguments as an array, e.g.
 
@@ -212,18 +231,15 @@ This means that a shell will not be spawned to run the command, and no shell exp
 	exec: "/usr/bin/supervisord -n"
 ```
 
-* `data_sources` : The data sources you'll be using to populate the configuration files. This should usually just be set to "file" and "environment" to start with, although you can write your own plugins and pull them in (more on that later).
+* `data_sources` : The data sources you'll be using to populate the configuration files. This should usually just be set to "file" to start with, although you can write your own plugins and pull them in (more on that later).
 * `template_sources` Where the templates come from, again a list of plugins.
 * `default_environment` : Sets the default environment file to load if none is specified (either using the -e flag, or via the `environment` environment variable). This defaults to 'development', but you may want to set this to 'production' to mimic the old, pre-0.4.0 behaviour.
 
-So for a simple use-case where you're just generating everything from files or environment variables and then spawning MongoDB, you'd have a common.yaml with this at the top:
+So for a simple use-case where you're just generating everything from files and then spawning MongoDB, you'd have a common.yaml with this at the top:
 ```yaml
 exec: [ "/usr/bin/mongod" , "--config" , "/etc/mongodb.conf" , "--rest" ]
-data_sources:
-	- file
-	- environment
-template_sources:
-	- file
+data_sources: [ "file" ]
+template_sources: [ "file" ]
 ```
 
 ### Ordering
@@ -235,11 +251,13 @@ data_sources:
   - environment_json
 ```
 
-Note also that template-specific values take priority over global values (see the Gotchas section for an example).
+(Or, in short-form YAML) : `data_sources: [ "defaults" , "file" , "environment_json" ]`
+
+**Important** : Please note that template-specific values take priority over global values (see the [Gotchas](#gotchas) section for an example).
 
 ## Template files
 
-These files under `/etc/tiller/templates` are simply the ERB templates for your configuration files, and are populated with values from the selected environment configuration blocks (see below). When the environment configuration is parsed (see below), key:value pairs are made available to the template. 
+When using the `FileTemplateSource` ("file") plugin, these files under `/etc/tiller/templates` are simply the ERB templates for your configuration files, and are populated with values from the selected environment configuration blocks (see below). When the environment configuration is parsed (see below), key:value pairs are made available to the template. 
 
 **IMPORTANT: **These files must be named with a suffix of `.erb`. Any files without an ending of `.erb` will be ignored.
 
@@ -315,7 +333,7 @@ Or, if the production environment is specified :
 
 And if the `development` environment is used (it's the default, so will also get used if no environment is specified), then the config file will get installed but with the line relating to replica set name left out.
 
-Of course, this means you need an environment block for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered in the next section.
+Of course, this means you need an environment block for each replica set you plan on deploying. If you have many Mongo clusters you wish to deploy, you'll probably want to specify the replica set name dynamically, perhaps at the time you launch the container. You can do this in many different ways, for example by using the `environment` plugin to populate values from environment variables (`docker run -e repl_set_name=foo ...`) and so on. These plugins are covered in their [own documentation](#plugins).
 
 
 ### Overriding common settings
@@ -360,155 +378,6 @@ mongodb.erb:
 And so on, one for each environment. You would then remove the `environments:` block from `common.yaml`, and Tiller will switch to loading these individual files.
 
 
-## Plugins
-
-In addition to specifying values in the environment files, there are other plugins that can also provide values to be used in your templates, and you can easily write your own. The plugins that ship with Tiller are :
-
-### File plugins
-These provide data from YAML environment files, and templates from ERB files (see above).
-
-### HTTP plugins
-These allow you to retrieve your templates and values from a HTTP server. Full documentation for this plugin is available in [README-HTTP.md](README-HTTP.md)
-
-### Consul plugins
-These allow you to retrieve your templates and values from a [Consul](https://consul.io) cluster. Full documentation for this plugin is available in [README-consul.md](README-consul.md), and there's also a blog post with a walk-through example at [http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller).
-
-### ZooKeeper plugins
-These allow you to store your templates and values in a [ZooKeeper](http://zookeeper.apache.org) cluster. Full documentation for this plugin is available in [README-zookeeper.md](README-zookeeper.md)
-
-### Defaults plugin
-If you add `  - defaults` to your list of data sources in `common.yaml`, you'll be able to make use of default values for your templates, which can save a lot of repeated definitions if you have a lot of common values shared between environments. You can also (as of Tiller 0.7.3) use it to install a template across all environments.
-
-These defaults are sourced from a `defaults:` block in your `common.yaml`, or from `/etc/tiller/defaults.yaml` if you are using the old-style configuration. For both styles, any individual `.yaml` files under `/etc/tiller/defaults.d/` are also loaded and parsed. 
-
-Top-level configuration keys are `global` for values available to all templates, and a template name for values only available to that specific template. For example, in your `common.yaml` you could add something like:
-
-```yaml
-data_sources: [ 'defaults' , 'file' , 'environment' ]
-defaults:
-
-	global:
-  		domain_name: 'example.com'
-	  
-	application.properties.erb:
-	    target: /etc/application.properties
-	    config:
-  		    java_version: 'jdk8'
-```
-
-This would make the variable `domain_name` available to all templates, and would also ensure that the `application.properties.erb` template gets installed across all environments.
-
-#### Defaults per environment
-
-As of Tiller 0.7.7, you can also use the file datasource to specify a top-level `global_values:` key inside each environment block to specify global values unique to that environment. See [issue #18](https://github.com/markround/tiller/issues/18) for the details. 
-
-This means you can (optionally) use the defaults datasource to specify a default across _all_ environments, `global_values:` for defaults specific to each environment, and optionally over-write them with local `config:` values on each template. Something like this :
-
-```
-data_sources: [ 'defaults','file','environment' ]
-template_sources: [ 'file' ]
-
-defaults:
-  global:
-    per_env: 'This is the default across all environments'
-
-environments:
-
-  development:
-    global_values:
-      per_env: 'This has been overwritten for the development environment'
-
-    test.erb:
-      target: test.txt
-      config:
-        per_env: 'This has again been overwritten by the local value just for this template'
-
-  production:
-
-	# This will get the value from the defaults module, as we don't specify a
-	# per-environment or any per-template value overwriting it.
-    test.erb:
-      target: test.txt
-     
-```
-
-
-### Environment plugin
-If you activated the `EnvironmentDataSource` (as shown by adding `  - environment` to the list of data sources in the example `common.yaml` above), you'll also be able to access environment variables within your templates. These are all converted to lower-case, and prefixed with `env_`. So for example, if you had the environment variable `LOGNAME` set, you could reference this in your template with `<%= env_logname %>`
-
-### Environment JSON
-If you add `  - environment_json` to your list of data sources in `common.yaml`, you'll be able to make complex JSON data structures available to your templates. Just pass your JSON in the environment variable `tiller_json`. See [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for some practical examples.
-
-As of Tiller 0.7.6, you can use this to also handle per-template variables, instead of treating everything as a "global" variable. To do this, make sure you have a key `_version` with a value of `2`. You can then separate values into global and per-template blocks, for example :
-
-```json
-{
-  "_version" : 2,
-  "global" : {
-    "global_value" : "This is a global value available to all templates"
-  },
-  "template.erb" : {
-    "local_value" : "This will create the 'local_value' only on template.erb"
-  }
-}
-```
-
-### Random plugin
-If you add `  - random` to your list of data sources in `common.yaml`, you'll be able to use randomly-generated values and strings in your templates, e.g. `<%= random_uuid %>`. This may be useful for generating random UUIDs, server IDs and so on. An example hash with demonstration values is as follows : 
-
-	{"random_base64"=>"nubFDEz2MWlIiJKUOQ+Ttw==",
-	 "random_hex"=>"550de401ef69d92b250ce379e5a5957c",
-	 "random_bytes"=>"3\xC8fS\x11`\\W\x00IF\x95\x9F8.\xA7",
-	 "random_number_10"=>8,
-	 "random_number_100"=>71,
-	 "random_number_1000"=>154,
-	 "random_urlsafe_base64"=>"MU9UP8lEOVA3Nsb0OURkrw",
-	 "random_uuid"=>"147acac8-7229-44af-80c1-246cf08910f5"}
-
-### XML File plugin
-This plugin parses the contents of an XML file (for example, a Maven POM) and makes the resulting structure available to your templates. First, run `gem install crack` to make sure you have the [crack gem](https://github.com/jnunemaker/crack) installed for XML parsing. 
-
-You can then enable this plugin by adding `xml_file` to your list of datasources in `common.yaml`. Once this has been done, you can specify two further parameters; either at the top-level of `common.yaml`, or per-template. These parameters are :
-
-* `xml_file_path` : Path to the XML file
-* `xml_file_var` : Variable name that your templates will use to access the structure.
-
-For example, assuming the following XML is loaded from a file specified in `xml_file_path` :
-
-```xml
-<project>
-        <modelVersion>4.0.0</modelVersion>
-        <groupId>com.mycompany.app</groupId>
-        <artifactId>my-app</artifactId>
-        <version>1</version>
-</project>
-```
-
-If you set `xml_file_var: maven_pom`, you would then be able to reference elements in your templates like so :
-
-```erb
-ArtifactID: <%= maven_pom['project']['artifactId'] %>
-```
-
-See the [test fixtures](https://github.com/markround/tiller/tree/master/features/fixtures/xml_file) and corresponding [test scenario](https://github.com/markround/tiller/blob/master/features/xml_file.feature) under the features/ directory for full examples.
-
-### External file plugin
-This plugin lets you load an external JSON or YAML file, and return its contents to your templates as global values. You may find this useful for allowing an end user to configure a docker container which requires lots of parameters; thereby avoiding the need for lots of environment variables and unwieldy `docker run` commands. 
-
-The plugin is enabled by adding `external_file` to the list of datasources in your `common.yaml`, and then providing a list of absolute file paths :
-
-```yaml
-data_sources: [ "file" , "external_file" ]
-external_files:
-  - /config/external.yaml
-  - /config/external.json
-```
-
-These could be provided by an end-user, and passed into the Docker container by way of volumes :
-
-`docker run -ti -v /config:/config ......`
-
-See the [test fixture](https://github.com/markround/tiller/tree/master/features/fixtures/external_file) for a full example. 
 
 # API
 There is a HTTP API provided for debugging purposes. This may be useful if you want a way of extracting and examining the configuration from a running container. Note that this is a *very* simple implementation, and should never be exposed to the internet or untrusted networks. Consider it as a tool to help debug configuration issues, and nothing more. Also see the "Gotchas" section if you experience any `Encoding::UndefinedConversionError` exceptions.
@@ -549,11 +418,34 @@ The API responds to the following GET requests:
 
 
 # Developer information
-If you want to build your own plugins, or generally hack on Tiller, see [DEVELOPERS.md](DEVELOPERS.md)
+If you want to build your own plugins, or generally hack on Tiller, see [docs/developers.md](docs/developers.md)
 
 # Gotchas
 ## Merging values
-Tiller will merge values from all sources. It will warn you, but it won't stop you from doing this, which may have undefined results. Particularly if you include two data sources that each provide target values - you may find that your templates end up getting installed in locations you didn't expect, or containing spurious values!
+Tiller will merge values from all sources - this is intended, as it allows you to over-ride values from one plugin with another. However, be careful as this may have undefined results. Particularly if you include two data sources that each provide target values - you may find that your templates end up getting installed in locations you didn't expect, or containing spurious values!
+
+## Global and template-specific value precedence 
+A "global" value will be over-written by a template-specific value (e.g. a value specified for a template in a `config:` block). This may cause you unexpected behaviour when you attempt to use a value from a data source such as `environment_json` or `environment` which exposes its values as global values.
+
+For example, if you have the following in an environment configuration block :
+
+```yaml
+my_template.erb:
+  target: /tmp/template.txt
+  config:
+    test: 'This is a default value'
+```
+
+And then use the environment_json plugin to try and over-ride this value, like so :
+
+`$ tiller_json='{ "test" : "From JSON!" }' tiller -n -v ......`
+
+You'll find that you won't see the "From JSON!" string appear in your template, no matter what order you load the plugins. This is because the `test` value in your environment configuration is a local, per-template value and thus will always take priority over a global value.
+
+If this isn't what you want, for the `environment_json` plugin, you can use the new v2 JSON format (as described above) to split your values into global and per-template local values. 
+
+Another solution is to provide a default, but allow it to be over-ridden, by using the `defaults` plugin to provide the default values (so all global data sources are merged in the correct order). See [This blog post](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for an example.
+
 
 ## Empty config
 If you are using the file datasource with Tiller < 0.2.5, you must provide a config hash, even if it's empty (e.g. you are using other data sources to provide all the values for your templates). For example:
@@ -589,28 +481,6 @@ This seems to crop up mostly on Ruby 1.9 installations, and happens when convert
 
 ## Signal handling
 Not a "gotcha" as such, but worth noting. Since version 0.4.0, Tiller catches the `INT`,`TERM` and `HUP` signals and passes them on to the child process spawned through `exec`. This helps avoid the ["PID 1"](http://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/) problem by making sure that if Tiller is killed then the child process should also exit.
-
-## Global and template-specific value precedence 
-A "global" value will be over-written by a template-specific value (e.g. a value specified for a template in a `config:` block). This may cause you unexpected behaviour when you attempt to use a value from a data source such as `environment_json` or `environment` which exposes its values as global values.
-
-For example, if you have the following in an environment configuration block :
-
-```yaml
-my_template.erb:
-  target: /tmp/template.txt
-  config:
-    test: 'This is a default value'
-```
-
-And then use the environment_json plugin to try and over-ride this value, like so :
-
-`$ tiller_json='{ "test" : "From JSON!" }' tiller -n -v ......`
-
-You'll find that you won't see the "From JSON!" string appear in your template, no matter what order you load the plugins. This is because the `test` value in your environment configuration is a local, per-template value and thus will always take priority over a global value.
-
-If this isn't what you want, for the `environment_json` plugin, you can use the new v2 JSON format (as described above) to split your values into global and per-template local values. 
-
-Another solution is to provide a default, but allow it to be over-ridden, by using the `defaults` plugin to provide the default values (so all global data sources are merged in the correct order). See [This blog post](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for an example.
 
 
 

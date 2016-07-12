@@ -1,6 +1,6 @@
+require 'tiller/datasource'
 require 'securerandom'
-# Random datasource for Tiller. Provides Base64, UUID and other useful
-# random strings.
+
 class RandomDataSource < Tiller::DataSource
   def global_values
     {
