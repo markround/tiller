@@ -92,7 +92,7 @@ If no environment is specified, it will default to using "development". Prior to
 
 ## Plugins
 
-In addition to specifying values in YAML environment files, there are other plugins that can also provide values to be used in your templates, and you can easily write your own. The plugins that ship with Tiller are :
+In addition to specifying values in YAML environment files, there are other plugins that can also provide values to be used in your templates, and you can easily [write your own](docs/developers.md). The plugins that ship with Tiller are :
 
  * File : The default plugins which read templates from ERB files on disk, and values from YAML file(s). This use-case is discussed below in this main document. You normally will want to enable this plugin unless you are fetching *everything* from another data source.
  * [Consul](docs/plugins/consul.md) : These plugins allow you to retrieve your templates and values from a [Consul](https://consul.io) cluster. Full documentation for this plugin is available in [consul.md](docs/plugins/consul.md), and there's also a blog post with a walk-through example at [http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller).
