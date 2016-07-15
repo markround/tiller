@@ -386,7 +386,6 @@ You may wish to only write templates to disk if they do not already exist, or if
 [1/2] templates written, [1] skipped with no change
 Template generation completed
 ```
-
 If you pass the debug flag on the command-line (`-d` / `--debug`), you'll see further information like this amongst the output :
 
 ```
@@ -448,6 +447,8 @@ Tiller will merge values from all sources - this is intended, as it allows you t
 ## Global and template-specific value precedence 
 A "global" value will be over-written by a template-specific value (e.g. a value specified for a template in a `config:` block). This may cause you unexpected behaviour when you attempt to use a value from a data source such as `environment_json` or `environment` which exposes its values as global values.
 
+Just to re-iterate this point, and make it as clear as possible: *a template value always over-rides a global value, and can only be over-ridden by another template value from a higher priority plugin.*
+
 For example, if you have the following in an environment configuration block :
 
 ```yaml
@@ -467,6 +468,7 @@ If this isn't what you want, for the `environment_json` plugin, you can use the 
 
 Another solution is to provide a default, but allow it to be over-ridden, by using the `defaults` plugin to provide the default values (so all global data sources are merged in the correct order). See [This blog post](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for an example.
 
+See also my comment on [issue #26](https://github.com/markround/tiller/issues/26#issuecomment-232957927) for some examples on how to over-ride defaults per environments.
 
 ## Empty config
 If you are using the file datasource with Tiller < 0.2.5, you must provide a config hash, even if it's empty (e.g. you are using other data sources to provide all the values for your templates). For example:
