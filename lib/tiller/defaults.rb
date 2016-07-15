@@ -10,6 +10,8 @@ module Tiller
     :no_exec              => false,
     :verbose              => false,
     'api_enable'          => false,
+    'md5sum'              => false,
+    'md5sum_noexec'       => false,
     'api_port'            => 6275
   }
 end

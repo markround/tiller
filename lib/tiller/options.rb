@@ -27,6 +27,12 @@ def parse_options(config)
     opts.on('-x', '--exec [EXEC]', 'Override the \'exec\' variable from common.yaml') do |exec|
       config[:alt_exec] = exec
     end
+    opts.on('--md5sum', 'Only write templates if MD5 checksum for content has changed') do
+      config['md5sum'] = true
+    end
+    opts.on('--md5sum-noexec', 'Do not execute a process if no templates were written or changed') do
+      config['md5sum_noexec'] = true
+    end
 
     opts.on('-h', '--help', 'Display this screen') do
       puts opts
