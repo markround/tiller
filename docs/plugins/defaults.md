@@ -54,3 +54,32 @@ environments:
 
 ```
 
+## "Stubbed" environments
+
+If you want to use the defaults plugin to provide templates for all environments, and some of those environments require no other configuration, you can leave them as empty ("stub" environments) in `common.yaml`. For example:
+
+
+```yaml
+data_sources: [ "defaults" , "file" ]
+template_sources: [ "file" ]
+
+defaults:
+  test.erb:
+    target: test.txt
+    config:
+      test_var: "This is a template var from defaults"
+
+environments:
+  production:
+  
+  development:
+    test.erb:
+      target: /some/other/path/test.txt
+      config:
+        test_var: "This is a template var from the development env"
+
+```
+
+In this example, the "production" environment is stubbed, so will generate everything from the defaults module, but the "development" environment" contains some configuration blocks and will install the template to an alternative location and with different contents.
+
+
