@@ -1,6 +1,6 @@
 # Changelog
 
-* 0.7.10 : Added optional MD5 sum checking and "no-exec if no templates changed" feature (https://github.com/markround/tiller/issues/30), "stub" environment support (https://github.com/markround/tiller/issues/29) and environment plugin configuration parameters `prefix` and `lowercase` to control behaviour of environment variables. Many thanks to [Eugen Mayer](https://github.com/EugenMayer) and Hermes42 for their suggestions.
+* 0.7.10 : Added optional MD5 sum checking and "no-exec if no templates changed" feature (https://github.com/markround/tiller/issues/30), "stub" environment support (https://github.com/markround/tiller/issues/29) and [environment plugin](docs/plugins/environment.md) configuration parameters `prefix` and `lowercase` to control behaviour of environment variables. Many thanks to [Eugen Mayer](https://github.com/EugenMayer) and Hermes42 for their suggestions.
 * 0.7.9 : Added external_file plugin.
 * 0.7.8 : Consul plugin! See [this blog post](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller) for an introduction and walk-through.
 * 0.7.7 : a nice feature suggested by [kydorn](https://github.com/kydorn) in [markround/tiller#18](https://github.com/markround/tiller/issues/18). Now the file datasource supports a global_values: block, so you can create defaults per environment (and use the defaults datasource to provide a default for all environments). Thanks for the suggestion!
