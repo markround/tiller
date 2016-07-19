@@ -38,5 +38,19 @@ Feature: Command line arguments
     When I run `tiller -d -e test -h`
     Then the output should contain:
     """
-:environment=>"test"
-"""
+    :environment=>"test"
+    """
+
+  Scenario: Enable md5 checks
+  When I run `tiller -d --md5sum -h`
+  Then the output should contain:
+    """
+    "md5sum"=>true
+    """
+
+  Scenario: Enable md5 noexec
+    When I run `tiller -d --md5sum-noexec -h`
+    Then the output should contain:
+    """
+    "md5sum_noexec"=>true
+    """

@@ -8,7 +8,14 @@ class FileDataSource < Tiller::DataSource
       # Try and load from v2 format common.yaml
       if @config['environments'].has_key?(@config[:environment])
         @log.debug("#{self} : Using values from v2 format common.yaml")
-        @config_hash = @config['environments'][@config[:environment]]
+        if @config['environments'][@config[:environment]].is_a? Hash
+          @config_hash = @config['environments'][@config[:environment]]
+        else
+          # This permits "stub"" environments, where all the config is provided by another module e.g. defaults
+          # See https://github.com/markround/tiller/issues/29
+          @log.info("Using stub environment for #{@config[:environment]}")
+          @config_hash = Hash.new
+        end
       else
         abort("Error : Could not load environment #{@config[:environment]} from common.yaml")
       end

@@ -10,6 +10,8 @@ module Tiller
     :no_exec              => false,
     :verbose              => false,
     'api_enable'          => false,
+    'md5sum'              => false,
+    'md5sum_noexec'       => false,
     'api_port'            => 6275
   }
 end
@@ -64,6 +66,15 @@ module Tiller::Consul
           'template'  => '/tiller/values/%e/%t',
           'target'    => '/tiller/target_values/%t/%e'
       }
+    }
+  end
+end
+
+module Tiller::Environment
+  def self.defaults
+    {
+        'prefix'    => 'env_',
+        'lowercase' => true
     }
   end
 end
