@@ -26,6 +26,9 @@ require 'tiller/util'
 require 'tiller/templatesource'
 require 'tiller/datasource'
 require 'tiller/logger'
+require 'digest/md5'
+
+EXIT_SUCCESS = 0
 
 # And we're on our way...
 module Tiller
@@ -104,7 +107,10 @@ module Tiller
 
   # Now we go through each template we've identified, and get the
   # values for each one.
-  all_templates = {}
+  all_templates       = {}
+  skipped_templates   = 0
+  updated_templates   = 0
+
   templates.each do |template, content|
 
     # Start with a hash of our global values
@@ -145,9 +151,27 @@ module Tiller
     # doesn't exist.
     target_path = File.dirname(target_values['target'])
     FileUtils.mkdir_p(target_path) unless File.directory?(target_path)
+
+    filename = target_values['target']
+
+    # MD5 checksum of templates
+    if config['md5sum'] && File.exists?(filename)
+      template_md5 = Digest::MD5.hexdigest(parsed_template)
+      log.debug("MD5 of #{template} is #{template_md5}")
+      file_md5 = Digest::MD5.hexdigest(File.read(filename))
+      log.debug("MD5 of #{filename} is #{file_md5}")
+      if template_md5 == file_md5
+        log.info("Content unchanged for #{template}, not writing anything")
+        skipped_templates += 1
+        next
+      end
+    end
+
     target = open(target_values['target'], 'w')
     target.puts(parsed_template)
     target.close
+
+    updated_templates += 1
 
     # config is redundant in target_values, remove it for the final status hash.
     all_templates[template] = {
@@ -172,6 +196,10 @@ module Tiller
 
   end
 
+  if config['md5sum']
+    log.info("[#{updated_templates}/#{templates.size}] templates written, [#{skipped_templates}] skipped with no change")
+  end
+
   puts 'Template generation completed'
 
   # Final status structure for API
@@ -185,6 +213,12 @@ module Tiller
   if config.has_key?(:alt_exec)
     log.info("Overriding exec parameter [#{config['exec']}] with [#{config[:alt_exec]}]")
     config['exec'] = config[:alt_exec]
+  end
+
+  # If no templates were generated and md5sum_noexec is enabled, stop here.
+  if config['md5sum'] && config['md5sum_noexec'] && skipped_templates == templates.size
+    log.info("No templates written, stopping without exec")
+    exit EXIT_SUCCESS
   end
 
   if config[:no_exec] == false && config.key?('exec')
