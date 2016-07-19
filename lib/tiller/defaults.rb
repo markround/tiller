@@ -70,3 +70,12 @@ module Tiller::Consul
   end
 end
 
+module Tiller::Environment
+  def self.defaults
+    {
+        'prefix'    => 'env_',
+        'lowercase' => true
+    }
+  end
+end
+
