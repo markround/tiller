@@ -41,7 +41,7 @@ Gem::Specification.new do |s|
   )
   s.executables << 'tiller'
   s.homepage =
-      'http://www.markround.com'
+      'http://www.markround.com/blog/categories/tiller/'
   s.license = 'MIT'
   s.metadata = { 'source' => 'https://github.com/markround/tiller' }
   s.required_ruby_version = '>= 1.9.2'
