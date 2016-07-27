@@ -35,11 +35,14 @@ module Tiller
 
   puts "tiller v#{VERSION} (https://github.com/markround/tiller) <github@markround.com>"
 
-  config = parse_options(Tiller::Defaults)
-  log = Tiller::Logger.new(config)
+  class << self;
+    attr_accessor :config, :log
+  end
+
+  Tiller::config = parse_options(Tiller::Defaults)
+  Tiller::log = Tiller::Logger.new
 
   log.debug("Executable: #{__FILE__}")
-
 
   # Add tiller_lib to the LOAD PATH so we can pull in user-defined plugins
   $LOAD_PATH.unshift(config[:tiller_lib]) unless $LOAD_PATH.include?(config[:tiller_lib])
@@ -85,11 +88,11 @@ module Tiller
     # e.g. environment-specific execs and so on. We do this first so that connection strings
     # to datasources (e.g. zookeeper) can be included in the config before we obtain any
     # values.
-    config.merge!(data_class.new(config).common) do |key, old, new|
+    config.merge!(data_class.new.common) do |key, old, new|
       warn_merge(key, old, new, 'common', data_class.to_s)
     end
 
-    global_values.merge!(data_class.new(config).global_values) do |key, old, new|
+    global_values.merge!(data_class.new.global_values) do |key, old, new|
       warn_merge(key, old, new, 'global', data_class.to_s)
     end
   end
@@ -97,7 +100,7 @@ module Tiller
   # Get all Templates for the given environment
   templates = {}
   template_classes.each do |template_class|
-    ts = template_class.new(config)
+    ts = template_class.new
     ts.templates.each do |t|
       templates[t] = ts.template(t)
     end
@@ -120,7 +123,7 @@ module Tiller
     # Now we add to the 'tiller' hash with values from each DataSource, warning if we
     # get duplicate values.
     data_classes.each do |data_class|
-      dc = data_class.new(config)
+      dc = data_class.new
       if dc.values(template) != nil
         tiller.merge!(dc.values(template)) do |key, old, new|
           warn_merge(key, old, new, 'data', data_class.to_s)

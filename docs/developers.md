@@ -73,7 +73,7 @@ You can create your own template provider by extending the `Tiller::TemplateSour
 
 If you create a `setup` method, it will get called straight after initialization. This can be useful for connecting to a database, parsing configuration files and so on.
 
-When the class is created, it gets passed a hash containing various variables you can use to return different templates based on environment etc. Or you can read any values from `common.yaml` yourself, as it's accessible from the instance variable `@config`.
+When the class is created, it gets passed a hash containing various variables you can use to return different templates based on environment etc. Or you can read any values from `common.yaml` yourself, as it's accessible from the class variable `Tiller::config`.
 
 The simplest possible example template source that returns one hard-coded template would be something like :
 
@@ -106,7 +106,7 @@ You can create your own datasources by inheriting `Tiller::DataSource` and provi
 	* `perms`: The octal permissions the file should have (e.g. 0644)
 * `global_values` : Return a hash of global values. 
 
-As with template sources, if you need to connect to a database or do any other post-initialisation work, create a `setup` method. You also have the `@config` instance variable available, which is a hash of the Tiller configuration (`common.yaml`).
+As with template sources, if you need to connect to a database or do any other post-initialisation work, create a `setup` method. You also have the `Tiller::config` class variable available, which is a hash of the Tiller configuration (`common.yaml`).
 
 The simplest possible example data source that returns one global value ("example") for all templates would look something like :
 
@@ -135,13 +135,13 @@ template_sources:
 If you don't want to use the default directory of `/usr/local/lib/tiller`, you can specify an alternate location by setting the `tiller_lib` environment variable, or by using the `-l`/`--libdir` flag on the command line.
 
 ## Logging
-Both `Tiller::DataSource` and `Tiller::TemplateSource` have a log instance object available through `@log`. The verbosity is set to WARN by default but can be set to `INFO` when Tiller is called with the `-v` flag, and `DEBUG` when the `-d` flag is used. EG:
+There is a class logger available via `Tiller::log`. The verbosity is set to WARN by default but can be set to `INFO` when Tiller is called with the `-v` flag, and `DEBUG` when the `-d` flag is used. EG:
 
 ```ruby
 class ExampleDataSource < Tiller::DataSource
   def setup
-    @log.info('You will see this if you have run tiller with the -v flag')
-    @log.debug('You will only see this if you have run tiller with the -d flag')
+    Tiller::log.info('You will see this if you have run tiller with the -v flag')
+    Tiller::log.debug('You will only see this if you have run tiller with the -d flag')
   end 
   ...
   ... Rest of file

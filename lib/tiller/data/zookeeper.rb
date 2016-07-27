@@ -10,8 +10,8 @@ class ZookeeperDataSource < Tiller::DataSource
     # Set our defaults if not specified
     @zk_config = Tiller::Zookeeper::Defaults
 
-    raise 'No zookeeper configuration block' unless @config.has_key?('zookeeper')
-    @zk_config.merge!(@config['zookeeper'])
+    raise 'No zookeeper configuration block' unless Tiller::config.has_key?('zookeeper')
+    @zk_config.merge!(Tiller::config['zookeeper'])
 
     # Sanity check
     ['uri'].each {|c| raise "Missing Zookeeper configuration #{c}" unless @zk_config.has_key?(c)}
@@ -29,21 +29,21 @@ class ZookeeperDataSource < Tiller::DataSource
 
   def values(template_name)
     path = @zk_config['values']['template']
-      .gsub('%e',@config[:environment])
+      .gsub('%e',Tiller::config[:environment])
       .gsub('%t',template_name)
 
     get_values(path)
   end
 
   def global_values
-    path = @zk_config['values']['global'].gsub('%e',@config[:environment])
-    @log.info("Fetching Zookeeper globals from #{path}")
+    path = @zk_config['values']['global'].gsub('%e',Tiller::config[:environment])
+    Tiller::log.info("Fetching Zookeeper globals from #{path}")
     get_values(path)
   end
 
   def target_values(template_name)
     path = @zk_config['values']['target']
-      .gsub('%e',@config[:environment])
+      .gsub('%e',Tiller::config[:environment])
       .gsub('%t',template_name)
     get_values(path)
   end

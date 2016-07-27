@@ -6,14 +6,14 @@ require 'tiller/datasource'
 
 class DefaultsDataSource < Tiller::DataSource
   def setup
-    defaults_file = File.join(@config[:tiller_base], 'defaults.yaml')
-    defaults_dir  = File.join(@config[:tiller_base], 'defaults.d')
+    defaults_file = File.join(Tiller::config[:tiller_base], 'defaults.yaml')
+    defaults_dir  = File.join(Tiller::config[:tiller_base], 'defaults.d')
     @defaults_hash = Hash.new
 
     # First, try and load defaults from v2 config
-    if @config.has_key?('defaults')
-      @log.debug("#{self} : Using values from v2 format common.yaml")
-      @defaults_hash.deep_merge!(@config['defaults'])
+    if Tiller::config.has_key?('defaults')
+      Tiller::log.debug("#{self} : Using values from v2 format common.yaml")
+      @defaults_hash.deep_merge!(Tiller::config['defaults'])
     else
       # Read defaults in from defaults file if no v2 config
       # Handle empty files - if YAML didn't parse, it returns false so we skip them
@@ -28,7 +28,7 @@ class DefaultsDataSource < Tiller::DataSource
     if File.directory? defaults_dir
       Dir.glob(File.join(defaults_dir,'*.yaml')).each do |d|
         yaml = YAML.load(open(d))
-        @log.debug("Loading defaults from #{d}")
+        Tiller::log.debug("Loading defaults from #{d}")
         @defaults_hash.deep_merge!(yaml) if yaml != false
       end
     end
@@ -52,7 +52,7 @@ class DefaultsDataSource < Tiller::DataSource
         # Previous versions of Tiller didn't throw an error when we had an empty
         # template config definition in a defaults file. Tiller 0.7.3 "broke" this, so while it's arguably the
         # correct thing to bail out, in the interests of backwards-compatibility, we now instead log a warning and continue.
-        @log.warn("Warning, empty config for #{template_name}")
+        Tiller::log.warn("Warning, empty config for #{template_name}")
         Hash.new
       end
     else
@@ -67,7 +67,7 @@ class DefaultsDataSource < Tiller::DataSource
         values.key?('target') ? values : Hash.new
       else
         # See comments for values function.
-        @log.warn("Warning, empty config for #{template_name}")
+        Tiller::log.warn("Warning, empty config for #{template_name}")
         Hash.new
       end
     else
