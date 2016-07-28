@@ -1,5 +1,3 @@
-require 'tiller/logger'
-
 # Tiller data source base class.
 module Tiller
   # Subclasses provide global_values and/or values (things local to a specific

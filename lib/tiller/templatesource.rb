@@ -1,5 +1,3 @@
-require 'tiller/logger'
-
 # Tiller template source base class
 module Tiller
   # Subclasses provide templates (an array), and individual template contents
