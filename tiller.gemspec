@@ -38,6 +38,7 @@ Gem::Specification.new do |s|
     lib/tiller/template/zookeeper.rb
     lib/tiller/template/http.rb
     lib/tiller/template/consul.rb
+    lib/tiller/render.rb
   )
   s.executables << 'tiller'
   s.homepage =
