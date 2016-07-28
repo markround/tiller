@@ -1,4 +1,4 @@
-# General developer information
+	⁃	# General developer information
 
 Tiller follows a fairly standard gem project layout and has a Rakefile, Gemfile and other assorted bits of scaffolding that hopefully makes development straightforward. 
 
@@ -154,22 +154,30 @@ If your plugin requires configuration, it's preferable that it reads it from a t
 
 # Helper modules
 
-You can also write custom utility functions in Ruby that can be called from within templates. An example of this is the bundled `Tiller::render` function that lets you include and parse [sub-templates](../README.md#sub-templates) from another template. 
+You can also write custom utility functions in Ruby that can be called from within templates. An example of this is the bundled `Tiller::render` function that lets you include and parse [sub-templates](../README.md#sub-templates) from another template. Helper modules aren't intended to replace the existing Data- and Template-source plugins; if you need to get some values into your templates, or hook up to some external service, these are probably still the best way to go about it.
 
-As a (somewhat contrived) example, let's build a module that has some functions to convert strings to upper-case or lower-case. It's pretty useless as you could just use the built-in Ruby String methods to do this, but it still serves as an example!
+But if you have a more complicated transformation to do (e.g. convert markdown text into HTML) or need to include some logic in a function, a helper would clean up your templates as well as keep a clean separation of code and configuration.
 
-You'll want to set aside a custom namespace for these modules and functions so they don't clash with anything else. This example assumes you work for Widgets, Inc. and you decide to use the company name as your namespace. It also assumes you are using the default directory for custom plugins; if you want to change this, use the `-l`/`--lib-dir` option to Tiller to point it somewhere else.
+As an example, this is how you'd add a [Lorem Ipsum](http://www.lipsum.com/) generator for filling in place-holder text. We'll simply wrap the excellent [forgery](https://github.com/sevenwire/forgery) gem, so first make sure you have it installed:
 
-First, create a file named `/usr/local/lib/tiller/helper/widgets_inc.rb` , and put the following code inside:
+```
+$ gem install forgery
+Successfully installed forgery-0.6.0
+Parsing documentation for forgery-0.6.0
+Done installing documentation for forgery after 0 seconds
+1 gem installed
+```
+
+You'll need to set aside a custom namespace for these modules and functions so they don't clash with anything else. I'll also assume you are using the default directory for custom plugins; if you want to change this, use the `-l`/`--lib-dir` option to Tiller to point to somewhere else.
+
+First, create a file named `/usr/local/lib/tiller/helper/lorem_ipsum.rb` , and put the following code inside:
 
 ```ruby
-module Tiller::WidgetsInc
-  def self.uppercase(string)
-    string.upcase
-  end
-  	
-  def self.lowercase(string)
-    string.downcase
+require 'forgery'
+
+module Tiller::LoremIpsum
+  def self.words(num)
+    Forgery(:lorem_ipsum).words(num)
   end
 end
 ```
@@ -177,19 +185,18 @@ end
 You can then load this module by adding the following to the top-level of your `common.yaml`:
 
 ```yaml
-helpers: [ "widgets_inc" ]
+helpers: [ "lorem_ipsum" ]
 ```
 
-Now, in your templates you can call these functions like so:
+Now, in your templates you can call this function like so:
 
 ```erb
-This is all in upper-case : <%= Tiller::WidgetsInc.uppercase('Hello, World!') %>
-This is all in lower-case : <%= Tiller::WidgetsInc.lowercase('Hello, World!') %>
+This is some place-holder content : <%= Tiller::LoremIpsum.words(10) %>
 ```
 
-When you run Tiller with the `-v` (verbose) flag, you'll see `Helper modules loaded ["widgets_inc"]` amongst the output, and your template will contain the following text when generated :
+When you run Tiller with the `-v` (verbose) flag, you'll see `Helper modules loaded ["lorem_ipsum"]` amongst the output, and your template will contain the following text when generated :
 
 ```
-This is all in upper-case : HELLO, WORLD! -%>
-This is all in lower-case : hello, world! -%>
+This is some place-holder content : lorem ipsum dolor sit amet consectetuer adipiscing elit proin risus
 ``` 
+
