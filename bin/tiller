@@ -8,7 +8,7 @@
 #
 # Mark Dastmalchi-Round <github@markround.com>
 
-VERSION = '0.7.10'
+VERSION = '0.8.0'
 
 require 'erb'
 require 'ostruct'
@@ -27,6 +27,7 @@ require 'tiller/templatesource'
 require 'tiller/datasource'
 require 'tiller/logger'
 require 'digest/md5'
+require 'tiller/render'
 
 EXIT_SUCCESS = 0
 
@@ -35,11 +36,14 @@ module Tiller
 
   puts "tiller v#{VERSION} (https://github.com/markround/tiller) <github@markround.com>"
 
-  config = parse_options(Tiller::Defaults)
-  log = Tiller::Logger.new(config)
+  class << self;
+    attr_accessor :config, :log, :templates, :tiller
+  end
+
+  Tiller::config = parse_options(Tiller::Defaults)
+  Tiller::log = Tiller::Logger.new
 
   log.debug("Executable: #{__FILE__}")
-
 
   # Add tiller_lib to the LOAD PATH so we can pull in user-defined plugins
   $LOAD_PATH.unshift(config[:tiller_lib]) unless $LOAD_PATH.include?(config[:tiller_lib])
@@ -73,6 +77,10 @@ module Tiller
 
   log.info('Template sources loaded ' + template_classes.to_s)
   log.info('Data sources loaded ' + data_classes.to_s)
+  if (config.key?('helpers'))
+    helper_modules    = helper_loader(config['helpers'])
+    log.info('Helper modules loaded ' + helper_modules.to_s)
+  end
 
   # Now go through all our data sources and start to assemble our global_values
   # hash. As hashes are getting merged, new values will take precedence over
@@ -85,19 +93,19 @@ module Tiller
     # e.g. environment-specific execs and so on. We do this first so that connection strings
     # to datasources (e.g. zookeeper) can be included in the config before we obtain any
     # values.
-    config.merge!(data_class.new(config).common) do |key, old, new|
+    config.merge!(data_class.new.common) do |key, old, new|
       warn_merge(key, old, new, 'common', data_class.to_s)
     end
 
-    global_values.merge!(data_class.new(config).global_values) do |key, old, new|
+    global_values.merge!(data_class.new.global_values) do |key, old, new|
       warn_merge(key, old, new, 'global', data_class.to_s)
     end
   end
 
   # Get all Templates for the given environment
-  templates = {}
+  Tiller::templates = {}
   template_classes.each do |template_class|
-    ts = template_class.new(config)
+    ts = template_class.new
     ts.templates.each do |t|
       templates[t] = ts.template(t)
     end
@@ -114,13 +122,13 @@ module Tiller
   templates.each do |template, content|
 
     # Start with a hash of our global values
-    tiller = Hash.new.merge(global_values)
+    Tiller::  tiller = Hash.new.merge(global_values)
     target_values = {}
 
     # Now we add to the 'tiller' hash with values from each DataSource, warning if we
     # get duplicate values.
     data_classes.each do |data_class|
-      dc = data_class.new(config)
+      dc = data_class.new
       if dc.values(template) != nil
         tiller.merge!(dc.values(template)) do |key, old, new|
           warn_merge(key, old, new, 'data', data_class.to_s)
@@ -141,11 +149,8 @@ module Tiller
     # Now, we build the template
     log.info("Building template #{template}")
 
-    # Use an OpenStruct namespace, as it's way easier than faffing around with
-    # manual binding, and also non-existing values just get replaced by <nil>
-    # instead of failing on errors.
-    ns = OpenStruct.new(tiller)
-    parsed_template = ERB.new(content, nil, '-').result(ns.instance_eval { binding })
+    # Use our re-usable render tag
+    parsed_template = Tiller::render(template)
 
     # Write the template, and also create the directory path if it
     # doesn't exist.

@@ -1,5 +1,3 @@
-require 'tiller/logger'
-
 # Tiller data source base class.
 module Tiller
   # Subclasses provide global_values and/or values (things local to a specific
@@ -7,12 +5,7 @@ module Tiller
   # location, permissions, owner and so on)
   class DataSource
 
-    # Every plugin gets this hash, which is the full parsed config
-    @config ={}
-
-    def initialize(config)
-      @config = config
-      @log = Tiller::Logger.new(config)
+    def initialize
       setup
     end
 
@@ -52,7 +45,7 @@ module Tiller
     end
 
     def ping
-      'ping!' + @config.to_s
+      'ping!' + Tiller::config.to_s
     end
   end
 end

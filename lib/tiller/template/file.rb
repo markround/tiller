@@ -1,7 +1,7 @@
 class FileTemplateSource < Tiller::TemplateSource
-  def initialize(config)
+  def initialize
     super
-    @template_dir = File.join(@config[:tiller_base], 'templates/')
+    @template_dir = File.join(Tiller::config[:tiller_base], 'templates/')
   end
 
   # Simply return a list of all the templates in the $tiller_base/templates

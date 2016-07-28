@@ -4,8 +4,8 @@ class EnvironmentDataSource < Tiller::DataSource
 
   def setup
     @plugin_config = Tiller::Environment.defaults
-    if @config.has_key? 'environment' and @config['environment'].is_a? Hash
-      @plugin_config.merge!(@config['environment'])
+    if Tiller::config.has_key? 'environment' and Tiller::config['environment'].is_a? Hash
+      @plugin_config.merge!(Tiller::config['environment'])
     end
   end
 

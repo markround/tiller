@@ -104,6 +104,10 @@ In addition to specifying values in YAML environment files, there are other plug
  * [Random data](docs/plugins/random.md) : Simple wrapper to provide random values to your templates.
  * [XML files](docs/plugins/xml_file.md) : Load and parse XML data for use in your templates.
  * [Zookeeper plugins](docs/plugins/zookeeper.md) : These plugins allow you to store your templates and values in a ZooKeeper cluster.
+ 
+### Helper modules
+You can also make use of custom utility functions in Ruby that can be called from within templates. For more information on this, see the [developers documentation](docs/developers.md#helper-modules).
+
 
 ## A word about configuration
 Tiller uses YAML for configuration files. If you're unfamiliar with YAML, don't worry - it's very easy to pick up. A good introduction is here : ["Complete idiot's introduction to YAML"](https://github.com/Animosity/CraftIRC/wiki/Complete-idiot's-introduction-to-yaml)
@@ -378,6 +382,28 @@ mongodb.erb:
 		replSet: 'staging'
 ```
 And so on, one for each environment. You would then remove the `environments:` block from `common.yaml`, and Tiller will switch to loading these individual files.
+
+# Sub-templates
+
+You can include other templates in your templates by using the built-in `Tiller::render` [helper module](#helper-modules). For example, if you have a template called `main.erb`, you can include another template called `sub.erb` by calling this module inside `main.erb`:
+
+```erb
+This is the main.erb template. 
+This will include the sub.erb template below this line:
+<%= Tiller::render('sub.erb') -%>
+```
+
+You can nest sub-templates as deeply as you wish, so you can have sub-templates including another sub-template and so on. However, it is important to note that all variables for sub-templates are evaluated only at the level of the top-level template. 
+
+Therefore, trying to pass a variable to the sub-template by putting something like this in your `common.yaml` will not work:
+
+```
+sub.erb:
+  config:
+    sub_var: This is a var for the sub-template
+```
+
+You will not be able to access `sub_var` from your template - you will need to declare it in the `main.erb` block instead, where it will be available to all sub-templates.
 
 # Checksums
 You may wish to only write templates to disk if they do not already exist, or if their content has changed. You can pass the `--md5sum` flag on the command line, or set `md5sum: true` in your `common.yaml`. With this feature enabled, you'll see output like this in your logs:

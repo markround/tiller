@@ -9,13 +9,13 @@ class ConsulTemplateSource < Tiller::TemplateSource
 
   def templates
     path = interpolate("#{@consul_config['templates']}")
-    @log.debug("#{self} : Fetching templates from #{path}")
+    Tiller::log.debug("#{self} : Fetching templates from #{path}")
     templates = Diplomat::Kv.get(path, {:keys => true, :dc => @consul_config['dc']}, :return)
 
     if templates.is_a? Array
       templates.map { |t| File.basename(t) }
     else
-      @log.warn("Consul : No templates could be fetched from #{path}")
+      Tiller::log.warn("Consul : No templates could be fetched from #{path}")
       []
     end
   end

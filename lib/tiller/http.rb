@@ -12,8 +12,8 @@ module Tiller::HttpCommon
     # Set our defaults if not specified
     @http_config = Tiller::Http.defaults
 
-    raise 'No HTTP configuration block' unless @config.has_key?('http')
-    @http_config.merge!(@config['http'])
+    raise 'No HTTP configuration block' unless Tiller::config.has_key?('http')
+    @http_config.merge!(Tiller::config['http'])
 
     # Sanity check
     ['uri'].each {|c| raise "HTTP: Missing HTTP configuration #{c}" unless @http_config.has_key?(c)}
@@ -23,14 +23,14 @@ module Tiller::HttpCommon
 
     # Basic auth for resource
     if @http_config.has_key?('username')
-      @log.debug('HTTP: Using basic authentication')
+      Tiller::log.debug('HTTP: Using basic authentication')
       raise 'HTTP: Missing password for authentication' unless @http_config.has_key?('password')
       @client.set_auth(nil, @http_config['username'], @http_config['password'])
     end
 
     # Basic auth for proxy
     if @http_config.has_key?('proxy_username')
-      @log.debug('HTTP: Using proxy basic authentication')
+      Tiller::log.debug('HTTP: Using proxy basic authentication')
       raise 'HTTP: Missing password for proxy authentication' unless @http_config.has_key?('proxy_password')
       @client.set_proxy_auth(@http_config['proxy_username'], @http_config['proxy_password'])
     end
@@ -39,10 +39,10 @@ module Tiller::HttpCommon
 
   # Interpolate the placeholders and return content from a URI
   def get_uri(uri, interpolate={})
-    uri.gsub!('%e', @config[:environment])
+    uri.gsub!('%e', Tiller::config[:environment])
     uri.gsub!('%t', interpolate[:template]) if interpolate[:template]
 
-    @log.debug("HTTP: Fetching #{uri}")
+    Tiller::log.debug("HTTP: Fetching #{uri}")
     resp = @client.get(uri, :follow_redirect => true)
     raise "HTTP: Server responded with status #{resp.status} for #{uri}" if resp.status != 200
     resp.body
@@ -53,7 +53,7 @@ module Tiller::HttpCommon
   def parse(content)
     case @http_config['parser']
       when 'json'
-        @log.debug("HTTP: Using JSON parser")
+        Tiller::log.debug("HTTP: Using JSON parser")
         JSON.parse(content)
       else
         raise "HTTP: Unsupported parser '#{@http_config['parser']}'"

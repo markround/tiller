@@ -4,26 +4,26 @@ class FileDataSource < Tiller::DataSource
   # Open and parse the environment file. Tries from v2 format common.yaml first, if that
   # failes, then it looks for separate environment files.
   def setup
-    if @config.has_key?('environments')
+    if Tiller::config.has_key?('environments')
       # Try and load from v2 format common.yaml
-      if @config['environments'].has_key?(@config[:environment])
-        @log.debug("#{self} : Using values from v2 format common.yaml")
-        if @config['environments'][@config[:environment]].is_a? Hash
-          @config_hash = @config['environments'][@config[:environment]]
+      if Tiller::config['environments'].has_key?(Tiller::config[:environment])
+        Tiller::log.debug("#{self} : Using values from v2 format common.yaml")
+        if Tiller::config['environments'][Tiller::config[:environment]].is_a? Hash
+          @config_hash = Tiller::config['environments'][Tiller::config[:environment]]
         else
           # This permits "stub"" environments, where all the config is provided by another module e.g. defaults
           # See https://github.com/markround/tiller/issues/29
-          @log.info("Using stub environment for #{@config[:environment]}")
+          Tiller::log.info("Using stub environment for #{Tiller::config[:environment]}")
           @config_hash = Hash.new
         end
       else
-        abort("Error : Could not load environment #{@config[:environment]} from common.yaml")
+        abort("Error : Could not load environment #{Tiller::config[:environment]} from common.yaml")
       end
     else
       # Try and load from v1 format files
       begin
-        env_file = File.join(@config[:tiller_base], 'environments',
-                             "#{@config[:environment]}.yaml")
+        env_file = File.join(Tiller::config[:tiller_base], 'environments',
+                             "#{Tiller::config[:environment]}.yaml")
         @config_hash = YAML.load(open(env_file))
       rescue
         abort("Error : Could not load environment file #{env_file}")

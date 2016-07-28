@@ -13,12 +13,12 @@ class EnvironmentJsonDataSource < Tiller::DataSource
         @json_structure = parse.is_a?(Hash) ? parse : Hash.new
         if @json_structure[VERSION_KEY].is_a? Integer
           @json_version = @json_structure[VERSION_KEY]
-          @log.debug("Using v#{@json_version} tiller_json format")
+          Tiller::log.debug("Using v#{@json_version} tiller_json format")
         else
           @json_version = 1
         end
       rescue JSON::ParserError
-        @log.warn('Warning : Error parsing tiller_json environment variable')
+        Tiller::log.warn('Warning : Error parsing tiller_json environment variable')
       end
     else
       @json_structure = Hash.new

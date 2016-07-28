@@ -6,8 +6,8 @@ class ZookeeperTemplateSource < Tiller::TemplateSource
     # Set our defaults if not specified
     @zk_config = Tiller::Zookeeper::Defaults
 
-    raise 'No zookeeper configuration block' unless @config.has_key?('zookeeper')
-    @zk_config.merge!(@config['zookeeper'])
+    raise 'No zookeeper configuration block' unless Tiller::config.has_key?('zookeeper')
+    @zk_config.merge!(Tiller::config['zookeeper'])
 
     # Sanity check
     ['uri'].each {|c| raise "Missing Zookeeper configuration #{c}" unless @zk_config.has_key?(c)}
@@ -24,8 +24,8 @@ class ZookeeperTemplateSource < Tiller::TemplateSource
   end
 
   def templates
-    path = @zk_config['templates'].gsub('%e',@config[:environment])
-    @log.info("Fetching Zookeeper templates from #{path}")
+    path = @zk_config['templates'].gsub('%e',Tiller::config[:environment])
+    Tiller::log.info("Fetching Zookeeper templates from #{path}")
     templates = []
     if @zk.exists?(path)
       templates = @zk.children(path)
@@ -35,7 +35,7 @@ class ZookeeperTemplateSource < Tiller::TemplateSource
   end
 
   def template(template_name)
-    path = @zk_config['templates'].gsub('%e',@config[:environment]) + "/#{template_name}"
+    path = @zk_config['templates'].gsub('%e',Tiller::config[:environment]) + "/#{template_name}"
     @zk.get(path)[0]
   end
 

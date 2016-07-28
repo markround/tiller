@@ -7,18 +7,18 @@ require 'crack'
 class XmlFileDataSource < Tiller::DataSource
 
   def global_values
-    parse_xml(@config)
+    parse_xml(Tiller::config)
   end
 
   def values(template)
-    parse_xml(@config['environments'][@config[:environment]][template])
+    parse_xml(Tiller::config['environments'][Tiller::config[:environment]][template])
   end
 
   def parse_xml(config_hash)
     if config_hash.has_key?('xml_file_path') && config_hash.has_key?('xml_file_var')
       path = config_hash['xml_file_path']
       var = config_hash['xml_file_var']
-      @log.info('Opening XML file : ' + path)
+      Tiller::log.info('Opening XML file : ' + path)
       begin
         xml = Crack::XML.parse(File.open(path))
       rescue StandardError => e
@@ -26,7 +26,7 @@ class XmlFileDataSource < Tiller::DataSource
       end
       struct = {}
       struct[var] = xml
-      @log.debug("Created XML structure : #{struct}")
+      Tiller::log.debug("Created XML structure : #{struct}")
       struct
     else
       {}

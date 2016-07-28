@@ -2,7 +2,6 @@ require 'tiller/templatesource'
 require 'tiller/datasource'
 
 def loader(type,sources)
-
   case type.to_s
     when 'Tiller::DataSource'
       source_path = 'tiller/data'
@@ -27,5 +26,17 @@ def loader(type,sources)
   end
 
   classes
+end
 
+
+def helper_loader(helpers)
+  source_path = 'tiller/helper'
+  loaded = []
+
+  helpers.each do |h|
+    require File.join(source_path,"#{h}.rb")
+    loaded.push(h)
+  end
+
+  loaded
 end
