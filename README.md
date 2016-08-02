@@ -5,7 +5,7 @@ You might find this particularly useful if you're using Docker, as you can ship 
 
 However, its use is not just limited to Docker; you may also find it useful as a sort of "proxy" that can provide values to application configuration files from a data source that the application does not natively support. 
 
-It's available as a [Ruby Gem](http://https://rubygems.org/gems/tiller), so installation should be a simple `gem install tiller`.
+It's available as a [Ruby Gem](https://rubygems.org/gems/tiller), so installation should be a simple `gem install tiller`.
 
 [![Gem Version](https://badge.fury.io/rb/tiller.svg)](http://badge.fury.io/rb/tiller)
 [![Build Status](https://travis-ci.org/markround/tiller.svg?branch=develop)](https://travis-ci.org/markround/tiller)
