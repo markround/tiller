@@ -8,8 +8,6 @@
 #
 # Mark Dastmalchi-Round <github@markround.com>
 
-VERSION = '0.8.0'
-
 require 'erb'
 require 'ostruct'
 require 'yaml'
@@ -28,6 +26,7 @@ require 'tiller/datasource'
 require 'tiller/logger'
 require 'digest/md5'
 require 'tiller/render'
+require 'tiller/version'
 
 EXIT_SUCCESS = 0
 
