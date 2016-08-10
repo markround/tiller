@@ -145,7 +145,7 @@ data_sources:
   - environment
 ```
 
-So, to summarise: A template value will take priority over a global value, and a value from a plugin loaded later will take priority over any previously loaded plugins.
+So, to summarise: *A template value will take priority over a global value, and any value from a plugin loaded later will take priority over any previously loaded plugins.*
 	    
 ## Arguments
 Tiller understands the following *optional* command-line arguments (mostly used for debugging purposes) :
