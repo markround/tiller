@@ -1,4 +1,4 @@
-	⁃	# General developer information
+# General developer information
 
 Tiller follows a fairly standard gem project layout and has a Rakefile, Gemfile and other assorted bits of scaffolding that hopefully makes development straightforward. 
 

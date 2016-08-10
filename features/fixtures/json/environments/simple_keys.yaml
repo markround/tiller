@@ -1,4 +1,4 @@
 simple_keys.erb:
   target: simple_keys.txt
   config:
-    default_value: 'This overrides the global value from the JSON data source'
+    default_value: 'From the file datasource'
