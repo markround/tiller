@@ -1,4 +1,4 @@
-require_relative 'lib/tiller/version'
+require './lib/tiller/version.rb'
 
 Gem::Specification.new do |s|
   s.name = 'tiller'
