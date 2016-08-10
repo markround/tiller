@@ -8,8 +8,6 @@
 #
 # Mark Dastmalchi-Round <github@markround.com>
 
-VERSION = '0.8.0'
-
 require 'erb'
 require 'ostruct'
 require 'yaml'
@@ -28,6 +26,7 @@ require 'tiller/datasource'
 require 'tiller/logger'
 require 'digest/md5'
 require 'tiller/render'
+require 'tiller/version'
 
 EXIT_SUCCESS = 0
 
@@ -82,12 +81,10 @@ module Tiller
     log.info('Helper modules loaded ' + helper_modules.to_s)
   end
 
-  # Now go through all our data sources and start to assemble our global_values
-  # hash. As hashes are getting merged, new values will take precedence over
-  # older ones, and a warning will be displayed.
-  # We also add in 'environment' to start with as it's very useful for all
-  # templates.
+  # We now don't actually use the global_values hash for anything when constructing the templates (as they can be
+  # over-ridden by template values), but it's here to keep compatibility with the v1 API.
   global_values = { 'environment' => config[:environment] }
+
   data_classes.each do |data_class|
     # Now need to see if any of the common.yaml values have been over-ridden by a datasource
     # e.g. environment-specific execs and so on. We do this first so that connection strings
@@ -97,9 +94,8 @@ module Tiller
       warn_merge(key, old, new, 'common', data_class.to_s)
     end
 
-    global_values.merge!(data_class.new.global_values) do |key, old, new|
-      warn_merge(key, old, new, 'global', data_class.to_s)
-    end
+    # Merge for the sake of the v1 API
+    global_values.merge!(data_class.new.global_values)
   end
 
   # Get all Templates for the given environment
@@ -119,16 +115,24 @@ module Tiller
   skipped_templates   = 0
   updated_templates   = 0
 
-  templates.each do |template, content|
+  templates.each do |template, _content|
 
-    # Start with a hash of our global values
-    Tiller::  tiller = Hash.new.merge(global_values)
-    target_values = {}
+    # We add in 'environment' to start with as it's very useful for all
+    # templates.
+    Tiller::tiller = { 'environment' => config[:environment] }
+    target_values  = {}
 
     # Now we add to the 'tiller' hash with values from each DataSource, warning if we
     # get duplicate values.
     data_classes.each do |data_class|
       dc = data_class.new
+
+      # First take the global values from the datasource
+      tiller.merge!(data_class.new.global_values) do |key, old, new|
+        warn_merge(key, old, new, 'data', data_class.to_s)
+      end
+
+      # Then merge template values over the top of them
       if dc.values(template) != nil
         tiller.merge!(dc.values(template)) do |key, old, new|
           warn_merge(key, old, new, 'data', data_class.to_s)
@@ -149,7 +153,7 @@ module Tiller
     # Now, we build the template
     log.info("Building template #{template}")
 
-    # Use our re-usable render tag
+    # Use our re-usable render helper
     parsed_template = Tiller::render(template)
 
     # Write the template, and also create the directory path if it

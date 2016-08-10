@@ -13,14 +13,15 @@ Feature: Tiller environment plugin
     Then a file named "test.txt" should exist
     And the file "test.txt" should contain "Hello, World!"
 
-  Scenario: Local config overrides global plugin
+  Scenario: Local config now does not over-ride environment
     Given I use a fixture named "environment_plugin"
     Given I set the environment variables exactly to:
       | variable    | value           |
       | test        | Hello, World!   |
     When I successfully run `tiller -b . -v -n -e local_override`
     Then a file named "test.txt" should exist
-    And the file "test.txt" should contain "This value overwrites the global value provided by the environment plugin"
+    And the file "test.txt" should contain "Hello, World!"
+    And the output should contain "env_test => 'This value will be overwritten' being replaced by : 'Hello, World!' from EnvironmentDataSource"
 
   Scenario: Custom prefix
     Given a file named "common.yaml" with:

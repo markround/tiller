@@ -10,7 +10,7 @@ group :development do
   gem 'zk'
   gem 'crack'
   gem 'rubyzip'
-  gem 'diplomat'
+  gem 'diplomat' , '~> 0.18.0'
   gem 'tiller', :path => '.'
 end
 

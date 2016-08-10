@@ -8,7 +8,7 @@ require 'tiller/api/handlers/templates'
 require 'tiller/api/handlers/template'
 
 
-API_VERSION=1
+API_VERSION=2
 
 # The following is a VERY simple HTTP API, used for querying the status of Tiller
 # after it has generated templates and forked a child process.

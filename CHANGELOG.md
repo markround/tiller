@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.x 
+
+* 0.9.0 (10/Aug/2016)
+  * Breaking change : Value precedence has changed. Previously, global values were merged together in the order that plugins were loaded. Then, the same was done for template values. Finally, template values were merged over the top of global values. This led to some counter-intuitive behaviour, such as a template value being defined in a defaults section, but still taking priority over a global value supplied by a higher priority plugin (like the environment plugin). Now, the behaviour has been simplified : We go through the plugins in order, and for each one we merge template values over global values, then proceed onto the next plugin. In summary: A template value will take priority over a global value, and any value from a plugin loaded later will take priority over any previously loaded plugins. Many thanks again to [Eugen Mayer](https://github.com/EugenMayer) for his suggestion on cleaning up this behaviour.
+
+
 ## 0.8.x
 
 * 0.8.0 (28/Jul/2016)

@@ -104,7 +104,7 @@ In addition to specifying values in YAML environment files, there are other plug
  * [Random data](docs/plugins/random.md) : Simple wrapper to provide random values to your templates.
  * [XML files](docs/plugins/xml_file.md) : Load and parse XML data for use in your templates.
  * [Zookeeper plugins](docs/plugins/zookeeper.md) : These plugins allow you to store your templates and values in a ZooKeeper cluster.
- 
+  
 ### Helper modules
 You can also make use of custom utility functions in Ruby that can be called from within templates. For more information on this, see the [developers documentation](docs/developers.md#helper-modules).
 
@@ -118,6 +118,34 @@ However, 0.7 and later versions allow you to place most configuration inside a s
 
 Of course, you can always use the old "one file for each environment" approach if you prefer. Tiller is 100% backwards compatible with the old approach, and I have no intention of removing support for it as it's very useful in certain circumstances. The only thing to be aware of is that you can't mix the two configuration styles: If you configure some environments in `common.yaml`, Tiller will ignore any separate environment configuration files.
 
+## Ordering
+Configuration is covered below, but this is an important point so I mention it here so it's more visible! You can use multiple plugins together, and Tiller lets you over-ride values from one data source with another. 
+ 
+Plugins can provide two types of values:
+
+ * "global values" which are available to all templates
+ * "template values" which are specific to a single template
+ 
+Template values always take priority - If a template value has the same name as a global value, it will overwrite the global value. 
+
+When you load the plugins (covered below), the order you load them in is significant - the last loaded plugin will have the highest priority and over-write values from the previous plugin. For example, in short-form YAML:
+
+```yaml
+data_sources: [ "defaults" , "file" , "environment" ]
+```
+
+The priority increases from left to right: Defaults will be used first, then the file data source, and finally any values specified as environment variables will over-write anything else.
+
+In long-form YAML, the priority increases from top to bottom:
+
+```yaml
+data_sources:
+  - defaults
+  - file
+  - environment
+```
+
+So, to summarise: A template value will take priority over a global value, and a value from a plugin loaded later will take priority over any previously loaded plugins.
 	    
 ## Arguments
 Tiller understands the following *optional* command-line arguments (mostly used for debugging purposes) :
@@ -237,7 +265,7 @@ This means that a shell will not be spawned to run the command, and no shell exp
 	exec: "/usr/bin/supervisord -n"
 ```
 
-* `data_sources` : The data sources you'll be using to populate the configuration files. This should usually just be set to "file" to start with, although you can write your own plugins and pull them in (more on that later).
+* `data_sources` : The data source plugins you'll be using to populate the configuration files. This should usually just be set to "file" to start with, although you can write your own plugins and pull them in (more on that later).
 * `template_sources` Where the templates come from, again a list of plugins.
 * `default_environment` : Sets the default environment file to load if none is specified (either using the -e flag, or via the `environment` environment variable). This defaults to 'development', but you may want to set this to 'production' to mimic the old, pre-0.4.0 behaviour.
 
@@ -247,19 +275,6 @@ exec: [ "/usr/bin/mongod" , "--config" , "/etc/mongodb.conf" , "--rest" ]
 data_sources: [ "file" ]
 template_sources: [ "file" ]
 ```
-
-### Ordering
-Since Tiller 0.3.0, the order you specify these plugins in is important. They'll be used in the order you specify, so you can order them to your particular use case. For example, you may want to retrieve values from the `defaults` data source, then overwrite that with some values from the `file` data source, and finally allow users to set their own values from the `environment_json` source (see below for more on each of these). In which case, you'd specify :
-```yaml
-data_sources:
-  - defaults
-  - file
-  - environment_json
-```
-
-(Or, in short-form YAML) : `data_sources: [ "defaults" , "file" , "environment_json" ]`
-
-**Important** : Please note that template-specific values take priority over global values (see the [Gotchas](#gotchas) section for an example).
 
 ## Template files
 
@@ -291,7 +306,7 @@ Now it will only contain the `replSet = (whatever)` line when there is a variabl
 
 These headings in `common.yaml` (underneath the `environments:` key) are named after the environment variable `environment` that you pass in (usually by using `docker run -e environment=<whatever>`, which sets the environment variable). Alternatively, you can set the environment by using the `tiller -e` flag from the command line. 
 
-When you're using the default `FileDataSource`, these environment blocks in `common.yaml` define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and also a set of key:value pairs that are made available to the template via the usual `<%= key %>` ERB syntax.
+When you're using the default `FileDataSource`, these environment blocks in `common.yaml` define the templates to be parsed, where the generated configuration file should be installed, ownership and permission information, and also a set of key:value pairs (the "template values") that are made available to the template via the usual `<%= key %>` ERB syntax.
 
 Carrying on with the MongoDB example, here's how you might set the replica set name in your staging and production environments (add the following to `common.yaml`):
 
@@ -457,10 +472,9 @@ Server: Tiller 0.3.1 / API v1
 The API responds to the following GET requests:
 
 * **/ping** : Used to check the API is up and running.
-* **/v1/config** : Return a hash of the Tiller configuration.
-* **/v1/globals** : Return a hash of global values from all data sources.
-* **/v1/templates** : Return a list of generated templates.
-* **/v1/template/{template_name}** : Return a hash of merged values and target values for the named template.
+* **/v2/config** : Return a hash of the Tiller configuration.
+* **/v2/templates** : Return a list of generated templates.
+* **/v2/template/{template_name}** : Return a hash of merged values and target values for the named template.
 
 
 # Developer information
@@ -469,32 +483,6 @@ If you want to build your own plugins, or generally hack on Tiller, see [docs/de
 # Gotchas
 ## Merging values
 Tiller will merge values from all sources - this is intended, as it allows you to over-ride values from one plugin with another. However, be careful as this may have undefined results. Particularly if you include two data sources that each provide target values - you may find that your templates end up getting installed in locations you didn't expect, or containing spurious values!
-
-## Global and template-specific value precedence 
-A "global" value will be over-written by a template-specific value (e.g. a value specified for a template in a `config:` block). This may cause you unexpected behaviour when you attempt to use a value from a data source such as `environment_json` or `environment` which exposes its values as global values.
-
-Just to re-iterate this point, and make it as clear as possible: *a template value always over-rides a global value, and can only be over-ridden by another template value from a higher priority plugin.*
-
-For example, if you have the following in an environment configuration block :
-
-```yaml
-my_template.erb:
-  target: /tmp/template.txt
-  config:
-    test: 'This is a default value'
-```
-
-And then use the environment_json plugin to try and over-ride this value, like so :
-
-`$ tiller_json='{ "test" : "From JSON!" }' tiller -n -v ......`
-
-You'll find that you won't see the "From JSON!" string appear in your template, no matter what order you load the plugins. This is because the `test` value in your environment configuration is a local, per-template value and thus will always take priority over a global value.
-
-If this isn't what you want, for the `environment_json` plugin, you can use the new v2 JSON format (as described above) to split your values into global and per-template local values. 
-
-Another solution is to provide a default, but allow it to be over-ridden, by using the `defaults` plugin to provide the default values (so all global data sources are merged in the correct order). See [This blog post](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for an example.
-
-See also my comment on [issue #26](https://github.com/markround/tiller/issues/26#issuecomment-232957927) for some examples on how to over-ride defaults per environments.
 
 ## Empty config
 If you are using the file datasource with Tiller < 0.2.5, you must provide a config hash, even if it's empty (e.g. you are using other data sources to provide all the values for your templates). For example:
