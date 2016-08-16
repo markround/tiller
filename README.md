@@ -484,6 +484,44 @@ If you want to build your own plugins, or generally hack on Tiller, see [docs/de
 ## Merging values
 Tiller will merge values from all sources - this is intended, as it allows you to over-ride values from one plugin with another. However, be careful as this may have undefined results. Particularly if you include two data sources that each provide target values - you may find that your templates end up getting installed in locations you didn't expect, or containing spurious values!
 
+The default merging behaviour is to replace values with ones from a higher priority plugin. However, if you wish instead to merge hash structures, then you can set `deep_merge: true` in `common.yaml`.
+
+For example, the default behaviour without `deep_merge`:
+```yaml
+---
+data_sources: ["defaults","file"]
+template_sources: ["file"]
+defaults:
+  global:
+    test_var:
+      key1: "key1 from defaults"
+      key2: "key2 from defaults"
+
+environments:
+  development:
+    global_values:
+      test_var:
+        key1: "key1 from development environment"
+
+```
+
+Will result in a `test_var` value with the following structure (the hash from the defaults plugin has been completely replaced):
+
+```
+{"key1"=>"key1 from development environment"}
+```
+
+Setting `deep_merge: true` will instead result in a `test_var` with keys merged:
+
+```
+{ 
+  "key1"=>"key1 from development environment", 
+  "key2"=>"key2 from defaults"
+}
+```
+
+
+
 ## Empty config
 If you are using the file datasource with Tiller < 0.2.5, you must provide a config hash, even if it's empty (e.g. you are using other data sources to provide all the values for your templates). For example:
 

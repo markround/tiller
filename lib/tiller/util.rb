@@ -1,5 +1,14 @@
-# Thanks, StackOverflow ;)
 class ::Hash
+
+  def tiller_merge!(second)
+    if Tiller::config['deep_merge']
+      self.deep_merge!(second)
+    else
+      self.merge!(second){ |key , v1 , v2| yield key, v1, v2 if block_given? }
+    end
+  end
+
+
   def deep_merge!(second)
     merger = proc { |_key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : [:undefined, nil, :nil].include?(v2) ? v1 : v2 }
     self.merge!(second, &merger)

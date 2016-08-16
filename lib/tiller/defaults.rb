@@ -12,6 +12,7 @@ module Tiller
     'api_enable'          => false,
     'md5sum'              => false,
     'md5sum_noexec'       => false,
+    'deep_merge'          => false,
     'api_port'            => 6275
   }
 end
