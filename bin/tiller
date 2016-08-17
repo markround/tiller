@@ -128,20 +128,20 @@ module Tiller
       dc = data_class.new
 
       # First take the global values from the datasource
-      tiller.merge!(data_class.new.global_values) do |key, old, new|
+      tiller.tiller_merge!(data_class.new.global_values) do |key, old, new|
         warn_merge(key, old, new, 'data', data_class.to_s)
       end
 
       # Then merge template values over the top of them
       if dc.values(template) != nil
-        tiller.merge!(dc.values(template)) do |key, old, new|
+        tiller.tiller_merge!(dc.values(template)) do |key, old, new|
           warn_merge(key, old, new, 'data', data_class.to_s)
         end
       end
 
       # Now get target_values (where the file should be installed to,
       # permissions and so on)
-      target_values.merge!(dc.target_values(template)) do |key, old, new|
+      target_values.tiller_merge!(dc.target_values(template)) do |key, old, new|
         warn_merge(key, old, new, 'target', data_class.to_s)
       end
     end

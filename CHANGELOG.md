@@ -2,6 +2,8 @@
 
 ## 0.9.x 
 
+* 0.9.1 (17/Aug/2016) : Added `deep_merge` flag to optionally merge hash values, instead of replacing them with values from a higher priority plugin ([issue #38](https://github.com/markround/tiller/issues/38)). Thanks to [pgleyzer](https://github.com/pgleyzer) for raising this issue.
+
 * 0.9.0 (10/Aug/2016)
   * Breaking change : Value precedence has changed. Previously, global values were merged together in the order that plugins were loaded. Then, the same was done for template values. Finally, template values were merged over the top of global values. This led to some counter-intuitive behaviour, such as a template value being defined in a defaults section, but still taking priority over a global value supplied by a higher priority plugin (like the environment plugin). Now, the behaviour has been simplified : We go through the plugins in order, and for each one we merge template values over global values, then proceed onto the next plugin. In summary: A template value will take priority over a global value, and any value from a plugin loaded later will take priority over any previously loaded plugins. Many thanks again to [Eugen Mayer](https://github.com/EugenMayer) for his suggestion on cleaning up this behaviour.
 
