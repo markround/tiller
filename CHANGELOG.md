@@ -2,6 +2,8 @@
 
 ## 0.9.x 
 
+* 0.9.2 (19/Aug/2016) : No changes, just corrected date in gemspec.
+
 * 0.9.1 (17/Aug/2016) : Added `deep_merge` flag to optionally merge hash values, instead of replacing them with values from a higher priority plugin ([issue #38](https://github.com/markround/tiller/issues/38)). Thanks to [pgleyzer](https://github.com/pgleyzer) for raising this issue.
 
 * 0.9.0 (10/Aug/2016)
