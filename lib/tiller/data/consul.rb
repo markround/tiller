@@ -56,7 +56,12 @@ class ConsulDataSource < Tiller::DataSource
 
 
   def fetch_all_keys(path)
-    keys = Diplomat::Kv.get(path, { keys: true, :dc => @consul_config['dc'] }, :return)
+    keys = []
+    begin
+      keys = Diplomat::Kv.get(path, { keys: true, :dc => @consul_config['dc'] }, :return)
+    rescue Faraday::ConnectionFailed
+      Tiller::log.error("Could not connect to consul! #{$!}")
+    end
     all_keys = {}
     if keys.is_a? Array
       keys.each do |k|
