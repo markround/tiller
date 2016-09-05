@@ -10,6 +10,7 @@ class HttpTemplateSource < Tiller::TemplateSource
   include Tiller::HttpCommon
 
   def templates
+    return [] unless Tiller::config.has_key?('http')
     parse(get_uri(@http_config['uri'] + @http_config['templates']))
   end
 

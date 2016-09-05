@@ -4,10 +4,15 @@ require 'tiller/defaults'
 require 'tiller/util'
 
 module Tiller::ConsulCommon
+
+
   def setup
     # Set our defaults if not specified
     @consul_config = Tiller::Consul.defaults
-    raise 'No Consul configuration block' unless Tiller::config.has_key?('consul')
+    unless Tiller::config.has_key?('consul')
+      Tiller::log.info('No Consul configuration block for this environment')
+      return
+    end
     @consul_config.deep_merge!(Tiller::config['consul'])
 
     # Sanity check

@@ -57,3 +57,30 @@ Feature: Consul plugin
     And the file "template1.txt" should contain "Nodes : {"
     And the file "template1.txt" should contain "ServicePort=8300"
 
+  Scenario: Test environment without Consul block
+    Given a file named "common.yaml" with:
+    """
+    ---
+    exec: ["true"]
+    data_sources: [ "consul" , "file" ]
+    template_sources: [ "consul" , "file" ]
+
+    environments:
+      development:
+        test.erb:
+          target: test.txt
+          config:
+            test_var: "This is a template var from the development env"
+    """
+    And a directory named "templates"
+    And a file named "templates/test.erb" with:
+    """
+    test_var: <%= test_var %>
+    """
+    When I successfully run `tiller -b . -v -n -e development`
+    Then a file named "test.txt" should exist
+    And the file "test.txt" should contain:
+    """
+    test_var: This is a template var from the development env
+    """
+    And the output should contain "No Consul configuration block for this environment"

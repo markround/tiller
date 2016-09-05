@@ -3,8 +3,12 @@ require 'logger'
 module Tiller
 
   class Logger < Logger
+
+    attr_accessor :messages
+
     def initialize
       super(STDOUT)
+      self.messages = []
 
       self.level = Logger::WARN
       self.level = Logger::INFO if Tiller::config[:verbose]
@@ -15,6 +19,13 @@ module Tiller
       end
 
     end
+
+    # Quick hack to remove duplicate informational messages
+    def info(msg)
+      super(msg) unless self.messages.include?(msg)
+      self.messages.push(msg)
+    end
+
   end
 
 end

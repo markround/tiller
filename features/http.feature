@@ -16,3 +16,31 @@ Some globals, now.
  * This is a value from HTTP 
  * Another global value 
 """
+
+  Scenario: Test environment without HTTP block
+    Given a file named "common.yaml" with:
+    """
+    ---
+    exec: ["true"]
+    data_sources: [ "http" , "file" ]
+    template_sources: [ "http" , "file" ]
+
+    environments:
+      development:
+        test.erb:
+          target: test.txt
+          config:
+            test_var: "This is a template var from the development env"
+    """
+    And a directory named "templates"
+    And a file named "templates/test.erb" with:
+    """
+    test_var: <%= test_var %>
+    """
+    When I successfully run `tiller -b . -v -n -e development`
+    Then a file named "test.txt" should exist
+    And the file "test.txt" should contain:
+    """
+    test_var: This is a template var from the development env
+    """
+    And the output should contain "No HTTP configuration block for this environment"

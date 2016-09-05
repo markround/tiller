@@ -8,6 +8,7 @@ class ConsulTemplateSource < Tiller::TemplateSource
   include Tiller::ConsulCommon
 
   def templates
+    return [] unless Tiller::config.has_key?('consul')
     path = interpolate("#{@consul_config['templates']}")
     Tiller::log.debug("#{self} : Fetching templates from #{path}")
     templates = Diplomat::Kv.get(path, {:keys => true, :dc => @consul_config['dc']}, :return)

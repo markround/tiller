@@ -35,7 +35,7 @@ module Tiller
 
   puts "tiller v#{VERSION} (https://github.com/markround/tiller) <github@markround.com>"
 
-  class << self;
+  class << self
     attr_accessor :config, :log, :templates, :tiller
   end
 

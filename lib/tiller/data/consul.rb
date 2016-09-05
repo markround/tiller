@@ -8,6 +8,8 @@ class ConsulDataSource < Tiller::DataSource
   include Tiller::ConsulCommon
 
   def global_values
+    return {} unless Tiller::config.has_key?('consul')
+
     # Fetch globals
     path = interpolate("#{@consul_config['values']['global']}")
     Tiller::log.debug("#{self} : Fetching globals from #{path}")
@@ -43,12 +45,14 @@ class ConsulDataSource < Tiller::DataSource
   end
 
   def values(template_name)
+    return {} unless Tiller::config.has_key?('consul')
     path = interpolate("#{@consul_config['values']['template']}", template_name)
     Tiller::log.debug("#{self} : Fetching template values from #{path}")
     fetch_all_keys(path)
   end
 
   def target_values(template_name)
+    return {} unless Tiller::config.has_key?('consul')
     path = interpolate("#{@consul_config['values']['target']}", template_name)
     Tiller::log.debug("#{self} : Fetching template target values from #{path}")
     fetch_all_keys(path)
