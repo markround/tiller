@@ -1,0 +1,7 @@
+---
+exec: ['date']
+data_sources: ['vault']
+template_sources: [ 'vault' ]
+
+vault:
+  url: 'http://127.0.0.1:8200'
