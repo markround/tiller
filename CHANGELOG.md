@@ -2,6 +2,11 @@
 
 ## 0.9.x 
 
+* 0.9.3 (07/Sep/2016)
+  * New Hashicorp [Vault](https://www.vaultproject.io/) plugin, contributed by [liquid-sky](https://github.com/liquid-sky). Thanks so much for this _awesome_ PR!
+  * HTTP, Vault and Consul plugins just log an informational message if no configuration block exists for that environment. This lets you only enable these plugins in some environments.
+  * Cleaned up some duplicate information log messages
+
 * 0.9.2 (19/Aug/2016) : No changes, just corrected date in gemspec.
 
 * 0.9.1 (17/Aug/2016) : Added `deep_merge` flag to optionally merge hash values, instead of replacing them with values from a higher priority plugin ([issue #38](https://github.com/markround/tiller/issues/38)). Thanks to [pgleyzer](https://github.com/pgleyzer) for raising this issue.
