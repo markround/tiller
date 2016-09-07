@@ -10,7 +10,11 @@ module Tiller::VaultCommon
     # Set our defaults if not specified
     @vault_config = Tiller::Vault::Defaults
 
-    raise 'No Vault configuration block' unless Tiller::config.has_key?('vault')
+    unless Tiller::config.has_key?('vault')
+      Tiller::log.info('No Vault configuration block for this environment')
+      return
+    end
+
     @vault_config.deep_merge!(Tiller::config['vault'])
 
     # Sanity checks

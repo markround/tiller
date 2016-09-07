@@ -8,6 +8,7 @@ class VaultTemplateSource < Tiller::TemplateSource
   include Tiller::VaultCommon
 
   def templates
+    return [] unless Tiller::config.has_key?('vault')
     path = interpolate("#{@vault_config['templates']}")
     Tiller::log.debug("#{self} : Fetching templates from #{path}")
 

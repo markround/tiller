@@ -8,6 +8,7 @@ class VaultDataSource < Tiller::DataSource
   include Tiller::VaultCommon
 
   def global_values
+    return {} unless Tiller::config.has_key?('vault')
     path = interpolate("#{@vault_config['values']['global']}")
     Tiller::log.debug("#{self} : Fetching globals from #{path}")
     globals = get_values(path)
@@ -19,6 +20,7 @@ class VaultDataSource < Tiller::DataSource
   end
 
   def values(template_name)
+    return {} unless Tiller::config.has_key?('vault')
     path = interpolate("#{@vault_config['values']['template']}", template_name)
     Tiller::log.debug("#{self} : Fetching template values from #{path}")
     get_values(path)
@@ -26,6 +28,7 @@ class VaultDataSource < Tiller::DataSource
 
 
   def target_values(template_name)
+    return {} unless Tiller::config.has_key?('vault')
     path = interpolate("#{@vault_config['values']['target']}", template_name)
     Tiller::log.debug("#{self} : Fetching template target values from #{path}")
     get_values(path)

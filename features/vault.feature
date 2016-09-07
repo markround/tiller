@@ -48,3 +48,31 @@ Feature: Vault plugin
     This is a per-environment global : per-env global for production enviroment
     """
     And a file named "template2.txt" should not exist
+
+  Scenario: Test environment without Vault block
+    Given a file named "common.yaml" with:
+    """
+    ---
+    exec: ["true"]
+    data_sources: [ "vault" , "file" ]
+    template_sources: [ "vault" , "file" ]
+
+    environments:
+      development:
+        test.erb:
+          target: test.txt
+          config:
+            test_var: "This is a template var from the development env"
+    """
+    And a directory named "templates"
+    And a file named "templates/test.erb" with:
+    """
+    test_var: <%= test_var %>
+    """
+    When I successfully run `tiller -b . -v -n -e development`
+    Then a file named "test.txt" should exist
+    And the file "test.txt" should contain:
+    """
+    test_var: This is a template var from the development env
+    """
+    And the output should contain "No Vault configuration block for this environment"
