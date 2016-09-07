@@ -8,9 +8,9 @@ group :development do
   gem 'httpclient'
   gem 'oj'
   gem 'zk'
+  gem 'vault', '~> 0.1'
   gem 'crack'
   gem 'rubyzip'
   gem 'diplomat' , '~> 0.18.0'
   gem 'tiller', :path => '.'
 end
-

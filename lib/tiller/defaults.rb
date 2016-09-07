@@ -31,6 +31,22 @@ module Tiller::Zookeeper
   }
 end
 
+# Defaults for the Vault data and template sources
+module Tiller::Vault
+  Defaults = {
+    'timeout'       => 30,
+    'ssl_verify'    => false,
+    'templates'     => '/secret/tiller/templates',
+    'json_key_name' => :content,
+
+    'values'    => {
+        'global'    => '/secret/tiller/globals/all',
+        'per_env'   => '/secret/tiller/globals/%e',
+        'template'  => '/secret/tiller/values/%e/%t',
+        'target'    => '/secret/tiller/target_values/%t/%e'
+    }
+  }
+end
 
 # Defaults for the HTTP data and template sources
 module Tiller::Http
@@ -79,4 +95,3 @@ module Tiller::Environment
     }
   end
 end
-
