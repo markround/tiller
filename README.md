@@ -104,6 +104,7 @@ In addition to specifying values in YAML environment files, there are other plug
  * [Random data](docs/plugins/random.md) : Simple wrapper to provide random values to your templates.
  * [XML files](docs/plugins/xml_file.md) : Load and parse XML data for use in your templates.
  * [Zookeeper plugins](docs/plugins/zookeeper.md) : These plugins allow you to store your templates and values in a ZooKeeper cluster.
+ * [Hashicorp Vault](docs/plugins/vault.md) : These plugins allow you to to store and retrieve your templates and values from the Hashicorp [Vault](https://www.vaultproject.io/) secrets store.
   
 ### Helper modules
 You can also make use of custom utility functions in Ruby that can be called from within templates. For more information on this, see the [developers documentation](docs/developers.md#helper-modules).
