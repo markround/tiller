@@ -1,4 +1,4 @@
-Feature: Helper modules
+Feature: Ansible vault
   Background:
   Given a file named "vault.yml.enc" with:
     """
@@ -20,6 +20,7 @@ Feature: Helper modules
     """
   And a directory named "lib/tiller/helper"
 
+  @debug
   Scenario: Vault with env var
     Given a file named "common.yaml" with:
     """
