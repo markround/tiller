@@ -1,3 +1,7 @@
+if RUBY_VERSION < "2.1.0"
+  raise("Ansible Vault plugin requires Ruby >= 2.1.0")
+end
+
 require 'ansible/vault'
 require 'tiller/util'
 require 'yaml'
