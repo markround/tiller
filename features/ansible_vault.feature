@@ -20,7 +20,6 @@ Feature: Ansible vault
     """
   And a directory named "lib/tiller/helper"
 
-  @debug
   Scenario: Vault with env var
     Given a file named "common.yaml" with:
     """
