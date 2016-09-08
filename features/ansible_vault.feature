@@ -20,6 +20,7 @@ Feature: Ansible vault
     """
   And a directory named "lib/tiller/helper"
 
+  @ruby21
   Scenario: Vault with env var
     Given a file named "common.yaml" with:
     """
@@ -49,6 +50,7 @@ Feature: Ansible vault
     Using password from environment variable ANSIBLE_VAULT_PASS
     """
 
+  @ruby21
   Scenario: Vault with different env var
     Given a file named "common.yaml" with:
     """
@@ -79,6 +81,7 @@ Feature: Ansible vault
     Using password from environment variable MY_PASSWORD
     """
 
+  @ruby21
   Scenario: Vault with password from configuration
     Given a file named "common.yaml" with:
     """
@@ -106,6 +109,7 @@ Feature: Ansible vault
     Using password from configuration block
     """
 
+  @ruby21
   Scenario: Vault with password from file
     Given a file named "common.yaml" with:
     """
@@ -134,6 +138,7 @@ Feature: Ansible vault
     Using password from file
     """
 
+  @ruby21
   Scenario: No config for environment
     Given a file named "common.yaml" with:
     """
@@ -159,6 +164,7 @@ Feature: Ansible vault
     No Ansible vault configuration block for this environment
     """
 
+  @ruby21
   Scenario: Config in environment common block
     Given a file named "common.yaml" with:
     """
