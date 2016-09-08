@@ -38,6 +38,7 @@ Gem::Specification.new do |s|
     lib/tiller/data/xml_file.rb
     lib/tiller/data/consul.rb
     lib/tiller/data/vault.rb
+    lib/tiller/data/ansible_vault.rb
     lib/tiller/template/file.rb
     lib/tiller/template/zookeeper.rb
     lib/tiller/template/http.rb
