@@ -9,6 +9,7 @@ group :development do
   gem 'oj'
   gem 'zk'
   gem 'vault', '~> 0.1'
+  gem 'ansible-vault'
   gem 'crack'
   gem 'rubyzip'
   gem 'diplomat' , '~> 0.18.0'

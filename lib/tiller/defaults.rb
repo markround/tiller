@@ -95,3 +95,11 @@ module Tiller::Environment
     }
   end
 end
+
+module Tiller::AnsibleVault
+  def self.defaults
+    {
+        'vault_password_env'  => 'ANSIBLE_VAULT_PASS'
+    }
+  end
+end
