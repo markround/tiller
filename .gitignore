@@ -3,3 +3,5 @@
 *.sh
 .rspec
 Gemfile.lock
+.rbenv-gemsets
+t/*
