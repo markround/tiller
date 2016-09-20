@@ -57,7 +57,7 @@ ansible_vault:
 
 This is the preferred method of providing the passphrase to decrypt the vault file. 
 
-If you don't specify any other configuration apart from the location of the vault file, the plugin will use the value of the environment variable `ANSIBLE_VAULT_PASS` as a passphrase. This means you can pass this in as a variable when you create the Docker container, or test manually:
+If you don't specify any other configuration apart from the location of the vault file, the plugin will use the value of the environment variable `ANSIBLE_VAULT_PASS` as a passphrase. This means you can pass this in as a variable when you create the Docker container (`docker run -e ANSIBLE_VAULT_PASS=tiller ...`) , or test manually:
 
 `$ ANSIBLE_VAULT_PASS="tiller" tiller -v -e development .........`
 
