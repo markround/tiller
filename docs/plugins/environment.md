@@ -19,6 +19,6 @@ environment:
   lowercase: false
 ```
 
-However, it is important to note that you most likely can not guarantee which environment variables will be present in your deployment environment. If you set the prefix to `''`, then you will be able to access variables by their original name. For example, `test_var="hello" tiller -v ......` will result in a variable called `test_var` being available to your templates instead of `env_test_var`.
+It is important to note that you most likely can not guarantee which environment variables will be present in your deployment environment. If you set the prefix to `''`, then you will be able to access variables by their original name. For example, `test_var="hello" tiller -v ......` will result in a variable called `test_var` being available to your templates instead of `env_test_var`.
 
 However, any other environment variables will also be made available (`env | wc -l` shows 58 variables defined on my fairly stock Mac OS X system), and they may unexpectedly over-ride your own variables. So you should only use a null prefix for this plugin if you are 100% certain you know in advance what environment variables will be present in your deployment environment.
