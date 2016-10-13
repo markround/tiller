@@ -47,12 +47,31 @@ module Tiller
   # Add tiller_lib to the LOAD PATH so we can pull in user-defined plugins
   $LOAD_PATH.unshift(config[:tiller_lib]) unless $LOAD_PATH.include?(config[:tiller_lib])
 
-  # Load the common YAML configuration file
+  # Load the common YAML configuration files
   begin
+    config_loaded = false
+
+    # Is there a common.yaml ? If so, load that first
     common_file = File.join(config[:tiller_base], 'common.yaml')
-    config.merge!(YAML.load(open(common_file)))
+    if File.exists?(common_file)
+      config.merge!(YAML.load(open(common_file)))
+      config_loaded = true
+    end
+
+    # Load and deep merge anything under config.d if present
+    config_d_dir =  File.join(config[:tiller_base], 'config.d')
+    Dir.glob(File.join(config_d_dir, '**', '*.yaml')).each do |f|
+      log.info("Loading config file #{f}")
+      config.deep_merge!(YAML.load(open(f)))
+      config_loaded = true
+    end
+
   rescue StandardError => e
-    abort "Error : Could not open common configuration file!\n#{e}"
+    abort "Error : Could not open common configuration files!\n#{e}"
+  end
+
+  unless config_loaded
+    abort "Error: No configuration files present!"
   end
 
   # Check for keys only present in v2 format (everything in one common.yaml)
