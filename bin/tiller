@@ -266,7 +266,7 @@ module Tiller
     Process.wait(child_pid)
 
     # Capture the child process status, so we can also exit with this code
-    exit_status = $?.exitstatus
+    exit_status = ($?.exitstatus == nil) ? 0 : $?.exitstatus
 
     log.info("Child process exited with status #{exit_status}")
     log.info('Child process finished, Tiller is stopping.')
