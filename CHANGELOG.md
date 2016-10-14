@@ -2,6 +2,10 @@
 
 ## 0.9.x 
 
+* 0.9.5 (10/Oct/2016)
+  * Fixed stack trace on exit when child process caught a SIGINT/SIGHUP/SIGKILL.
+  * Added [new config.d feature](README.md#separate-config-files-under-configd) - you can now split your `common.yaml` into multiple files under `/etc/tiller/config.d` and they'll all be deep-merged together to generate the configuration. Very useful for inheritance in Docker images! Many thanks to [rafik777](https://github.com/rafik777) for reporting the exit behaviour bug, and for giving me the idea for the config.d feature.
+
 * 0.9.4 (21/Sep/2016) : Added [Ansible Vault](docs/plugins/ansible_vault.md) plugin to retrieve values from an encrypted YAML file.
 
 * 0.9.3 (07/Sep/2016)

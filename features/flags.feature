@@ -6,7 +6,7 @@ Feature: Command line arguments
 
   Scenario: Run tiller with no arguments
     When I run `tiller`
-    Then the output should contain "Error : Could not open common configuration file!"
+    Then the output should contain "Error: No configuration files present!"
 
   Scenario: Run tiller with -h
     When I successfully run `tiller -h`
