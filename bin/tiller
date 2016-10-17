@@ -60,7 +60,7 @@ module Tiller
 
     # Load and deep merge anything under config.d if present
     config_d_dir =  File.join(config[:tiller_base], 'config.d')
-    Dir.glob(File.join(config_d_dir, '**', '*.yaml')).each do |f|
+    Dir.glob(File.join(config_d_dir, '**', '*.yaml')).sort.each do |f|
       log.info("Loading config file #{f}")
       config.deep_merge!(YAML.load(open(f)))
       config_loaded = true
