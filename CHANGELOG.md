@@ -2,20 +2,26 @@
 
 ## 0.9.x 
 
+* 0.9.6 (18/Oct/2016)
+  * Bug fix for order of config file loading when using `config.d` feature. Now correctly sorts files before loading/merging/parsing.
+
 * 0.9.5 (10/Oct/2016)
   * Fixed stack trace on exit when child process caught a SIGINT/SIGHUP/SIGKILL.
   * Added [new config.d feature](README.md#separate-config-files-under-configd) - you can now split your `common.yaml` into multiple files under `/etc/tiller/config.d` and they'll all be deep-merged together to generate the configuration. Very useful for inheritance in Docker images! Many thanks to [rafik777](https://github.com/rafik777) for reporting the exit behaviour bug, and for giving me the idea for the config.d feature.
 
-* 0.9.4 (21/Sep/2016) : Added [Ansible Vault](docs/plugins/ansible_vault.md) plugin to retrieve values from an encrypted YAML file.
+* 0.9.4 (21/Sep/2016)
+  * Added [Ansible Vault](docs/plugins/ansible_vault.md) plugin to retrieve values from an encrypted YAML file.
 
 * 0.9.3 (07/Sep/2016)
   * New Hashicorp [Vault](https://www.vaultproject.io/) plugin, contributed by [liquid-sky](https://github.com/liquid-sky). Thanks so much for this _awesome_ PR!
   * HTTP, Vault and Consul plugins just log an informational message if no configuration block exists for that environment. This lets you only enable these plugins in some environments.
-  * Cleaned up some duplicate information log messages
+  * Cleaned up some duplicate informational log messages
 
-* 0.9.2 (19/Aug/2016) : No changes, just corrected date in gemspec.
+* 0.9.2 (19/Aug/2016)
+  * No changes, just corrected date in gemspec.
 
-* 0.9.1 (17/Aug/2016) : Added `deep_merge` flag to optionally merge hash values, instead of replacing them with values from a higher priority plugin ([issue #38](https://github.com/markround/tiller/issues/38)). Thanks to [pgleyzer](https://github.com/pgleyzer) for raising this issue.
+* 0.9.1 (17/Aug/2016)
+  * Added `deep_merge` flag to optionally merge hash values, instead of replacing them with values from a higher priority plugin ([issue #38](https://github.com/markround/tiller/issues/38)). Thanks to [pgleyzer](https://github.com/pgleyzer) for raising this issue.
 
 * 0.9.0 (10/Aug/2016)
   * Breaking change : Value precedence has changed. Previously, global values were merged together in the order that plugins were loaded. Then, the same was done for template values. Finally, template values were merged over the top of global values. This led to some counter-intuitive behaviour, such as a template value being defined in a defaults section, but still taking priority over a global value supplied by a higher priority plugin (like the environment plugin). Now, the behaviour has been simplified : We go through the plugins in order, and for each one we merge template values over global values, then proceed onto the next plugin. In summary: A template value will take priority over a global value, and any value from a plugin loaded later will take priority over any previously loaded plugins. Many thanks again to [Eugen Mayer](https://github.com/EugenMayer) for his suggestion on cleaning up this behaviour.
