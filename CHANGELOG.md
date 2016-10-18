@@ -2,6 +2,9 @@
 
 ## 0.9.x 
 
+* 0.9.6 (18/Oct/2016)
+  * Bug fix for order of config file loading when using `config.d` feature. Now correctly sorts files before loading/merging/parsing.
+
 * 0.9.5 (10/Oct/2016)
   * Fixed stack trace on exit when child process caught a SIGINT/SIGHUP/SIGKILL.
   * Added [new config.d feature](README.md#separate-config-files-under-configd) - you can now split your `common.yaml` into multiple files under `/etc/tiller/config.d` and they'll all be deep-merged together to generate the configuration. Very useful for inheritance in Docker images! Many thanks to [rafik777](https://github.com/rafik777) for reporting the exit behaviour bug, and for giving me the idea for the config.d feature.
