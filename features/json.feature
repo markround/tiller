@@ -86,3 +86,22 @@ This is a list of all servers:
     When I successfully run `tiller -b . -v -n -e override`
     Then a file named "simple_keys.txt" should exist
     And the file "simple_keys.txt" should contain "from JSON!"
+
+  Scenario: Don't die if missing tiller_json environment variable
+    Given a file named "common.yaml" with:
+    """
+    ---
+    data_sources: [ "file" , "environment_json" ]
+    template_sources: [ "file" ]
+    exec: [ "true" ]
+    environments:
+      development:
+        test.erb:
+          target: test.txt
+    """
+    And a file named "templates/test.erb" with:
+    """
+    Test value : <%= test_value %>
+    """
+    When I successfully run `tiller -b . -v -n `
+    Then a file named "test.txt" should exist
