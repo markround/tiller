@@ -2,6 +2,9 @@
 
 ## 0.9.x 
 
+* 0.9.7 (14/Sep/2016)
+  * Fixed [issue #42](https://github.com/markround/tiller/issues/42). If you'd enabled the `environment_json` plugin but weren't using it, this would cause Tiller to crash. Many thanks to [Tony Finn](https://github.com/tonyfinn) for reporting it!
+
 * 0.9.6 (18/Oct/2016)
   * Bug fix for order of config file loading when using `config.d` feature. Now correctly sorts files before loading/merging/parsing.
 
