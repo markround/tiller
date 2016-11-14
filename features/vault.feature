@@ -1,3 +1,4 @@
+@ruby2
 Feature: Vault plugin
 
   Scenario: Download Vault
