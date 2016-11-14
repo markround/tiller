@@ -22,6 +22,7 @@ class EnvironmentJsonDataSource < Tiller::DataSource
       end
     else
       @json_structure = Hash.new
+      @json_version = 1
     end
   end
 
