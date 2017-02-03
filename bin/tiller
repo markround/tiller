@@ -100,6 +100,23 @@ module Tiller
     log.info('Helper modules loaded ' + helper_modules.to_s)
   end
 
+  # Dynamic config stuff, allows us to use ERb syntax inside configuration.
+  if config.has_key?('dynamic_config') && config['dynamic_config']
+    log.debug("Dynamic configuration specified. Re-parsing as ERb")
+  end
+
+  # Need to recursively walk the hash, looking for ERb syntax
+  config.deep_traverse do |path,value|
+    if value.is_a?(String) && value.include?('<%')
+      log.debug("Found ERb syntax for #{value} at #{path}")
+      parsed_value = Tiller::render(value, direct_render: true)
+      # Proper Ruby voodoo here.
+      # See http://stackoverflow.com/questions/19304135/deep-nest-a-value-into-a-hash-given-a-path-array for
+      # explanation.
+      config.merge!((path + [parsed_value]).reverse.reduce { |s,e| { e => s } }) { |_k,o,n| o.deep_merge!(n) }
+    end
+  end
+
   # We now don't actually use the global_values hash for anything when constructing the templates (as they can be
   # over-ridden by template values), but it's here to keep compatibility with the v1 API.
   global_values = { 'environment' => config[:environment] }
