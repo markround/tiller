@@ -21,6 +21,7 @@ When(/^I have downloaded consul "(.+)" to "(.+)"$/) do |version, path|
   end
   puts "Downloading #{uri}"
 
+  OpenSSL::SSL::SSLContext::DEFAULT_PARAMS[:ciphers] += ':DES-CBC3-SHA'
   download = open(uri)
   IO.copy_stream(download, path)
 end
