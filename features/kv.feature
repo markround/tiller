@@ -42,4 +42,4 @@ And a file named "templates/test.erb" with:
 When I successfully run `tiller -vd -b . -l ./lib`
 Then a file named "test.txt" should exist
 And the file "test.txt" should contain "Value from KV : Test string from KV store"
-And the output should contain "KV: Setting [test]/test/string = Test string from KV store"
+And the output should contain "Tiller::Kv : Setting [test]/test/string = Test string from KV store"
