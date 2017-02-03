@@ -19,7 +19,7 @@ Feature: Dynamic configuration
     data_sources: [ "file" ]
     template_sources: [ "file" ]
     helpers: [ "test" ]
-    dynamic_config: true
+    dynamic_values: true
 
     environments:
       development:
@@ -36,7 +36,7 @@ Feature: Dynamic configuration
     When I successfully run `tiller -vd -b . -l ./lib`
     Then a file named "test.txt" should exist
     And the file "test.txt" should contain "dynamic_value: Test string"
-    And the output should contain "Dynamic configuration specified. Re-parsing values as ERb"
+    And the output should contain "Dynamic values specified. Will parse all values as ERb."
     And the output should contain "Found ERb syntax"
 
   Scenario: Test dynamic configuration with nested hash
@@ -47,7 +47,7 @@ Feature: Dynamic configuration
     data_sources: [ "file" ]
     template_sources: [ "file" ]
     helpers: [ "test" ]
-    dynamic_config: true
+    dynamic_values: true
 
     environments:
       development:
@@ -66,7 +66,7 @@ Feature: Dynamic configuration
     When I successfully run `tiller -vd -b . -l ./lib`
     Then a file named "test.txt" should exist
     And the file "test.txt" should contain "dynamic_value: Test string"
-    And the output should contain "Dynamic configuration specified. Re-parsing values as ERb"
+    And the output should contain "Dynamic values specified. Will parse all values as ERb."
     And the output should contain "Found ERb syntax"
 
   Scenario: Test dynamic configuration with datasource values
@@ -77,7 +77,7 @@ Feature: Dynamic configuration
     data_sources: [ "environment" , "file" ]
     template_sources: [ "file" ]
     helpers: [ "test" ]
-    dynamic_config: true
+    dynamic_values: true
 
     environments:
       development:
@@ -97,7 +97,7 @@ Feature: Dynamic configuration
     When I successfully run `tiller -vd -b . -l ./lib`
     Then a file named "test.txt" should exist
     And the file "test.txt" should contain "dynamic_value: Test string"
-    And the output should contain "Dynamic configuration specified. Re-parsing values as ERb"
+    And the output should contain "Dynamic values specified. Will parse all values as ERb."
     And the output should contain "Found ERb syntax"
 
   Scenario: Test dynamic target from environment
@@ -108,7 +108,7 @@ Feature: Dynamic configuration
     data_sources: [ "environment" , "file" ]
     template_sources: [ "file" ]
     helpers: [ "test" ]
-    dynamic_config: true
+    dynamic_values: true
 
     environments:
       development:
@@ -129,5 +129,5 @@ Feature: Dynamic configuration
     When I successfully run `tiller -vd -b . -l ./lib`
     Then a file named "dynamic.txt" should exist
     And the file "dynamic.txt" should contain "dynamic_value: Test string"
-    And the output should contain "Dynamic configuration specified. Re-parsing values as ERb"
+    And the output should contain "Dynamic values specified. Will parse all values as ERb."
     And the output should contain "Found ERb syntax"

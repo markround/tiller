@@ -100,9 +100,7 @@ module Tiller
     log.info('Helper modules loaded ' + helper_modules.to_s)
   end
 
-
-  log.debug("Dynamic configuration specified. Re-parsing values as ERb") if config.assoc('dynamic_config')
-
+  log.debug("Dynamic values specified. Will parse all values as ERb.") if config.assoc('dynamic_values')
 
   # We now don't actually use the global_values hash for anything when constructing the templates (as they can be
   # over-ridden by template values), but it's here to keep compatibility with the v1 API.
@@ -169,7 +167,7 @@ module Tiller
       end
 
       # Dynamic config stuff, allows us to use ERb syntax inside configuration.
-      if config.assoc('dynamic_config')
+      if config.assoc('dynamic_values')
         # Need to recursively walk the hash, looking for ERb syntax
         tiller.deep_traverse do |path,value|
           if value.is_a?(String) && value.include?('<%')
