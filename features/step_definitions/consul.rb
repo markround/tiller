@@ -1,6 +1,7 @@
 require 'open-uri'
 require 'diplomat'
 require 'pp'
+require 'openssl'
 
 CONSUL_DATA_DIR="/tmp/tiller-consul-data"
 
@@ -20,9 +21,7 @@ When(/^I have downloaded consul "(.+)" to "(.+)"$/) do |version, path|
     fail!("Unsupported platform for consul")
   end
   puts "Downloading #{uri}"
-
-  download = open(uri, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})
-  IO.copy_stream(download, path)
+  hashicorp_download(uri, path)
 end
 
 
