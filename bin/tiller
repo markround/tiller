@@ -26,6 +26,7 @@ require 'tiller/datasource'
 require 'tiller/logger'
 require 'digest/md5'
 require 'tiller/render'
+require 'tiller/kv'
 require 'tiller/version'
 
 EXIT_SUCCESS = 0
@@ -296,5 +297,7 @@ module Tiller
     exit exit_status
 
   end
+
+
 
 end

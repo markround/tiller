@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     lib/tiller/http.rb
     lib/tiller/consul.rb
     lib/tiller/vault.rb
+    lib/tiller/kv.rb
     lib/tiller/templatesource.rb
     lib/tiller/data/file.rb
     lib/tiller/data/zookeeper.rb
