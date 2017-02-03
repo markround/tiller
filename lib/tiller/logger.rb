@@ -26,6 +26,12 @@ module Tiller
       self.messages.push(msg)
     end
 
+    # Quick hack to remove duplicate informational messages
+    def debug(msg)
+      super(msg) unless self.messages.include?(msg)
+      self.messages.push(msg)
+    end
+
   end
 
 end
