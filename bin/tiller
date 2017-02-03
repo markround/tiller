@@ -181,6 +181,12 @@ module Tiller
             tiller.merge!((path + [parsed_value]).reverse.reduce { |s,e| { e => s } })
           end
         end
+        target_values.each do |key ,value|
+          if value.is_a?(String) && value.include?('<%')
+            log.debug("Found ERb syntax for target value #{key}:#{value}}")
+            target_values[key] = Tiller::render(value, direct_render: true)
+          end
+        end
       end
     end
 
