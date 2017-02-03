@@ -174,9 +174,10 @@ Tiller::Kv.get('/path/to/key', namespace: 'example')
 
 You can also write custom utility functions in Ruby that can be called from within templates (or from within YAML configuration files, if `dynamic_values: true` has been set __TODO: see the main documentation for details on this__). 
 
-An example of this is the bundled `Tiller::render` function that lets you include and parse [sub-templates](../README.md#sub-templates) from another template. Helper modules aren't intended to replace the existing Data- and Template-source plugins; if you need to get some values into your templates, or hook up to some external service, these are probably still the best way to go about it. You could however create a helper to retrieve values programmatically from a datasource, for instance if you wanted to create a "lookup" function to return individual values instead of passing in a complex hash data structure.
+An example of this is the bundled `Tiller::render` function that lets you include and parse [sub-templates](../README.md#sub-templates) from another template. Helper modules aren't intended to replace the existing Data- and Template-source plugins; if you need to get some values into your templates, or hook up to some external service, these are probably still the best way to go about it. 
 
-But if you have a more complicated transformation to do (e.g. convert markdown text into HTML) or need to include some logic in a function, a helper would clean up your templates as well as keep a clean separation of code and configuration. 
+You could however create a helper to retrieve values programmatically from a datasource, for instance if you wanted to create a "lookup" function to return individual values, instead of passing in a large, complex data structure to your templates.  If you have a more complicated transformation to do (e.g. convert markdown text into HTML) or need to include some logic in a function, a helper would also be a good way to clean up your templates as well as keep a clean separation of code and configuration. 
+
 
 As a simple example, this is how you'd add a [Lorem Ipsum](http://www.lipsum.com/) generator for filling in place-holder text. We'll simply wrap the excellent [forgery](https://github.com/sevenwire/forgery) gem, so first make sure you have it installed:
 
