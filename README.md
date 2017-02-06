@@ -449,6 +449,13 @@ Content unchanged for test.erb, not writing anything
 
 If you also want to make sure a process is launched only if at least one file has been updated, you can pass the `--md5sum-noexec` command line option, or set `md5sum_noexec: true` in your `common.yaml`. 
 
+# Dynamic configuration file
+If you set the value `dynamic_config: true` in your `common.yaml`, you can use ERb syntax in your configuration values. For example, if you want to dynamically specify the location of a file from an environment variable, you could enable the `environment` plugin and do something like this:
+
+`target: <%= env_target %>` 
+
+And then pass the `target` environment variable at run-time. You can also call [helper modules](docs/developers.md#helper-modules) to populate values as well.
+
 
 # API
 There is a HTTP API provided for debugging purposes. This may be useful if you want a way of extracting and examining the configuration from a running container. Note that this is a *very* simple implementation, and should never be exposed to the internet or untrusted networks. Consider it as a tool to help debug configuration issues, and nothing more. Also see the "Gotchas" section if you experience any `Encoding::UndefinedConversionError` exceptions.
