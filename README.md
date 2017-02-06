@@ -9,7 +9,7 @@ It's available as a [Ruby Gem](https://rubygems.org/gems/tiller), so installatio
 
 [![Gem Version](https://badge.fury.io/rb/tiller.svg)](http://badge.fury.io/rb/tiller)
 [![Build Status](https://travis-ci.org/markround/tiller.svg?branch=develop)](https://travis-ci.org/markround/tiller)
-![](http://ruby-gem-downloads-badge.herokuapp.com/tiller?type=total)
+![](https://img.shields.io/gem/dt/tiller.svg)
  [![Join the chat at https://gitter.im/markround/tiller](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/markround/tiller)
 
 ## Quickstart
