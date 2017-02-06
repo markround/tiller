@@ -99,11 +99,12 @@ These provide values that templates can use. There are 3 kinds of values:
 You can create your own datasources by inheriting `Tiller::DataSource` and providing any of the following 3 methods :
  
 * `values(template_name)` : Return a hash of keys/values for the given template name
-* `target_values(template_name)` : Return a hash of values for the given template name, which must include:
-	* `target` : The full path that the populated template should be installed to (directories will be created if they do not exist)
-	* `user` : The user that the file should be owned by (e.g. root)
-	* `group` : The group that the file should be owned by (e.g. bin)
-	* `perms`: The octal permissions the file should have (e.g. 0644)
+* `target_values(template_name)` : Return a hash of values for the given template name:
+	* `target` : The full path that the populated template should be installed to (directories will be created if they do not exist). This is mandatory.
+  * `user` : The user that the file should be owned by (e.g. root)
+  * `group` : The group that the file should be owned by (e.g. bin)
+  * `perms`: The octal permissions the file should have (e.g. 0644)
+  * `exec_on_write` : An optional command to execute after the template has been written (different from the main `exec` parameter), specified in array format e.g. `["touch" , "/tmp/somefile"]`
 * `global_values` : Return a hash of global values. 
 
 As with template sources, if you need to connect to a database or do any other post-initialisation work, create a `setup` method. You also have the `Tiller::config` class variable available, which is a hash of the Tiller configuration (`common.yaml`).
