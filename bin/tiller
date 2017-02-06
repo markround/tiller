@@ -26,6 +26,7 @@ require 'tiller/datasource'
 require 'tiller/logger'
 require 'digest/md5'
 require 'tiller/render'
+require 'tiller/kv'
 require 'tiller/version'
 
 EXIT_SUCCESS = 0
@@ -100,6 +101,8 @@ module Tiller
     log.info('Helper modules loaded ' + helper_modules.to_s)
   end
 
+  log.debug("Dynamic values specified. Will parse all values as ERb.") if config.assoc('dynamic_values')
+
   # We now don't actually use the global_values hash for anything when constructing the templates (as they can be
   # over-ridden by template values), but it's here to keep compatibility with the v1 API.
   global_values = { 'environment' => config[:environment] }
@@ -162,6 +165,27 @@ module Tiller
       # permissions and so on)
       target_values.tiller_merge!(dc.target_values(template)) do |key, old, new|
         warn_merge(key, old, new, 'target', data_class.to_s)
+      end
+
+      # Dynamic config stuff, allows us to use ERb syntax inside configuration.
+      if config.assoc('dynamic_values')
+        # Need to recursively walk the hash, looking for ERb syntax
+        tiller.deep_traverse do |path,value|
+          if value.is_a?(String) && value.include?('<%')
+            log.debug("Found ERb syntax for #{value} at #{path}")
+            parsed_value = Tiller::render(value, direct_render: true)
+            # Proper Ruby voodoo here.
+            # See http://stackoverflow.com/questions/19304135/deep-nest-a-value-into-a-hash-given-a-path-array for
+            # explanation.
+            tiller.merge!((path + [parsed_value]).reverse.reduce { |s,e| { e => s } })
+          end
+        end
+        target_values.each do |key ,value|
+          if value.is_a?(String) && value.include?('<%')
+            log.debug("Found ERb syntax for target value #{key}:#{value}}")
+            target_values[key] = Tiller::render(value, direct_render: true)
+          end
+        end
       end
     end
 
@@ -273,5 +297,7 @@ module Tiller
     exit exit_status
 
   end
+
+
 
 end
