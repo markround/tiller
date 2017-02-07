@@ -243,90 +243,9 @@ This is particularly useful for creating layered Docker images which inherit fro
 
 See the [test fixture](https://github.com/markround/tiller/blob/master/features/config_d.feature) for some examples.
 
-# Sub-templates
-
-You can include other templates in your templates by using the built-in `Tiller::render` [helper module](#helper-modules). For example, if you have a template called `main.erb`, you can include another template called `sub.erb` by calling this module inside `main.erb`:
-
-```erb
-This is the main.erb template. 
-This will include the sub.erb template below this line:
-<%= Tiller::render('sub.erb') -%>
-```
-
-You can nest sub-templates as deeply as you wish, so you can have sub-templates including another sub-template and so on. However, it is important to note that all variables for sub-templates are evaluated only at the level of the top-level template. 
-
-Therefore, trying to pass a variable to the sub-template by putting something like this in your `common.yaml` will not work:
-
-```
-sub.erb:
-  config:
-    sub_var: This is a var for the sub-template
-```
-
-You will not be able to access `sub_var` from your template - you will need to declare it in the `main.erb` block instead, where it will be available to all sub-templates.
-
-# Checksums
-You may wish to only write templates to disk if they do not already exist, or if their content has changed. You can pass the `--md5sum` flag on the command line, or set `md5sum: true` in your `common.yaml`. With this feature enabled, you'll see output like this in your logs:
-
-```
-[1/2] templates written, [1] skipped with no change
-Template generation completed
-```
-If you pass the debug flag on the command-line (`-d` / `--debug`), you'll see further information like this amongst the output :
-
-```
-Building template test.erb
-MD5 of test.erb is c377cfd6c73a5a9a334f949503b6e65d
-MD5 of test.txt is c377cfd6c73a5a9a334f949503b6e65d
-Content unchanged for test.erb, not writing anything
-[0/1] templates written, [1] skipped with no change
-```
-
-If you also want to make sure a process is launched only if at least one file has been updated, you can pass the `--md5sum-noexec` command line option, or set `md5sum_noexec: true` in your `common.yaml`. 
-
-# Dynamic configuration file
-If you set the value `dynamic_config: true` in your `common.yaml`, you can use ERb syntax in your configuration values. For example, if you want to dynamically specify the location of a file from an environment variable, you could enable the `environment` plugin and do something like this:
-
-`target: <%= env_target %>` 
-
-And then pass the `target` environment variable at run-time. You can also call [helper modules](docs/developers.md#helper-modules) to populate values as well.
 
 
-# API
-There is a HTTP API provided for debugging purposes. This may be useful if you want a way of extracting and examining the configuration from a running container. Note that this is a *very* simple implementation, and should never be exposed to the internet or untrusted networks. Consider it as a tool to help debug configuration issues, and nothing more. Also see the "Gotchas" section if you experience any `Encoding::UndefinedConversionError` exceptions.
 
-## Enabling
-You can enable the API by passing the `--api` (and optional `--api-port`) command-line arguments. Alternatively, you can also set these in `common.yaml` :
-	
-```yaml
-api_enable: true
-api_port: 6275
-```
-
-## Usage
-Once Tiller has forked a child process (specified by the `exec` parameter), you will see a message on stdout informing you the API is starting :
-
-	Tiller API starting on port 6275
-	
-If you want to expose this port from inside a Docker container, you will need to add this port to your list of mappings (e.g. `docker run ... -p 6275:6275 ...`). You should now be able to connect to this via HTTP, e.g.
-
-```
-$ curl -D - http://docker-container-ip:6275/ping
-HTTP/1.1 200 OK
-Content-Type: application/json
-Server: Tiller 0.3.1 / API v1
-
-{ "ping": "Tiller API v1 OK" }
-
-```
-
-## Methods
-The API responds to the following GET requests:
-
-* **/ping** : Used to check the API is up and running.
-* **/v2/config** : Return a hash of the Tiller configuration.
-* **/v2/templates** : Return a list of generated templates.
-* **/v2/template/{template_name}** : Return a hash of merged values and target values for the named template.
 
 
 # Developer information

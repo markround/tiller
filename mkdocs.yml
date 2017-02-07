@@ -8,7 +8,12 @@ pages:
 - Home: 'index.md'
 - General Usage:
   - Overview: 'general/index.md'
-  - Common Issues: 'general/faq.md'
+- Advanced Usage:
+  - Checksums: 'advanced/checksums.md'
+  - Nested Templates: 'advanced/subtemplates.md'
+  - Dynamic Values: 'advanced/dynamic.md'
+  - HTTP API: 'advanced/api.md'
+- Common Issues: 'general/faq.md'
 
 - Plugins:
   - About: 'plugins/index.md'
