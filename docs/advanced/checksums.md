@@ -1,3 +1,4 @@
+# Checksums
 You may wish to only write templates to disk if they do not already exist, or if their content has changed. You can pass the `--md5sum` flag on the command line, or set `md5sum: true` in your `common.yaml`. With this feature enabled, you'll see output like this in your logs:
 
 ```

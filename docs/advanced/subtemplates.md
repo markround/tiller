@@ -1,3 +1,5 @@
+# Nested templates
+
 You can include other templates in your templates by using the built-in `Tiller::render` [helper module](#helper-modules). For example, if you have a template called `main.erb`, you can include another template called `sub.erb` by calling this module inside `main.erb`:
 
 ```erb
