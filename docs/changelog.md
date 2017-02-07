@@ -8,10 +8,10 @@
 
 * 0.9.5 (10/Oct/2016)
   * Fixed stack trace on exit when child process caught a SIGINT/SIGHUP/SIGKILL.
-  * Added [new config.d feature](README.md#separate-config-files-under-configd) - you can now split your `common.yaml` into multiple files under `/etc/tiller/config.d` and they'll all be deep-merged together to generate the configuration. Very useful for inheritance in Docker images! Many thanks to [rafik777](https://github.com/rafik777) for reporting the exit behaviour bug, and for giving me the idea for the config.d feature.
+  * Added [new config.d feature](advanced/separate_config.md) - you can now split your `common.yaml` into multiple files under `/etc/tiller/config.d` and they'll all be deep-merged together to generate the configuration. Very useful for inheritance in Docker images! Many thanks to [rafik777](https://github.com/rafik777) for reporting the exit behaviour bug, and for giving me the idea for the config.d feature.
 
 * 0.9.4 (21/Sep/2016)
-  * Added [Ansible Vault](docs/plugins/ansible_vault.md) plugin to retrieve values from an encrypted YAML file.
+  * Added [Ansible Vault](plugins/ansible_vault.md) plugin to retrieve values from an encrypted YAML file.
 
 * 0.9.3 (07/Sep/2016)
   * New Hashicorp [Vault](https://www.vaultproject.io/) plugin, contributed by [liquid-sky](https://github.com/liquid-sky). Thanks so much for this _awesome_ PR!
@@ -32,14 +32,14 @@
 
 * 0.8.0 (28/Jul/2016)
   * Breaking change : Switched to using a singleton pattern for logging and config variables. See http://www.markround.com/blog/2016/07/27/tiller-0-dot-8-changes-for-custom-plugins/ - you'll need to do a `s/\@log/Tiller::log/g` and `s/\@config/Tiller::config/g` on any custom plugins you may have written. If you've not written any custom plugins and are just using the ones bundled with Tiller, you can ignore this.
-  * [Sub-templating](README.md#sub-templates) feature, as requested by [Pablo Gonzalez](https://github.com/kydorn) - thanks for the idea!
-  * [Helper modules](docs/developers.md#helper-modules) feature, lets you group together blocks of Ruby code which you can call from your templates.
+  * [Sub-templating](advanced/subtemplates.md) feature, as requested by [Pablo Gonzalez](https://github.com/kydorn) - thanks for the idea!
+  * [Helper modules](developers.md#helper-modules) feature, lets you group together blocks of Ruby code which you can call from your templates.
 
 
 
 # 0.7.x
 
-* 0.7.10 : Added optional MD5 sum checking and "no-exec if no templates changed" feature (https://github.com/markround/tiller/issues/30), "stub" environment support (https://github.com/markround/tiller/issues/29) and [environment plugin](docs/plugins/environment.md) configuration parameters `prefix` and `lowercase` to control behaviour of environment variables. Many thanks to [Eugen Mayer](https://github.com/EugenMayer) and Hermes42 for their suggestions.
+* 0.7.10 : Added optional MD5 sum checking and "no-exec if no templates changed" feature (https://github.com/markround/tiller/issues/30), "stub" environment support (https://github.com/markround/tiller/issues/29) and [environment plugin](plugins/environment.md) configuration parameters `prefix` and `lowercase` to control behaviour of environment variables. Many thanks to [Eugen Mayer](https://github.com/EugenMayer) and Hermes42 for their suggestions.
 * 0.7.9 : Added external_file plugin.
 * 0.7.8 : Consul plugin! See [this blog post](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller) for an introduction and walk-through.
 * 0.7.7 : a nice feature suggested by [kydorn](https://github.com/kydorn) in [markround/tiller#18](https://github.com/markround/tiller/issues/18). Now the file datasource supports a global_values: block, so you can create defaults per environment (and use the defaults datasource to provide a default for all environments). Thanks for the suggestion!

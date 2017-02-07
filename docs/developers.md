@@ -53,20 +53,10 @@ I'd also love to hear from anyone using Tiller, if you're doing anything cool wi
 
 
 # Plugin architecture
-Well, "architecture" is probably too grand a word, but as discussed in the main [README.md](README.md), you can get data into your template files from a multitude of sources, or even grab your template files from a source such as a database or from a HTTP server. Here's a quick overview:
+Well, "architecture" is probably too grand a word, but you can get data into your template files from a multitude of sources, or even grab your template files from a source such as a database or from a HTTP server. Here's a quick overview:
 
 ##Template sources
-These are modules that provide a list of templates, and return the template contents. The code for the `FileTemplateSource` module is really simple. It pretty much just does this to return a list of templates :
-```ruby
-    Dir.glob(File.join(@template_dir , '**' , '*.erb')).each do |t|
-      t.sub!(@template_dir , '')
-    end
-```  
-And then to return an individual template, it just does :
-```ruby 
-    open(File.join(@template_dir , template_name)).read
-``` 
-You can create your own template provider by extending the `Tiller::TemplateSource` class and providing two methods :
+These are modules that provide a list of templates, and return the template contents. You can create your own template provider by extending the `Tiller::TemplateSource` class and providing two methods :
 
 * `templates` : Return an array of templates available
 * `template(template_name)` : Return a string containing an ERB template for the given `template_name`
@@ -175,7 +165,7 @@ Tiller::Kv.get('/path/to/key', namespace: 'example')
 
 You can also write custom utility functions in Ruby that can be called from within templates (or from within YAML configuration files, if `dynamic_values: true` has been set __TODO: see the main documentation for details on this__). 
 
-An example of this is the bundled `Tiller::render` function that lets you include and parse [sub-templates](../README.md#sub-templates) from another template. Helper modules aren't intended to replace the existing Data- and Template-source plugins; if you need to get some values into your templates, or hook up to some external service, these are probably still the best way to go about it. 
+An example of this is the bundled `Tiller::render` function that lets you include and parse [sub-templates](advanced/subtemplates.md) from another template. Helper modules aren't intended to replace the existing Data- and Template-source plugins; if you need to get some values into your templates, or hook up to some external service, these are probably still the best way to go about it. 
 
 You could however create a helper to retrieve values programmatically from a datasource, for instance if you wanted to create a "lookup" function to return individual values, instead of passing in a large, complex data structure to your templates.  If you have a more complicated transformation to do (e.g. convert markdown text into HTML) or need to include some logic in a function, a helper would also be a good way to clean up your templates as well as keep a clean separation of code and configuration. 
 
