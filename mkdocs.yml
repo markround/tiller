@@ -18,7 +18,7 @@ pages:
   - Exec On Write: 'advanced/exec_on_write.md'
 - Common Issues: 'general/faq.md'
 - Plugins:
-  - About: 'plugins/index.md'
+  - Overview: 'plugins/index.md'
   - Available Plugins:
       - Ansible Vault: 'plugins/ansible_vault.md'
       - Consul: 'plugins/consul.md'
