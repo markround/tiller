@@ -1,5 +1,4 @@
 # Gotchas
-
 This section covers some of the most frequently encountered issues.
 
 ## Plugin ordering

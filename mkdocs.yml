@@ -1,20 +1,21 @@
 site_name: Tiller
 repo_url: https://github.com/markround/tiller/
 
-
 theme: readthedocs
 
 pages:
 - Home: 'index.md'
+- Quickstart: 'quickstart.md'
 - General Usage:
   - Overview: 'general/index.md'
+  - Setup With Docker: 'general/setup.md'
 - Advanced Usage:
   - Checksums: 'advanced/checksums.md'
   - Nested Templates: 'advanced/subtemplates.md'
   - Dynamic Values: 'advanced/dynamic.md'
+  - Separate Config Files: 'advanced/separate_config.md'
   - HTTP API: 'advanced/api.md'
 - Common Issues: 'general/faq.md'
-
 - Plugins:
   - About: 'plugins/index.md'
   - Available Plugins:
@@ -35,3 +36,4 @@ pages:
   - Changelog: 'changelog.md'
   - License: 'license.md'
   - Thanks: 'general/thanks.md'
+  - Support: 'general/support.md'

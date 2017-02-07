@@ -13,37 +13,10 @@ It's available as a [Ruby Gem](https://rubygems.org/gems/tiller), so installatio
  [![Join the chat at https://gitter.im/markround/tiller](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/markround/tiller)
 [![Documentation Status](https://readthedocs.org/projects/tiller/badge/?version=latest)](http://tiller.readthedocs.io/en/latest/?badge=latest)
 
-## Documentation
-The main documentation has been updated and a searchable, easy to read version is now hosted on [readthedocs.io](http://tiller.readthedocs.io/). You can also read the documentation by browsing the [docs](docs/) directory in this repository.
+# Documentation
+The main documentation has been updated and a searchable, easy to read version is now hosted on [readthedocs.io](http://tiller.readthedocs.io/). You can also read the raw markdown files by browsing the [docs](docs/) directory in this repository.
 
-## Changes
-See [changelog.md](docs/changelog.md)
 
-## Support
-
-For problems and improvements, feel free to open an [issue](https://github.com/markround/tiller/issues), or drop by the [Gitter channel](https://gitter.im/markround/tiller) to chat. These are the preferred options, as then others can see and benefit from any solutions. Alternatively, send me an email : github@markround.com and I'll do my best to help.
-
-# Background
-I had a number of Docker containers that I wanted to run with a slightly different configuration, depending on the environment I was launching them. For example, a web application might connect to a different database in a staging environment, a MongoDB replica set name might be different, or I might want to allocate a different amount of memory to a Java process. This meant my options basically looked like:
-
-* Maintain multiple containers / Dockerfiles.
-* Maintain the configuration in separate data volumes and use --volumes-from to pull the relevant container in.
-* Bundle the configuration files into one container, and manually specify the `CMD` or `ENTRYPOINT` values to pick this up. 
-
-None of those really appealed due to duplication, or the complexity of an approach that would necessitate really long `docker run` commands. 
-
-So I knocked up a quick Ruby script (originally called "Runner.rb") that I could use across all my containers, which does the following :
-
-* Generates configuration files from ERB templates (which can come from a number of sources)
-* Uses values provided from a data source (i.e YAML files) for each environment
-* Copies the generated templates to the correct location and specifies permissions
-* Optionally executes a child process once it's finished (e.g. mongod, nginx, supervisord, etc.)
-* Now provides a pluggable architecture, so you can define additional data or template sources. For example, you can create a DataSource that looks up values from an LDAP store, or a TemplateSource that pulls things from a database. 
-
-This way I can keep all my configuration together in the container, and just tell Docker which environment to use when I start it. I can also use it to dynamically alter configuration at runtime ("parameterized containers") by passing in configuration from environment variables, external files, or a datastore such as Consul. 
-
-## Why "Tiller" ?
-Docker-related projects all seem to have shipyard-related names, and this was the first ship-building related term I could find that didn't have an existing gem or project named after it! And a tiller is the thing that steers a boat, so it sounded appropriate for something that generates configuration files.
 
 
 
@@ -217,44 +190,5 @@ environments:
 		    ...
 		    ...
 ```
-
-## Separate configuration files per environment
-
-Instead of placing all your environment configuration in `common.yaml`, you can split environment definitions out into separate files. This was the default behaviour of Tiller < 0.7.0, and will remain supported. To do this, create a `/etc/tiller/environments` directory, and then a yaml file named after your environment. 
-
-For example, if you had a `/etc/tiller/common.yaml` that looked like the [example above](#complete-example), you would create a `/etc/tiller/environments/staging.yaml` file with the following content:
-
-```yaml
-mongodb.erb:
-	target: /etc/mongodb.conf
-	user: root
-	group: root
-	perms: 0644
-	config:
-		replSet: 'staging'
-```
-And so on, one for each environment. You would then remove the `environments:` block from `common.yaml`, and Tiller will switch to loading these individual files.
-
-## Separate config files under config.d
-
-If you want to further split out your configuration, you can create a `config.d` directory (usually at `/etc/tiller/config.d`) and place configuration fragments in separate YAML files under it. All these files will be loaded in order and merged together. Any configuration variable or block that would normally go in `common.yaml` can be split out into these separate files.
-
-This is particularly useful for creating layered Docker images which inherit from a base. The base image could contain your default Tiller configuration, and you can then drop additional files under `config.d` to over-ride the defaults, or to specify new templates for that particular container.
-
-See the [test fixture](https://github.com/markround/tiller/blob/master/features/config_d.feature) for some examples.
-
-
-
-
-
-
-# Developer information
-If you want to build your own plugins, or generally hack on Tiller, see [docs/developers.md](docs/developers.md)
-
-
-
-
-
-
 
 

@@ -1,4 +1,4 @@
-# Setup
+# Setup with Docker
 
 This section will show how you can bundle configuration and templates inside a container so you can switch between them at run-time, using just the "file" plugin.
 
