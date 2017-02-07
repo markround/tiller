@@ -17,7 +17,7 @@ It's available as a [Ruby Gem](https://rubygems.org/gems/tiller), so installatio
 The main documentation has been updated and a searchable, easy to read version is now hosted on [readthedocs.io](http://tiller.readthedocs.io/). You can also read the documentation by browsing the [docs](docs/) directory in this repository.
 
 ## Changes
-See [CHANGELOG.md](docs/CHANGELOG.md)
+See [changelog.md](docs/changelog.md)
 
 ## Support
 
