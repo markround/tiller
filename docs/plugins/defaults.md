@@ -26,7 +26,7 @@ As of Tiller 0.7.7, you can also use the file datasource to specify a top-level 
 
 This means you can (optionally) use the defaults datasource to specify a default across _all_ environments, `global_values:` for defaults specific to each environment, and optionally over-write them with local `config:` values on each template. Something like this :
 
-```
+```yaml
 data_sources: [ 'defaults','file','environment' ]
 template_sources: [ 'file' ]
 
