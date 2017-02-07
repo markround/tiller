@@ -1,0 +1,32 @@
+site_name: Tiller
+repo_url: https://github.com/markround/tiller/
+
+
+theme: readthedocs
+
+pages:
+- Home: 'index.md'
+- General Usage:
+  - Overview: 'general/index.md'
+  - Common Issues: 'general/faq.md'
+
+- Plugins:
+  - About: 'plugins/index.md'
+  - Available Plugins:
+      - Ansible Vault: 'plugins/ansible_vault.md'
+      - Consul: 'plugins/consul.md'
+      - Defaults: 'plugins/defaults.md'
+      - Environment: 'plugins/environment.md'
+      - Environment JSON: 'plugins/environment_json.md'
+      - External File: 'plugins/external_file.md'
+      - File: 'plugins/file.md'
+      - HTTP: 'plugins/http.md'
+      - Random: 'plugins/random.md'
+      - Hashicorp Vault: 'plugins/vault.md'
+      - XML File: 'plugins/xml_file.md'
+      - Zookeeper: 'plugins/zookeeper.md'
+- Developer Information: 'developers.md'
+- About:
+  - Changelog: 'changelog.md'
+  - License: 'license.md'
+  - Thanks: 'general/thanks.md'

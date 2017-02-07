@@ -53,14 +53,3 @@ Tiller understands the following *optional* command-line arguments (mostly used 
 
 
 
-# Future improvements
-
-* Please open an [issue](https://github.com/markround/tiller/issues) for any improvements you'd like to see!
-
-# Thanks
-
-Thanks to everyone who has submitted bug reports and feature requests. Also a special mention and huge thanks to JetBrains, for providing me with a free [opensource project license](https://www.jetbrains.com/buy/opensource/) for the fantastic [RubyMine](https://www.jetbrains.com/ruby/) IDE!
-
-# License
-
-MIT. See the included LICENSE file.
