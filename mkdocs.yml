@@ -8,13 +8,14 @@ pages:
 - Quickstart: 'quickstart.md'
 - General Usage:
   - Overview: 'general/index.md'
-  - Setup With Docker: 'general/setup.md'
+  - Setup With Docker: 'general/docker.md'
 - Advanced Usage:
   - Checksums: 'advanced/checksums.md'
   - Nested Templates: 'advanced/subtemplates.md'
   - Dynamic Values: 'advanced/dynamic.md'
   - Separate Config Files: 'advanced/separate_config.md'
   - HTTP API: 'advanced/api.md'
+  - Exec On Write: 'advanced/exec_on_write.md'
 - Common Issues: 'general/faq.md'
 - Plugins:
   - About: 'plugins/index.md'
@@ -32,6 +33,7 @@ pages:
       - XML File: 'plugins/xml_file.md'
       - Zookeeper: 'plugins/zookeeper.md'
 - Developer Information: 'developers.md'
+- Further Reading: 'resources.md'
 - About:
   - Changelog: 'changelog.md'
   - License: 'license.md'

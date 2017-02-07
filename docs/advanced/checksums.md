@@ -15,3 +15,4 @@ Content unchanged for test.erb, not writing anything
 ```
 
 If you also want to make sure a process is launched only if at least one file has been updated, you can pass the `--md5sum-noexec` command line option, or set `md5sum_noexec: true` in your `common.yaml`. 
+

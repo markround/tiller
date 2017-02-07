@@ -1,8 +1,24 @@
 # Separate configuration files per environment
 
-Instead of placing all your environment configuration in `common.yaml`, you can split environment definitions out into separate files. This was the default behaviour of Tiller < 0.7.0, and will remain supported. To do this, create a `/etc/tiller/environments` directory, and then a yaml file named after your environment. 
+Instead of placing all your environment configuration in `common.yaml`, you can split environment definitions out into separate files. This was the default behaviour of Tiller < 0.7.0, although it  will remain supported in future versions. To do this, create a `/etc/tiller/environments` directory, and then a yaml file named after your environment. 
 
-For example, if you had a `/etc/tiller/common.yaml` that looked like the [example above](#complete-example), you would create a `/etc/tiller/environments/staging.yaml` file with the following content:
+For example, consider a `/etc/tiller/common.yaml` that had a block like this:
+ 
+```yaml
+environments:
+  staging:
+    mongodb.erb:
+    	target: /etc/mongodb.conf
+    	user: root
+    	group: root
+    	perms: 0644
+    	config:
+    		replSet: 'staging'
+   production:
+    ... rest of content snipped ...
+``` 
+ 
+You would create a `/etc/tiller/environments/staging.yaml` file with the following content:
 
 ```yaml
 mongodb.erb:

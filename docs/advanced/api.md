@@ -19,9 +19,9 @@ If you want to expose this port from inside a Docker container, you will need to
 $ curl -D - http://docker-container-ip:6275/ping
 HTTP/1.1 200 OK
 Content-Type: application/json
-Server: Tiller 0.3.1 / API v1
+Server: Tiller 1.0.0 / API v2
 
-{ "ping": "Tiller API v1 OK" }
+{ "ping": "Tiller API v2 OK" }
 
 ```
 

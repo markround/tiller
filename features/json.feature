@@ -26,9 +26,9 @@ Default value : from JSON!
 """
     And the output should contain:
   """
-  Warning, merging duplicate data values.
+  Merging duplicate data values
   default_value => 'from defaults' being replaced by : 'From the file datasource' from FileDataSource
-  Warning, merging duplicate data values.
+  Merging duplicate data values
   default_value => 'From the file datasource' being replaced by : 'from JSON!' from EnvironmentJsonDataSource
   """
 

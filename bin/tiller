@@ -312,7 +312,7 @@ module Tiller
         log.info("Main child process with PID #{collected_pid} exited with status #{exit_status}")
         main_exit_status = exit_status
       else
-        log.info("EOW process with PID #{collected_pid} exited with status #{exit_status}")
+        log.info("exec_on_write process with PID #{collected_pid} exited with status #{exit_status}")
       end
       pids.delete(collected_pid)
     end
