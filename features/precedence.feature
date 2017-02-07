@@ -90,7 +90,6 @@ Feature: Test new value precedence and merging behaviour
     """
     Merging duplicate data values
     test_var => 'From defaults plugin' being replaced by : 'From file plugin' from FileDataSource
-    Merging duplicate data values
     test_var => 'From file plugin' being replaced by : 'from environment' from EnvironmentDataSource
     """
 

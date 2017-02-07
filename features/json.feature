@@ -18,19 +18,17 @@ Feature: JSON environment data source
     When I successfully run `tiller -b . -v -n -e simple_keys`
     Then a file named "simple_keys.txt" should exist
     And the file "simple_keys.txt" should contain:
-"""
-Default value : from JSON!
+    """
+    Default value : from JSON!
 
- * Key 1 is : value1
- * Key 2 is : value2
-"""
+     * Key 1 is : value1
+     * Key 2 is : value2
+    """
     And the output should contain:
-  """
-  Merging duplicate data values
-  default_value => 'from defaults' being replaced by : 'From the file datasource' from FileDataSource
-  Merging duplicate data values
-  default_value => 'From the file datasource' being replaced by : 'from JSON!' from EnvironmentJsonDataSource
-  """
+    """
+    default_value => 'from defaults' being replaced by : 'From the file datasource' from FileDataSource
+    default_value => 'From the file datasource' being replaced by : 'from JSON!' from EnvironmentJsonDataSource
+    """
 
   Scenario: Simple data from environment v2 format
     Given I use a fixture named "json"
