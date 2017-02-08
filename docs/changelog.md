@@ -3,8 +3,8 @@
   * 1.0.0 (unreleased)
 
     * Switched to semantic versioning
-    * Added [exec_on_write](advanced/exec_on_write.md) feature to run commands per-template when they're written
-    * Added [dynamic_values](advanced/dynamic.md) feature to support ERb syntax inside YAML configuration file values
+    * Added [`exec_on_write`](advanced/exec_on_write.md) feature to run commands per-template when they're written. Thanks to [EugenMayer](https://github.com/EugenMayer) for requesting this.
+    * Added [`dynamic_values`](advanced/dynamic.md) feature to support ERb syntax inside YAML configuration file values. Thanks to [DanielRedOak](https://github.com/DanielRedOak), [gayetri](https://github.com/gayetri) and [EugenMayer](https://github.com/EugenMayer)for suggesting variations of this feature!
     * Deprecated v1 HTTP API /globals endpoint
     * Added internal [K/V store](developers.md#kv-store) for plugins to pass data around
     * Improved documentation, wrote quick-start guide and moved to [readthedocs.io](http://tiller.readthedocs.io)
