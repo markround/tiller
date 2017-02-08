@@ -23,7 +23,7 @@ The above example would use templates from files, and retrieve values from Vault
 
 
 # Configuring
-Configuration for this plugin is placed inside a "vault" block. This should be in the the top-level of `common.yaml` file, or in a per-environment block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this.
+Configuration for this plugin is placed inside a "vault" block. This should be in the the top-level of `common.yaml` file, or in a [per-environment block](file.md#overriding-common-settings).
 
 A sample configuration (showing the defaults for most parameters) is as follows :
 

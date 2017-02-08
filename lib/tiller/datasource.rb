@@ -36,7 +36,8 @@ module Tiller
     #    'target'  => "/tmp/#{template_name}",
     #    'user'    => 'root',
     #    'group'   => 'root',
-    #    'perms'   => '0644'
+    #    'perms'   => '0644',
+    #    'exec_on_write' => [ "/usr/bin/touch" , "somefile.tmp" ]
     # }
     # Again, we should always return a hash; if we have no data for the given
     # template, just return an empty hash.

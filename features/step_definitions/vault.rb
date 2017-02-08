@@ -22,8 +22,7 @@ When(/^I have downloaded vault "(.+)" to "(.+)"$/) do |version, path|
   end
   puts "Downloading #{uri}"
 
-  download = open(uri)
-  IO.copy_stream(download, path)
+  hashicorp_download(uri, path)
 end
 
 And (/^a token should be created$/) do

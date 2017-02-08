@@ -4,7 +4,7 @@ Tiller follows a fairly standard gem project layout and has a Rakefile, Gemfile 
 
 ## Setup
 
-To get started, ensure you have Ruby > 1.9 and the Bundler gem installed. Then run `bundle install` in the top-level directory to install all the development dependencies. You should see something similar to the following:
+To get started, ensure you have Ruby > 1.9 (Ruby 2.x is preferred as some plugins require it) and the Bundler gem installed. Then run `bundle install` in the top-level directory to install all the development dependencies. You should see something similar to the following:
 
 	Using rake 10.4.2
 	Using ffi 1.9.10
@@ -20,29 +20,30 @@ To get started, ensure you have Ruby > 1.9 and the Bundler gem installed. Then r
 You can now use the Rake tasks (through `bundle exec`)to build the gem :
 
 	$ bundle exec rake build
-	tiller 0.6.5 built to pkg/tiller-0.6.5.gem.
+	tiller 1.0.0 built to pkg/tiller-1.0.0.gem.
 	
 And then install the locally produced package :
 
 	$ bundle exec rake install:local
-	tiller 0.6.5 built to pkg/tiller-0.6.5.gem.
-	tiller (0.6.5) installed.
+	tiller 1.0.0 built to pkg/tiller-1.0.0.gem.
+	tiller (1.0.0) installed.
 
 I recommend Bundler version 1.10.6 or later; older versions may not have the 'install:local' job available.
 
 ## Tests
 
 There are quite a few tests under the `features/` directory which use Cucumber and Aruba. Again, you can run these through a Rake task :
-
-	$ bundle exec rake features
-	Feature: Defaults module
-	...
-	... Rest of output snipped
-	...
-	22 scenarios (22 passed)
-	70 steps (70 passed)
-	0m6.500s
-	
+```
+$ bundle exec rake features
+Feature: Defaults module
+...
+... Rest of output snipped
+...
+110 scenarios (110 passed)
+588 steps (588 passed)
+0m49.460s
+```
+  
 `bundle exec rake` with no arguments will by default build the gem, install it and then run the tests. You can see the status of builds across all branches of this gem at [https://travis-ci.org/](https://travis-ci.org/markround/tiller/branches) - these are run everytime I push to a origin branch on Github.
 
 ## Contributions
@@ -53,20 +54,10 @@ I'd also love to hear from anyone using Tiller, if you're doing anything cool wi
 
 
 # Plugin architecture
-Well, "architecture" is probably too grand a word, but as discussed in the main [README.md](README.md), you can get data into your template files from a multitude of sources, or even grab your template files from a source such as a database or from a HTTP server. Here's a quick overview:
+Well, "architecture" is probably too grand a word, but you can get data into your template files from a multitude of sources, or even grab your template files from a source such as a database or from a HTTP server. Here's a quick overview:
 
 ##Template sources
-These are modules that provide a list of templates, and return the template contents. The code for the `FileTemplateSource` module is really simple. It pretty much just does this to return a list of templates :
-```ruby
-    Dir.glob(File.join(@template_dir , '**' , '*.erb')).each do |t|
-      t.sub!(@template_dir , '')
-    end
-```  
-And then to return an individual template, it just does :
-```ruby 
-    open(File.join(@template_dir , template_name)).read
-``` 
-You can create your own template provider by extending the `Tiller::TemplateSource` class and providing two methods :
+These are modules that provide a list of templates, and return the template contents. You can create your own template provider by extending the `Tiller::TemplateSource` class and providing two methods :
 
 * `templates` : Return an array of templates available
 * `template(template_name)` : Return a string containing an ERB template for the given `template_name`
@@ -99,11 +90,12 @@ These provide values that templates can use. There are 3 kinds of values:
 You can create your own datasources by inheriting `Tiller::DataSource` and providing any of the following 3 methods :
  
 * `values(template_name)` : Return a hash of keys/values for the given template name
-* `target_values(template_name)` : Return a hash of values for the given template name, which must include:
-	* `target` : The full path that the populated template should be installed to (directories will be created if they do not exist)
-	* `user` : The user that the file should be owned by (e.g. root)
-	* `group` : The group that the file should be owned by (e.g. bin)
-	* `perms`: The octal permissions the file should have (e.g. 0644)
+* `target_values(template_name)` : Return a hash of values for the given template name:
+	* `target` : The full path that the populated template should be installed to (directories will be created if they do not exist). This is mandatory.
+  * `user` : The user that the file should be owned by (e.g. root)
+  * `group` : The group that the file should be owned by (e.g. bin)
+  * `perms`: The octal permissions the file should have (e.g. 0644)
+  * `exec_on_write` : An optional command to execute after the template has been written (different from the main `exec` parameter), specified in array format e.g. `["touch" , "/tmp/somefile"]`
 * `global_values` : Return a hash of global values. 
 
 As with template sources, if you need to connect to a database or do any other post-initialisation work, create a `setup` method. You also have the `Tiller::config` class variable available, which is a hash of the Tiller configuration (`common.yaml`).
@@ -152,13 +144,34 @@ end
 ## Configuration
 If your plugin requires configuration, it's preferable that it reads it from a top-level configuration block in `common.yaml`, instead of requiring a separate configuration file.
 
+# K/V store
+If you want to pass internal data around from your plugins - for example, from a datasource to a helper module (see below), you can use the included simple key/value store, which provides two methods (get and set) for you.
+
+By default, the KV store will place all values in a `tiller` namespace. To avoid potential clashes with other plugins using the store, you should ideally specify your own namespace when setting or getting values. A simple example follows:
+
+```ruby
+# Set a key in the default 'tiller' namespace
+Tiller::Kv.set('/path/to/key', "This is a value")
+# Set a key in an 'example' namespace.
+Tiller::Kv.set('/path/to/key', "This is a different value", namespace: 'example')
+
+# Returns "This is a value"
+Tiller::Kv.get('/path/to/key')
+# Returns "This is a different value"
+Tiller::Kv.get('/path/to/key', namespace: 'example')
+
+```
+
 # Helper modules
 
-You can also write custom utility functions in Ruby that can be called from within templates. An example of this is the bundled `Tiller::render` function that lets you include and parse [sub-templates](../README.md#sub-templates) from another template. Helper modules aren't intended to replace the existing Data- and Template-source plugins; if you need to get some values into your templates, or hook up to some external service, these are probably still the best way to go about it.
+You can also write custom utility functions in Ruby that can be called from within templates (or from within YAML configuration files, if `dynamic_values: true` has been set __TODO: see the main documentation for details on this__). 
 
-But if you have a more complicated transformation to do (e.g. convert markdown text into HTML) or need to include some logic in a function, a helper would clean up your templates as well as keep a clean separation of code and configuration.
+An example of this is the bundled `Tiller::render` function that lets you include and parse [sub-templates](advanced/subtemplates.md) from another template. Helper modules aren't intended to replace the existing Data- and Template-source plugins; if you need to get some values into your templates, or hook up to some external service, these are probably still the best way to go about it. 
 
-As an example, this is how you'd add a [Lorem Ipsum](http://www.lipsum.com/) generator for filling in place-holder text. We'll simply wrap the excellent [forgery](https://github.com/sevenwire/forgery) gem, so first make sure you have it installed:
+You could however create a helper to retrieve values programmatically from a datasource, for instance if you wanted to create a "lookup" function to return individual values, instead of passing in a large, complex data structure to your templates.  If you have a more complicated transformation to do (e.g. convert markdown text into HTML) or need to include some logic in a function, a helper would also be a good way to clean up your templates as well as keep a clean separation of code and configuration. 
+
+
+As a simple example, this is how you'd add a [Lorem Ipsum](http://www.lipsum.com/) generator for filling in place-holder text. We'll simply wrap the excellent [forgery](https://github.com/sevenwire/forgery) gem, so first make sure you have it installed:
 
 ```
 $ gem install forgery

@@ -26,6 +26,7 @@ require 'tiller/datasource'
 require 'tiller/logger'
 require 'digest/md5'
 require 'tiller/render'
+require 'tiller/kv'
 require 'tiller/version'
 
 EXIT_SUCCESS = 0
@@ -100,6 +101,8 @@ module Tiller
     log.info('Helper modules loaded ' + helper_modules.to_s)
   end
 
+  log.debug("Dynamic values specified. Will parse all values as ERb.") if config.assoc('dynamic_values')
+
   # We now don't actually use the global_values hash for anything when constructing the templates (as they can be
   # over-ridden by template values), but it's here to keep compatibility with the v1 API.
   global_values = { 'environment' => config[:environment] }
@@ -133,6 +136,8 @@ module Tiller
   all_templates       = {}
   skipped_templates   = 0
   updated_templates   = 0
+  pids                = []
+
 
   templates.each do |template, _content|
 
@@ -162,6 +167,27 @@ module Tiller
       # permissions and so on)
       target_values.tiller_merge!(dc.target_values(template)) do |key, old, new|
         warn_merge(key, old, new, 'target', data_class.to_s)
+      end
+
+      # Dynamic config stuff, allows us to use ERb syntax inside configuration.
+      if config.assoc('dynamic_values')
+        # Need to recursively walk the hash, looking for ERb syntax
+        tiller.deep_traverse do |path,value|
+          if value.is_a?(String) && value.include?('<%')
+            log.debug("Found ERb syntax for #{value} at #{path}")
+            parsed_value = Tiller::render(value, direct_render: true)
+            # Proper Ruby voodoo here.
+            # See http://stackoverflow.com/questions/19304135/deep-nest-a-value-into-a-hash-given-a-path-array for
+            # explanation.
+            tiller.merge!((path + [parsed_value]).reverse.reduce { |s,e| { e => s } })
+          end
+        end
+        target_values.each do |key ,value|
+          if value.is_a?(String) && value.include?('<%')
+            log.debug("Found ERb syntax for target value #{key}:#{value}}")
+            target_values[key] = Tiller::render(value, direct_render: true)
+          end
+        end
       end
     end
 
@@ -222,6 +248,17 @@ module Tiller
         "#{target_values['target']}")
     end
 
+    # Exec on write
+    if target_values.key?('exec_on_write')
+      if ! target_values['exec_on_write'].is_a?(Array)
+        log.warn("Warning: exec_on_write for template #{template} is not in array format")
+      else
+        eow_pid=launch(target_values['exec_on_write'])
+        pids.push(eow_pid)
+        log.info("exec_on_write process for #{template} forked with PID #{eow_pid}")
+      end
+    end
+
   end
 
   if config['md5sum']
@@ -254,24 +291,38 @@ module Tiller
     puts "Executing #{config['exec']}..."
 
     # Spawn and wait so API can continue to run
-    child_pid = launch(config['exec'], :verbose => config[:verbose])
+    child_pid = launch(config['exec'])
+    pids.push(child_pid)
 
-    log.info("Child process forked with PID #{child_pid}.")
+    log.info("Child process forked with PID #{child_pid}")
 
-    # Catch signals and send them on to the child process
+    # Catch signals and send them on to the child processes
     [ :INT, :TERM, :HUP ].each do |sig|
-      Signal.trap(sig) { signal(sig, child_pid, :verbose => config[:verbose]) }
+      Signal.trap(sig) do
+        pids.each { |p|  signal(sig, p, :verbose => config[:verbose])}
+      end
     end
 
-    Process.wait(child_pid)
+    # Wait for all PIDs
+    main_exit_status = 0
+    while pids.length >= 1 do
+      collected_pid = Process.wait
+      exit_status = ($?.exitstatus == nil) ? 0 : $?.exitstatus
+      if collected_pid == child_pid
+        log.info("Main child process with PID #{collected_pid} exited with status #{exit_status}")
+        main_exit_status = exit_status
+      else
+        log.info("exec_on_write process with PID #{collected_pid} exited with status #{exit_status}")
+      end
+      pids.delete(collected_pid)
+    end
 
-    # Capture the child process status, so we can also exit with this code
-    exit_status = ($?.exitstatus == nil) ? 0 : $?.exitstatus
-
-    log.info("Child process exited with status #{exit_status}")
+    log.info("Child process exited with status #{main_exit_status}")
     log.info('Child process finished, Tiller is stopping.')
     exit exit_status
 
   end
+
+
 
 end
