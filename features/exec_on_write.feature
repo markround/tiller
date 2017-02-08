@@ -12,9 +12,9 @@ Feature: Exec on write
       development:
         test.erb:
           target: test.txt
-          exec_on_write: touch eow.tmp
+          exec_on_write: touch exec_on_write.tmp
           config:
-            value: EOW feature
+            value: exec_on_write feature
     """
     And a directory named "templates"
     And a file named "templates/test.erb" with:
@@ -23,7 +23,7 @@ Feature: Exec on write
     """
     When I run `tiller -vd -b . -l ./lib`
     Then a file named "test.txt" should exist
-    And the file "test.txt" should contain "value: EOW feature"
+    And the file "test.txt" should contain "value: exec_on_write feature"
     And the output should match /Warning: exec_on_write for template (.+) is not in array format/
 
   Scenario: Test exec_on_write
@@ -38,9 +38,9 @@ Feature: Exec on write
       development:
         test.erb:
           target: test.txt
-          exec_on_write: ["touch" , "eow.tmp"]
+          exec_on_write: ["touch" , "exec_on_write.tmp"]
           config:
-            value: EOW feature
+            value: exec_on_write feature
     """
     And a directory named "templates"
     And a file named "templates/test.erb" with:
@@ -49,10 +49,10 @@ Feature: Exec on write
     """
     When I successfully run `tiller -vd -b . -l ./lib`
     Then a file named "test.txt" should exist
-    And the file "test.txt" should contain "value: EOW feature"
-    And a file named "eow.tmp" should exist
+    And the file "test.txt" should contain "value: exec_on_write feature"
+    And a file named "exec_on_write.tmp" should exist
     And the output should match /exec_on_write process for (.+) forked with PID ([0-9]+)/
-    And the output should match /EOW process with PID ([0-9]+) exited with status 0/
+    And the output should match /exec_on_write process with PID ([0-9]+) exited with status 0/
     And the output should match /Main child process with PID ([0-9]+) exited with status 0/
 
   Scenario: Test exec_on_write does not exec when md5 checksums match
@@ -68,9 +68,9 @@ Feature: Exec on write
       development:
         test.erb:
           target: test.txt
-          exec_on_write: ["touch" , "eow.tmp"]
+          exec_on_write: ["touch" , "exec_on_write.tmp"]
           config:
-            value: EOW feature
+            value: exec_on_write feature
     """
     And a directory named "templates"
     And a file named "templates/test.erb" with:
@@ -79,11 +79,11 @@ Feature: Exec on write
     """
     Given a file named "test.txt" with:
     """
-    value: EOW feature
+    value: exec_on_write feature
     """
     When I successfully run `tiller -vd -b . -l ./lib`
     Then a file named "test.txt" should exist
-    And the file "test.txt" should contain "value: EOW feature"
+    And the file "test.txt" should contain "value: exec_on_write feature"
     And the output should contain "[0/1] templates written, [1] skipped with no change"
-    And a file named "eow.tmp" should not exist
+    And a file named "exec_on_write.tmp" should not exist
     And the output should not match /exec_on_write process for (.+) forked with PID ([0-9]+)/

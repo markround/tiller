@@ -37,8 +37,8 @@ end
 
 # Warn if values are being merged
 def warn_merge(key, old, new, type, source)
-  puts "Warning, merging duplicate #{type} values."
-  puts "#{key} => '#{old}' being replaced by : '#{new}' from #{source}"
+  Tiller::log.info("Merging duplicate #{type} values")
+  Tiller::log.info("#{key} => '#{old}' being replaced by : '#{new}' from #{source}")
   new
 end
 

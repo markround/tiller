@@ -76,7 +76,7 @@ Feature: Configuration from config.d
     """
     And the output should contain:
     """
-    Warning, merging duplicate data values.
+    Merging duplicate data values
     test_var => 'From defaults module' being replaced by : 'From 02-environments.yaml' from FileDataSource
     """
 
