@@ -1,5 +1,5 @@
 # Quickstart tutorial
-The following examples are intended to give you a very quick overview of how Tiller can generate dynamic configuration files, using values from a few different [plugins](plugins/index.md). It doesn't cover topics like executing commands and running Tiller inside Docker, however this is covered in the rest of the documentation. The example simplistic use-case covered is an application that has a database configuration file, and we need a way to set the database hostname dynamically, depending on where the application is run.  
+The following examples are intended to give you a very quick overview of how Tiller can generate dynamic configuration files, using values from a few different [plugins](plugins/index.md). It doesn't cover topics like executing commands and [running Tiller inside Docker](general/docker.md), however this is covered in the rest of the documentation. The example simplistic use-case covered is an application that has a database configuration file, and we need a way to set the database hostname dynamically, depending on where the application is run.  
 
 
 # Requirements
