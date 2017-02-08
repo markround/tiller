@@ -1,6 +1,6 @@
 # 1.0.0
 
-  * 1.0.0 (unreleased)
+  * 1.0.0 (09/Feb/2017)
 
     * Switched to semantic versioning
     * Added [`exec_on_write`](advanced/exec_on_write.md) feature to run commands per-template when they're written. Thanks to [EugenMayer](https://github.com/EugenMayer) for requesting this.
