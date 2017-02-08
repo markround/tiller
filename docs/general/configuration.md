@@ -1,6 +1,6 @@
 # Main configuration values
   
-`common.yaml` contains most of the configuration for Tiller. It contains top-level `exec`, `data_sources`, `template_sources` and `default_environment` parameters, along with sections for each environment. 
+`common.yaml` contains most of the configuration for Tiller. It contains top-level `exec`, `data_sources`, `template_sources` and `default_environment` parameters. If you are using the [file plugin](../plugins/file.md) (which you usually will be) it also typically contains configuration sections for each environment. 
   
 It can also take optional blocks of configuration for some plugins (for example, the [Consul Plugins](../plugins/consul.md)). Settings defined here can also be overridden on a per-environment basis.
   
