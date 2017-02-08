@@ -37,10 +37,10 @@ consul:
 
   templates: '/tiller/templates'
   values:
-   global: '/tiller/globals/all'
-   per_env: '/tiller/globals/%e'
-   template: '/tiller/values/%e/%t'
-   target: '/tiller/target_values/%t/%e'
+    global: '/tiller/globals/all'
+    per_env: '/tiller/globals/%e'
+    template: '/tiller/values/%e/%t'
+    target: '/tiller/target_values/%t/%e'
 ```
 
 At a bare minimum, you need to specify a URL for the plugins to connect to. This is the HTTP port of your Consul server, e.g. `http://localhost:8500`. If you omit the other parameters, they will default to the values shown above. If you're happy to accept the rest of the defaults, your configuration can therefore be as simple as this :

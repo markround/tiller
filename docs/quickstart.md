@@ -1,3 +1,6 @@
+# Quickstart tutorial
+The following examples are intended to give you a very quick overview of how Tiller can generate dynamic configuration files, using values from a few different [plugins](plugins/index.md). It doesn't cover topics like executing commands and running Tiller inside Docker, however this is covered in the rest of the documentation. The example simplistic use-case covered is an application that has a database configuration file, and we need a way to set the database hostname dynamically, depending on where the application is run.  
+
 
 # Requirements
  * Ruby >= 1.9 (2.x series preferred, 2.3 is ideal)
@@ -16,7 +19,7 @@ $ mkdir quickstart
 $ mkdir quickstart/templates
 ```
 
-Create a simple template file and save it as `quickstart/templates/db.erb` - in all these examples, we'll imagine it's a configuration file for an application that provides a database hostname:
+Create a simple template file and save it as `quickstart/templates/db.erb` - this is your example database configuration file.
 
 ```erb 
 db_hostname: <%= env_db_hostname %>
@@ -44,7 +47,7 @@ $ export DB_HOSTNAME=mydb.example.com
 $ tiller --base-dir=./quickstart
 ```
 
-Now, your template file has been written to `db.ini` (the `target:` parameter in the main configuration file) and has the content set from your environment variable:
+Now, your template file has been written to `db.ini` (specified by the `target:` parameter in the main configuration file) and has the content set from your environment variable:
 
 ```ini
 db_hostname: mydb.example.com
@@ -73,7 +76,8 @@ environments:
     db.erb:
       target: db.ini
 ```
-This now enables the [Defaults](plugins/defaults.md) plugin and configures it to provide a default value if none is set. Try unsetting the environment variable you set earlier and re-running Tiller :
+
+This now enables the [Defaults](plugins/defaults.md) plugin and configures it to provide a default value if one is not set. Try unsetting the environment variable you set earlier and re-running Tiller :
 
 ```sh
 $ unset DB_HOSTNAME
@@ -123,7 +127,7 @@ environments:
         env_db_hostname: db.staging.example.com
 ```
 
-In addition to declaring a global default for `env_db_hostname`, this also sets a default for the `target` value - this has the effect of ensuring this template is generated in every environment, and saves a bit of redundancy so we don't have to set this value multiple times.
+In addition to declaring a global default for `env_db_hostname`, this also sets a default for the `target` value of the `db.erb` template - this has the effect of ensuring this template is generated in every environment, and saves a bit of redundancy so we don't have to set this value multiple times.
 
 We then specify an empty "development" environment as we've specified everything we need for this environment already: We have a default value for the database hostname, the template will be generated, and we can override the default by setting an environment variable.
 

@@ -1,29 +1,26 @@
-
-
 # Usage
-Tiller can be used to dynamically generate configuration files before passing execution over to a daemon process. 
-
-It looks at an environment variable called "environment" (or the argument to the `-e` flag), and creates a set of configuration files based on templates, and then optionally runs a specified daemon process via `exec`. 
+Tiller can be used to dynamically generate configuration files based on ERb templates before passing execution over to a daemon process or other command. It is usually used inside a Docker container as the `CMD` or `ENTRYPOINT` process.
 
 In a basic use-case, when you are bundling your templates and configuration inside the container, all you need to do is tell Tiller which environment you want to use e.g. 
 
-	# docker run -t -i -e environment=staging markround/demo_container:latest
-	tiller v0.3.1 (https://github.com/markround/tiller) <github@markround.com>
-	Using configuration from /etc/tiller
-	Using plugins from /usr/local/lib/tiller
-	Using environment staging
-	Template sources loaded [FileTemplateSource]
-	Data sources loaded [FileDataSource, NetworkDataSource]
-	Templates to build ["mongodb.erb", "sensu_client.erb"]
-	Building template mongodb.erb
-	Setting ownership/permissions on /etc/mongodb.conf
-	Building template sensu_client.erb
-	Setting ownership/permissions on /etc/sensu/conf.d/client.json
-	Template generation completed
-	Executing /usr/bin/supervisord
-	Child process forked.
+```
+$ docker run -ti -e environment=staging my-application:latest
+tiller v1.0.0 (https://github.com/markround/tiller) <github@markround.com>
+Using common.yaml v2 format configuration file
+Using configuration from /etc/tiller
+Using plugins from /usr/local/lib/tiller
+Using staging development
+Template sources loaded [FileTemplateSource]
+Data sources loaded [FileDataSource]
+Available templates : ["application.erb"]
+Building template application.erb
+Not running as root, so not setting ownership/permissions on /etc/application.ini
+Template generation completed
+Executing ["/usr/sbin/my_application"]...
+Child process forked with PID 87560
+```
 
-If no environment is specified, it will default to using "development". Prior to version 0.4.0, this used to be "production", but as was quite rightly pointed out, this is a bit scary. You can always change the default anyway - see below. 
+If no environment is specified, it will default to using "development".
 
 # A word about configuration
 Tiller uses YAML for configuration files. If you're unfamiliar with YAML, don't worry - it's very easy to pick up. A good introduction is here : ["Complete idiot's introduction to YAML"](https://github.com/Animosity/CraftIRC/wiki/Complete-idiot's-introduction-to-yaml)
@@ -49,9 +46,6 @@ Tiller understands the following *optional* command-line arguments (mostly used 
 * `-h` / `--help` : Show a short help screen
 * `--md5sum` : Only write templates if they do not already exist, or their content has changed (see [below](#checksums)). 
 * `--md5sum-noexec` : If no templates were written/updated, do not execute any  process.
-
-# Where to go from here
-
 
 
 

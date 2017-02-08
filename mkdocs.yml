@@ -8,6 +8,7 @@ pages:
 - Quickstart: 'quickstart.md'
 - General Usage:
   - Overview: 'general/index.md'
+  - Configuration: 'general/configuration.md'
   - Setup With Docker: 'general/docker.md'
 - Advanced Usage:
   - Checksums: 'advanced/checksums.md'
