@@ -7,12 +7,8 @@ As of version 0.6.0, Tiller includes plugins to retrieve templates and values fr
 Add the `zookeeper` plugins in your `common.yaml`, e.g.
 
 ```yaml
-data_sources:
-  - file
-  - zookeeper
-template_sources:
-  - zookeeper
-  - file
+data_sources: [ 'file' , 'zookeeper' ]
+template_sources: [ 'file' , 'zookeeper' ]
 ```
 
 Note that the ordering is significant. In the above example, values from the ZooKeeper data source will take precedence over YAML files, but templates loaded from files will take precedence over templates stored in ZooKeeper. You should tweak this as appropriate for your environment.
@@ -20,7 +16,7 @@ Note that the ordering is significant. In the above example, values from the Zoo
 You also do not need to enable both plugins; for example you may just want to retrieve values for your templates from ZooKeeper, but continue to use files to store your actual template content.
 
 # Configuring
-Configuration for this plugin is placed inside a "zookeeper" block. This can either be included in the main `common.yaml` file, or in a per-environment configuration block inside a `common:` block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this.
+Configuration for this plugin is placed inside a "zookeeper" block. This can either be included in the main `common.yaml` file, or in a [per-environment block](file.md#overriding-common-settings).
 
 A sample configuration (showing the defaults for most parameters) is as follows :
 ```yaml

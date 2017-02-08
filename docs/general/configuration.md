@@ -42,6 +42,13 @@ This parameter specifies which plugin will be providing the templates. It uses t
 template_sources: [ "file" ]
 ```
   
+** IMPORTANT NOTE ** : The order in which you specify plugins is important. Plugins will be loaded in the order they are specified, so in the following example, values from the environment will take precedence over anything specified in `common.yaml` from the [file](../plugins/file.md) plugin, and templates from [Consul](../plugins/consul.md) will take precedence over anything from the filesystem:
+
+```yaml
+data_sources: [ "file" , "environment" ]
+template_sources: [ "file" , "consul" ]
+```
+
 
 ## default_environment
 
@@ -52,7 +59,7 @@ default_environment: testing
 ```
 
 # Example
-For a simple use-case where you're just generating everything from files and then spawning MongoDB with a different replica set name specified in the staging and production environments, you'd have a common.yaml like this:
+For a simple use-case where you're just generating everything from [files](../plugins/file.md) and then spawning MongoDB with a different replica set name specified in the staging and production environments, you'd have a common.yaml like this:
 
 ```yaml
 ---

@@ -23,7 +23,7 @@ The above example would use templates from files, and retrieve values from Consu
 
 
 # Configuring
-Configuration for this plugin is placed inside a "consul" block. This should be in the the top-level of `common.yaml` file, or in a per-environment block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this.
+Configuration for this plugin is placed inside a "consul" block. This should be in the the top-level of `common.yaml` file, or in a [per-environment block](file.md#overriding-common-settings).
 
 A sample configuration (showing the defaults for most parameters) is as follows :
 
@@ -177,5 +177,5 @@ ServicePort : <%= consul_services['consul'][0].ServicePort %>
 ```
 
 # Further reading
-See [this](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller) blog post for an introduction to this plugin with some examples.
+See [this](http://www.markround.com/blog/2016/05/12/new-consul-plugin-for-tiller) blog post for a walk-through tutorial with some examples.
 

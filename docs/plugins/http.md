@@ -9,12 +9,8 @@ The plugins expect data to be returned in JSON format, apart from the template c
 Add the `http` plugins in your `common.yaml`, e.g.
 
 ```yaml
-data_sources:
-  - file
-  - http
-template_sources:
-  - http
-  - file
+data_sources: [ 'file' , 'http' ]
+template_sources: [ 'file' , 'http' ]
 ```
 
 Note that the ordering is significant. In the above example, values from the HTTP data source will take precedence over YAML files, but templates loaded from files will take precedence over templates stored in HTTP. You should tweak this as appropriate for your environment.
@@ -22,7 +18,7 @@ Note that the ordering is significant. In the above example, values from the HTT
 You also do not need to enable both plugins; for example you may just want to retrieve values for your templates from a web server, but continue to use files to store your actual template content.
 
 # Configuring
-Configuration for this plugin is placed inside a "http" block. This can either be included in the top-level of `common.yaml` file, or in a per-environment block. See the main [README.md](https://github.com/markround/tiller/blob/master/README.md#common-configuration) for more information on this.
+Configuration for this plugin is placed inside a "http" block. This can either be included in the top-level of `common.yaml` file, or in a [per-environment block](file.md#overriding-common-settings).
 
 A sample configuration (showing the defaults for most parameters) is as follows :
 

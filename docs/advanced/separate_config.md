@@ -1,6 +1,8 @@
 # Separate configuration files per environment
 
-Instead of placing all your environment configuration in `common.yaml`, you can split environment definitions out into separate files. This was the default behaviour of Tiller < 0.7.0, although it  will remain supported in future versions. To do this, create a `/etc/tiller/environments` directory, and then a yaml file named after your environment. 
+When using the [file](../plugins/file.md) plugin, instead of placing all your environment configuration in `common.yaml` you can split environment definitions out into separate files. 
+
+This was the default behaviour of Tiller < 0.7.0, although it  will remain supported in future versions. To do this, create a `/etc/tiller/environments` directory, and then a yaml file named after your environment. 
 
 For example, consider a `/etc/tiller/common.yaml` that had a block like this:
  

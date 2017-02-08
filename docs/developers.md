@@ -4,7 +4,7 @@ Tiller follows a fairly standard gem project layout and has a Rakefile, Gemfile 
 
 ## Setup
 
-To get started, ensure you have Ruby > 1.9 and the Bundler gem installed. Then run `bundle install` in the top-level directory to install all the development dependencies. You should see something similar to the following:
+To get started, ensure you have Ruby > 1.9 (Ruby 2.x is preferred as some plugins require it) and the Bundler gem installed. Then run `bundle install` in the top-level directory to install all the development dependencies. You should see something similar to the following:
 
 	Using rake 10.4.2
 	Using ffi 1.9.10
@@ -20,29 +20,30 @@ To get started, ensure you have Ruby > 1.9 and the Bundler gem installed. Then r
 You can now use the Rake tasks (through `bundle exec`)to build the gem :
 
 	$ bundle exec rake build
-	tiller 0.6.5 built to pkg/tiller-0.6.5.gem.
+	tiller 1.0.0 built to pkg/tiller-1.0.0.gem.
 	
 And then install the locally produced package :
 
 	$ bundle exec rake install:local
-	tiller 0.6.5 built to pkg/tiller-0.6.5.gem.
-	tiller (0.6.5) installed.
+	tiller 1.0.0 built to pkg/tiller-1.0.0.gem.
+	tiller (1.0.0) installed.
 
 I recommend Bundler version 1.10.6 or later; older versions may not have the 'install:local' job available.
 
 ## Tests
 
 There are quite a few tests under the `features/` directory which use Cucumber and Aruba. Again, you can run these through a Rake task :
-
-	$ bundle exec rake features
-	Feature: Defaults module
-	...
-	... Rest of output snipped
-	...
-	22 scenarios (22 passed)
-	70 steps (70 passed)
-	0m6.500s
-	
+```
+$ bundle exec rake features
+Feature: Defaults module
+...
+... Rest of output snipped
+...
+110 scenarios (110 passed)
+588 steps (588 passed)
+0m49.460s
+```
+  
 `bundle exec rake` with no arguments will by default build the gem, install it and then run the tests. You can see the status of builds across all branches of this gem at [https://travis-ci.org/](https://travis-ci.org/markround/tiller/branches) - these are run everytime I push to a origin branch on Github.
 
 ## Contributions
