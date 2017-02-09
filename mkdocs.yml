@@ -2,6 +2,8 @@ site_name: Tiller
 repo_url: https://github.com/markround/tiller/
 
 theme: readthedocs
+extra_javascript: 
+  - js/extra.js
 
 pages:
 - Home: 'index.md'
