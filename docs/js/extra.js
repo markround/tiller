@@ -1,3 +1,4 @@
+var nodemcu = nodemcu || {};
 (function () {
   'use strict';
   //var languageCodeToNameMap = {en: 'English', de: 'Deutsch'};
@@ -8,6 +9,7 @@
   $(document).ready(function () {
     fixSearch();
   });
+
 
   /*
    * RTD messes up MkDocs' search feature by tinkering with the search box defined in the theme, see
@@ -37,6 +39,23 @@
     }
   }
 
+
+  /**
+   * Analyzes the URL of the current page to find out what the selected GitHub branch is. It's usually
+   * part of the location path. The code needs to distinguish between running MkDocs standalone
+   * and docs served from RTD. If no valid branch could be determined 'dev' returned.
+   *
+   * @returns GitHub branch name
+   */
+  function determineSelectedBranch() {
+    var branch = 'dev', path = window.location.pathname;
+    if (window.location.origin.indexOf('readthedocs') > -1) {
+      // path is like /en/<branch>/<lang>/build/ -> extract 'lang'
+      // split[0] is an '' because the path starts with the separator
+      branch = path.split('/')[2];
+    }
+    return branch;
+  }
 
   function values(associativeArray) {
     var values = [];
