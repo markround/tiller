@@ -164,7 +164,7 @@ Tiller::Kv.get('/path/to/key', namespace: 'example')
 
 # Helper modules
 
-You can also write custom utility functions in Ruby that can be called from within templates (or from within YAML configuration files, if [`dynamic_values: true`](advanced/dynamic.md) has been set). 
+You can also write custom utility functions in Ruby that can be called from within templates (or from within YAML configuration files, if `dynamic_values: true` [has been set](advanced/dynamic.md)). 
 
 An example of this is the bundled `Tiller::render` function that lets you include and parse [sub-templates](advanced/subtemplates.md) from another template. Helper modules aren't intended to replace the existing Data- and Template-source plugins; if you need to get some values into your templates, or hook up to some external service, these are probably still the best way to go about it. 
 
