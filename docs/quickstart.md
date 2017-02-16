@@ -19,7 +19,7 @@ $ mkdir quickstart
 $ mkdir quickstart/templates
 ```
 
-Create a simple template file and save it as `quickstart/templates/db.erb` - this is your example database configuration file.
+Create a simple template file and save it as `quickstart/templates/db.erb` - this is your example database configuration file. It should have the following content:
 
 ```erb 
 db_hostname: <%= env_db_hostname %>
