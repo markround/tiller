@@ -150,6 +150,8 @@ If you want to pass internal data around from your plugins - for example, from a
 By default, the KV store will place all values in a `tiller` namespace. To avoid potential clashes with other plugins using the store, you should ideally specify your own namespace when setting or getting values. A simple example follows:
 
 ```ruby
+require 'tiller/kv'
+
 # Set a key in the default 'tiller' namespace
 Tiller::Kv.set('/path/to/key', "This is a value")
 # Set a key in an 'example' namespace.
