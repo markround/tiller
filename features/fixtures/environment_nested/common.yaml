@@ -1,0 +1,8 @@
+---
+data_sources: [ "defaults", "environment_nested" ]
+template_sources: [ "file" ]
+
+defaults:
+
+  test.erb:
+    target: test.txt

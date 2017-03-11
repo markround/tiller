@@ -7,6 +7,7 @@ In addition to specifying values in YAML environment files, there are other plug
  * [Defaults](defaults.md) : Make use of default values across your environments and templates - this can help avoid repeated definitions and makes for more efficient configuration.
  * [Environment variables](environment.md) : Make use of environment variables in your templates.
  * [JSON environment variables](environment_json.md) : Use complex JSON data structures from the environment in your templates. See [http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/](http://www.markround.com/blog/2014/10/17/building-dynamic-docker-images-with-json-and-tiller-0-dot-1-4/) for some practical examples.
+ * [Nested environment variables](environment_nested.md) : Use environment variables `a_b_c=value` to build nested variables like `a['b']['c']`.
  * [External files](external_file.md) : Load external JSON or YAML files, and use their contents in your templates.
  * [HTTP plugins](http.md) : These plugins let you retrieve your templates and values from a HTTP server
  * [Random data](random.md) : Simple wrapper to provide random values to your templates.
