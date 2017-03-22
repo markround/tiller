@@ -15,6 +15,7 @@ Feature: Vault plugin
   Scenario: Populate vault with test data
     Given I have populated vault with test data
     Then the vault key "secret/tiller/globals/all/vault_global" should exist
+    And the vault key "secret/custom/foo" should exist
 
 
   Scenario: Test dev environment template generation with Vault
@@ -77,3 +78,50 @@ Feature: Vault plugin
     test_var: This is a template var from the development env
     """
     And the output should contain "No Vault configuration block for this environment"
+
+  Scenario: Test flex mode with Vault
+    Given a file named "common.yaml" with:
+    """
+    ---
+    exec: ["true"]
+    data_sources: [ "vault" , "file", "environment" ]
+    template_sources: [ "file" ]
+
+    dynamic_values: true
+    vault:
+      url: 'http://127.0.0.1:8200'
+      flex_mode: true
+      values:
+        foo: 'secret/custom/foo'
+        custom: 'secret/custom'
+        global_dev_foo: 'secret/%e/foo'
+
+    environments:
+      development:
+        test.erb:
+          target: test.txt
+          vault:
+            dev_foo: 'secret/<%= environment %>/foo'
+    test.erb:
+      vault:
+        all_foo: 'secret/<%= environment %>/foo'
+    """
+    And a directory named "templates"
+    And a file named "templates/test.erb" with:
+    """
+    foo_value: <%= foo[:value] %>
+    custom_foo_value: <%= custom[:foo][:value] %>
+    global_dev_foo_value: <%= global_dev_foo[:value] %>
+    local_dev_foo_value: <%= dev_foo[:value] %>
+    all_foo_value: <%= all_foo[:value] %>
+    """
+    When I successfully run `tiller -b . -v -n -e development`
+    Then a file named "test.txt" should exist
+    And the file "test.txt" should contain:
+    """
+    foo_value: bar
+    custom_foo_value: bar
+    global_dev_foo_value: devbar
+    local_dev_foo_value: devbar
+    all_foo_value: devbar
+    """

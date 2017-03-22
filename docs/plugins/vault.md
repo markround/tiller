@@ -52,8 +52,8 @@ vault:
 
 ## Authentication
 
-Vault requires a token in order to connect to it. If you omit the token parameter, Tiller will look for it in your `~/.vault-token` file (which is created automatically when vault is started in dev mode). 
- 
+Vault requires a token in order to connect to it. If you omit the token parameter, Tiller will look for it in your `~/.vault-token` file (which is created automatically when vault is started in dev mode).
+
 
 ```yaml
 vault:
@@ -64,7 +64,7 @@ vault:
 # Paths
 You can use any K/V hierarchy inside Vault, but the default is expected to look like the following:
 
-Since Vault stores documents in JSON with a body like: 
+Since Vault stores documents in JSON with a body like:
 
 ```json
 {
@@ -72,7 +72,7 @@ Since Vault stores documents in JSON with a body like:
 }
 ```
 
-by default Tiller will assume that the key name is `content`, however it is configurable with `json_key_name` parameter. If you want it to be stored, for example, as 
+by default Tiller will assume that the key name is `content`, however it is configurable with `json_key_name` parameter. If you want it to be stored, for example, as
 
 ```json
 {
@@ -80,7 +80,7 @@ by default Tiller will assume that the key name is `content`, however it is conf
 }
 ```
 
-you can configure Tiller as follows: 
+you can configure Tiller as follows:
 
 ```yaml
 vault:
@@ -106,7 +106,7 @@ vault:
 	 	 ├── values
 	 	 │   ├── production (keys and values for the 'production' environment)
 	 	 │   │       ├ template1.erb
-	 	 │   │       │     ├── some_key 
+	 	 │   │       │     ├── some_key
 	 	 │   │       │     ├── some_other_key
      	 │   │       ├ template2.erb
 	 	 │   │       │     ├── some_key
@@ -154,3 +154,37 @@ This is a global value : <%= some_key_for_all_environments %>
 This should only be present in production : <%= some_key_only_for_production_environment %>
 ```
 
+# Flex Mode
+
+If you would like to be more precise with your Vault paths, or simply want to access all of the Key/Value pairs in a single Vault document rather than just a single key, you can use `flex_mode`:
+
+```yaml
+data_sources: [ "vault" , "file" ]
+template_sources: [ "file" ]
+dynamic_values: true
+
+vault:
+  url: 'http://127.0.0.1:8200'
+  flex_mode: true
+  values:
+    foo: 'secret/custom/foo'
+    custom: 'secret/custom'
+
+environments:
+  development:
+    test.erb:
+      target: test.txt
+        vault:
+          foo: 'secret/%e/foo'
+          dynamic_foo: 'secret/<%= environment %>/foo'
+
+test.erb:
+  vault:
+    all_foo: 'secret/<%= environment %>/foo'
+```
+
+You can also use specify a list path in Vault to be used in a mapping, and the plugin will map the listed keys into a symbolized hash.
+
+**NOTE:** Vault cannot be used as a template source when in `flex_mode`. All `values` will be mapped to globals.
+
+You can also make template-specific Vault mappings within the `environments` namespace or top-level namespace, as described above. The environment-specific Vault mappings will override the top-level ones.
