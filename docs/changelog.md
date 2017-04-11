@@ -1,4 +1,8 @@
 # 1.0.0
+ 
+  * 1.1.0 (unreleased)
+    * Add signals used to manage services like Apache, NGINX, bind, postgresql, etc. Some of these signals (USR1, WINCH) are necessary for graceful stops. Thanks to [Adam Jensen](https://github.com/jensenak) for the PR!
+    * Added environment_nested plugin in [Pull #51](https://github.com/markround/tiller/pull/51). Thanks to [Thorsten Huhn](https://github.com/thorstenhuhn) for this addition!
 
   * 1.0.0 (09/Feb/2017)
 
