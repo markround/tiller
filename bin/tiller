@@ -297,7 +297,7 @@ module Tiller
     log.info("Child process forked with PID #{child_pid}")
 
     # Catch signals and send them on to the child processes
-    [ :INT, :TERM, :HUP ].each do |sig|
+    [ :INT, :TERM, :HUP, :QUIT, :USR1, :USR2, :WINCH ].each do |sig|
       Signal.trap(sig) do
         pids.each { |p|  signal(sig, p, :verbose => config[:verbose])}
       end
