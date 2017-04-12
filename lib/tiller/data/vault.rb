@@ -13,6 +13,7 @@ class VaultDataSource < Tiller::DataSource
       globals = {}
       Tiller::log.debug("#{self} : In Flex Mode: Fetching all defined paths under values")
       @vault_config['values'].each do |key, path|
+        next unless path
         Tiller::log.debug("#{self} : Fetching values in #{path} into the #{key} variable")
         path = "/#{path}" if path[0] != '/'
         path = interpolate(path)
