@@ -52,7 +52,7 @@ vault:
 
 ## Authentication
 
-Vault requires a token in order to connect to it. If you omit the token parameter, Tiller will look for it in your `~/.vault-token` file (which is created automatically when vault is started in dev mode).
+Vault requires a token in order to connect to it. If you omit the token parameter, Tiller will first look in the `VAULT_TOKEN` environment variable, and then look for it in your `~/.vault-token` file (which is created automatically when vault is started in dev mode).
 
 
 ```yaml

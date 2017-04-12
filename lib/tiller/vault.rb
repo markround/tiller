@@ -3,7 +3,7 @@ require 'pp'
 require 'tiller/defaults'
 require 'tiller/util'
 
-VAULT_TOKEN_FILE = "#{Dir.home}/.vault-token"
+VAULT_TOKEN_FILE = ENV.key?('HOME') ? "#{Dir.home}/.vault-token" : nil
 
 module Tiller::VaultCommon
   def setup
@@ -19,14 +19,14 @@ module Tiller::VaultCommon
 
     # Sanity checks
     ['url'].each {|c| raise "Missing Vault configuration #{c}" unless @vault_config.has_key?(c)}
-    raise "Missing Vault token" if !(File.exists? VAULT_TOKEN_FILE || @vault_config['token'])
+    raise "Missing Vault token" if !((VAULT_TOKEN_FILE && File.exists? VAULT_TOKEN_FILE) || @vault_config['token'] || ENV['VAULT_TOKEN'])
 
     Vault.configure do |config|
         # The address of the Vault server
         config.address = @vault_config['url']
 
         # The token to authenticate to Vault
-        config.token = @vault_config['token'] || File.read(VAULT_TOKEN_FILE)
+        config.token = @vault_config['token'] || ENV['VAULT_TOKEN'] || File.read(VAULT_TOKEN_FILE)
 
         config.ssl_verify = @vault_config['ssl_verify']
         config.ssl_pem_file = @vault_config['ssl_pem_file'] if @vault_config.has_key?(:ssl_pem_file)
