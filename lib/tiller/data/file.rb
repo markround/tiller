@@ -25,6 +25,7 @@ class FileDataSource < Tiller::DataSource
         env_file = File.join(Tiller::config[:tiller_base], 'environments',
                              "#{Tiller::config[:environment]}.yaml")
         @config_hash = YAML.load(open(env_file))
+        @config_hash ||= Hash.new #in case YAML.load returned false
       rescue
         abort("Error : Could not load environment file #{env_file}")
       end
