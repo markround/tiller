@@ -61,11 +61,13 @@ class ConsulDataSource < Tiller::DataSource
 
   def fetch_all_keys(path)
     keys = Diplomat::Kv.get(path, { keys: true, :dc => @consul_config['dc'] }, :return)
-    all_keys = {}
+    all_keys = Hash.new
     if keys.is_a? Array
       keys.each do |k|
         Tiller::log.debug("#{self} : Fetching key #{k}")
-        all_keys[File.basename(k)] = Diplomat::Kv.get(k, { nil_values: true, :dc => @consul_config['dc'] })
+        k_basename = k[path.length..-1] # remove leading path
+        v = Diplomat::Kv.get(k, { nil_values: true, :dc => @consul_config['dc'] })
+        all_keys.deep_merge!(k_basename.split('/').reverse.inject(v) { |a, n| { n => a } })
       end
       all_keys
     else
