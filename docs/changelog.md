@@ -6,6 +6,7 @@
     * Added environment_nested plugin in [Pull #51](https://github.com/markround/tiller/pull/51). Thanks to [Thorsten Huhn](https://github.com/thorstenhuhn) for this addition.
     * Fixed [Issue #54](https://github.com/markround/tiller/issues/54). Thanks to [Bob Saveland](https://github.com/savelandr) for the bug report, and for providing the fix and test cases.
     * Added [Flex Mode](https://github.com/markround/tiller/pull/52) for the Hashicorp Vault plugin. Thanks to [Schuyler Jager](https://github.com/schuylr) for the PR and test cases.
+    * Fixed [Issue #50](https://github.com/markround/tiller/issues/50). Thanks to [Thorsten Huhn](https://github.com/thorstenhuhn) for this PR.
 
   * 1.0.0 (09/Feb/2017)
 
