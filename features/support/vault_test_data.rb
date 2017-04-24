@@ -40,6 +40,9 @@ This is a per-environment global : <%= vault_per_env %>}
   # Populate templates content
   Vault.logical.write('/secret/tiller/templates/template1.erb', content: template1)
   Vault.logical.write('/secret/tiller/templates/template2.erb', content: template2)
+  # Populate custom foo bar values for flex mode
+  Vault.logical.write('/secret/custom/foo', value: 'bar')
+  Vault.logical.write('/secret/development/foo', value: 'devbar')
 end
 
 if ! defined?(Cucumber)

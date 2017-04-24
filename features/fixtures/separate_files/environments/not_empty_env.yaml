@@ -1,0 +1,3 @@
+file.conf.erb:
+  config:
+    value: "not_default"

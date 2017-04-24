@@ -1,0 +1,4 @@
+file.conf.erb:
+  target: file.conf
+  config:
+    value: "default_value"

@@ -1,4 +1,12 @@
-# 1.0.0
+# 1.x
+ 
+  * 1.1.0 (24/Apr/2017)
+    * For the first time, this release consists of code mainly from the community! I'd like to take a moment to offer massive thanks to everyone who has submitted bug reports and pull requests, all your comments and code are very much appreciated! 
+    * Add signals used to manage services like Apache, NGINX, bind, postgresql, etc. Some of these signals (USR1, WINCH) are necessary for graceful stops. Thanks to [Adam Jensen](https://github.com/jensenak) for the PR.
+    * Added environment_nested plugin in [Pull #51](https://github.com/markround/tiller/pull/51). Thanks to [Thorsten Huhn](https://github.com/thorstenhuhn) for this addition.
+    * Fixed [Issue #54](https://github.com/markround/tiller/issues/54). Thanks to [Bob Saveland](https://github.com/savelandr) for the bug report, and for providing the fix and test cases.
+    * Added [Flex Mode](https://github.com/markround/tiller/pull/52) for the Hashicorp Vault plugin. Thanks to [Schuyler Jager](https://github.com/schuylr) for the PR and test cases.
+    * Fixed [Issue #50](https://github.com/markround/tiller/issues/50). Thanks to [Thorsten Huhn](https://github.com/thorstenhuhn) for this PR.
 
   * 1.0.0 (09/Feb/2017)
 
