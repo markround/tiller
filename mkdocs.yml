@@ -28,6 +28,7 @@ pages:
       - Defaults: 'plugins/defaults.md'
       - Environment: 'plugins/environment.md'
       - Environment JSON: 'plugins/environment_json.md'
+      - Environment Nested: 'plugins/environment_nested.md'
       - External File: 'plugins/external_file.md'
       - File: 'plugins/file.md'
       - HTTP: 'plugins/http.md'
