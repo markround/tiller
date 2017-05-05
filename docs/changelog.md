@@ -1,5 +1,7 @@
 # 1.x
- 
+  * 1.1.1 (unreleased)
+    * Sort defaults files before loading. Thanks to [Pablo Gonzalez](https://github.com/kydorn) for [PR #57](https://github.com/markround/tiller/pull/57)
+
   * 1.1.0 (24/Apr/2017)
     * For the first time, this release consists of code mainly from the community! I'd like to take a moment to offer massive thanks to everyone who has submitted bug reports and pull requests, all your comments and code are very much appreciated! 
     * Add signals used to manage services like Apache, NGINX, bind, postgresql, etc. Some of these signals (USR1, WINCH) are necessary for graceful stops. Thanks to [Adam Jensen](https://github.com/jensenak) for the PR.
