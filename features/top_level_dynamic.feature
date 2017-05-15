@@ -16,6 +16,7 @@ Feature: Top level dynamic values
     end
     """
 
+  @debug
   Scenario: Generate template with module
     Given a directory named "templates"
     And a file named "templates/test.erb" with:
