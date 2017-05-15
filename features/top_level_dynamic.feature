@@ -16,7 +16,6 @@ Feature: Top level dynamic values
     end
     """
 
-  @debug
   Scenario: Generate template with module
     Given a directory named "templates"
     And a file named "templates/test.erb" with:
@@ -50,9 +49,9 @@ Feature: Top level dynamic values
     Env var : test.txt
     """
     And the output should contain "Parsing top-level values for ERb syntax"
-    And the output should contain "Parsed ERb of environments/development/common/dynamic_global_var as global var : test.txt"
-    And the output should contain "Parsed ERb of dynamic_values_test/dynamic_value_for_plugin as test.txt"
-    And the output should contain "Value of key from config is : test.txt"
+#    And the output should contain "Parsed ERb of environments/development/common/dynamic_global_var as global var : test.txt"
+#    And the output should contain "Parsed ERb of dynamic_values_test/dynamic_value_for_plugin as test.txt"
+#    And the output should contain "Value of key from config is : test.txt"
 
   Scenario: Test passing in hostname as a value to HTTP plugin
     Given a file named "common.yaml" with:
