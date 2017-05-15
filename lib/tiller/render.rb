@@ -6,7 +6,12 @@ module Tiller
     if options.has_key?(:namespace)
       b = binding
       ns =  options[:namespace]
-      ns.each { |k, v| b.local_variable_set(k, v) }
+      if RUBY_VERSION > "2.1.0"
+        ns.each { |k, v| b.local_variable_set(k, v) }
+      else
+        ns.each { |k, v| b.eval("#{k} = '#{v}'") }
+      end
+
       return ERB.new(template, nil, '-').result(ns.instance_eval { b })
     end
 

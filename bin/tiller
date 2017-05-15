@@ -45,6 +45,10 @@ module Tiller
 
   log.debug("Executable: #{__FILE__}")
 
+  if RUBY_VERSION < "2.1.0"
+    log.warn("Deprecation warning: Support for Ruby versions < 2.1.0 may be removed in future")
+  end
+
   # Add tiller_lib to the LOAD PATH so we can pull in user-defined plugins
   $LOAD_PATH.unshift(config[:tiller_lib]) unless $LOAD_PATH.include?(config[:tiller_lib])
 
@@ -113,8 +117,9 @@ module Tiller
             parsed_value = Tiller::render(value, direct_render: true, namespace: data_class.new.global_values)
             log.debug("Parsed ERb of #{path.join('/')} as #{parsed_value}", dedup: false)
             config.deep_merge!((path + [parsed_value]).reverse.reduce { |s,e| { e => s } })
-          rescue NameError
+          rescue NameError => e
             # This happens if there is no value provided by the currently active datasource
+            pp e
           end
         end
       end
