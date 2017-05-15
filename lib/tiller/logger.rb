@@ -21,15 +21,15 @@ module Tiller
     end
 
     # Quick hack to remove duplicate informational messages
-    def info(msg)
+    def info(msg, options={})
       super(msg) unless self.messages.include?(msg)
-      self.messages.push(msg)
+      self.messages.push(msg) if options.fetch(:dedup, true)
     end
 
     # Quick hack to remove duplicate informational messages
-    def debug(msg)
+    def debug(msg, options={})
       super(msg) unless self.messages.include?(msg)
-      self.messages.push(msg)
+      self.messages.push(msg) if options.fetch(:dedup, true)
     end
 
   end

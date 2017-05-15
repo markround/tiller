@@ -94,6 +94,33 @@ module Tiller
   data_classes      = loader(DataSource, config['data_sources'])
   template_classes  = loader(TemplateSource, config['template_sources'])
 
+
+  # dynamic_values in top-level config (https://github.com/markround/tiller/issues/58)
+  # We create a temporary copy of our config hash, and iterate over it, fetching values from each datasource in turn
+  # and then merging the values back into the main config hash as we go along.
+  if config.assoc('dynamic_values')
+    log.debug('Parsing top-level values for ERb syntax')
+    # Deep copy for our temp config
+    temp_config = Marshal.load(Marshal.dump(config))
+    data_classes.each do |data_class|
+      temp_config.deep_traverse do |path,value|
+        # We skip anything under environments block (Unless it's the "common" over-ride block) as these
+        # may contain values we want to replace with template-specific values later on.
+        next if path.include?('environments') and ! path.include?('common')
+
+        if value.is_a?(String) && value.include?('<%')
+          begin
+            parsed_value = Tiller::render(value, direct_render: true, namespace: data_class.new.global_values)
+            log.debug("Parsed ERb of #{path.join('/')} as #{parsed_value}", dedup: false)
+            config.deep_merge!((path + [parsed_value]).reverse.reduce { |s,e| { e => s } })
+          rescue NameError
+            # This happens if there is no value provided by the currently active datasource
+          end
+        end
+      end
+    end
+  end
+
   log.info('Template sources loaded ' + template_classes.to_s)
   log.info('Data sources loaded ' + data_classes.to_s)
   if (config.key?('helpers'))
