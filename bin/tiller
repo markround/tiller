@@ -119,7 +119,6 @@ module Tiller
             config.deep_merge!((path + [parsed_value]).reverse.reduce { |s,e| { e => s } })
           rescue NameError => e
             # This happens if there is no value provided by the currently active datasource
-            pp e
           end
         end
       end
