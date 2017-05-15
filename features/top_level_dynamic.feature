@@ -48,12 +48,9 @@ Feature: Top level dynamic values
     """
     Env var : test.txt
     """
-    And the output should contain:
-    """
-    Parsing top-level values for ERb syntax
-    Parsed ERb of environments/development/common/dynamic_global_var as global var : test.txt
-    Parsed ERb of dynamic_values_test/dynamic_value_for_plugin as test.txt
-    """
+    And the output should contain "Parsing top-level values for ERb syntax"
+    And the output should contain "Parsed ERb of environments/development/common/dynamic_global_var as global var : test.txt"
+    And the output should contain "Parsed ERb of dynamic_values_test/dynamic_value_for_plugin as test.txt"
     And the output should contain "Value of key from config is : test.txt"
 
   Scenario: Test passing in hostname as a value to HTTP plugin
@@ -88,7 +85,4 @@ Feature: Top level dynamic values
 
      * This is a value from HTTP
     """
-    And the output should contain:
-    """
-    Parsed ERb of environments/development/common/http/uri as http://markround.github.io/http_test
-    """
+    And the output should contain "Parsed ERb of environments/development/common/http/uri as http://markround.github.io/http_test"
