@@ -5,4 +5,4 @@ However, as of Tiller v1.2.0, official support for any Ruby version less than 2.
 
 My general policy is that I'll aim to target currently supported Ruby versions, which at the time of writing are 2.2.0 and up. I won't deliberately disable Tiller running on older versions, and will do my best to write code that still works on older versions but going forward I won't consider it a bug if a feature doesn't work on an older Ruby.
  
- 
+If you need a way of getting a newer Ruby version on an older system, I highly recommend [rbenv](https://github.com/rbenv/rbenv).
