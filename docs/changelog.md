@@ -1,6 +1,8 @@
 # 1.x
-  * 1.1.1 (unreleased)
+  * 1.2.0 (unreleased)
     * Sort defaults files before loading. Thanks to [Pablo Gonzalez](https://github.com/kydorn) for [PR #57](https://github.com/markround/tiller/pull/57)
+    * Allow dynamic_values in top-level config [Issue #58](https://github.com/markround/tiller/issues/58). Thanks to [Andrew Kroenert](https://github.com/andrewkro) for the feature request.
+    * Deprecated support for older Ruby versions. See [http://tiller.readthedocs.io/en/latest/requirements/](http://tiller.readthedocs.io/en/latest/requirements/)
 
   * 1.1.0 (24/Apr/2017)
     * For the first time, this release consists of code mainly from the community! I'd like to take a moment to offer massive thanks to everyone who has submitted bug reports and pull requests, all your comments and code are very much appreciated! 

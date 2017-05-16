@@ -78,7 +78,7 @@ Feature: Vault plugin
     test_var: This is a template var from the development env
     """
     And the output should contain "No Vault configuration block for this environment"
-
+    
   Scenario: Test flex mode with Vault
     Given a file named "common.yaml" with:
     """
@@ -115,7 +115,7 @@ Feature: Vault plugin
     local_dev_foo_value: <%= dev_foo[:value] %>
     all_foo_value: <%= all_foo[:value] %>
     """
-    When I successfully run `tiller -b . -v -n -e development`
+    When I successfully run `tiller -b . -dv -n -e development`
     Then a file named "test.txt" should exist
     And the file "test.txt" should contain:
     """
