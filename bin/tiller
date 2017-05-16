@@ -126,8 +126,6 @@ module Tiller
     end
   end
 
-  pp config
-
   log.info('Template sources loaded ' + template_classes.to_s)
   log.info('Data sources loaded ' + data_classes.to_s)
   if (config.key?('helpers'))
