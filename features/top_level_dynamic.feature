@@ -1,3 +1,4 @@
+@ruby21
 Feature: Top level dynamic values
   Background:
     Given a directory named "lib/tiller/data"

@@ -39,6 +39,7 @@ pages:
 - Developer Information: 'developers.md'
 - Further Reading: 'resources.md'
 - About:
+  - Requirements: 'requirements.md'
   - Changelog: 'changelog.md'
   - License: 'license.md'
   - Thanks: 'general/thanks.md'

@@ -35,6 +35,10 @@ EXIT_SUCCESS = 0
 module Tiller
 
   puts "tiller v#{VERSION} (https://github.com/markround/tiller) <github@markround.com>"
+  if RUBY_VERSION < SUPPORTED_RUBY_VERSION
+    puts "Warning : Support for Ruby versions < #{SUPPORTED_RUBY_VERSION} is deprecated."
+    puts "          See http://tiller.readthedocs.io/en/latest/requirements/"
+  end
 
   class << self
     attr_accessor :config, :log, :templates, :tiller
@@ -44,10 +48,6 @@ module Tiller
   Tiller::log = Tiller::Logger.new
 
   log.debug("Executable: #{__FILE__}")
-
-  if RUBY_VERSION < "2.1.0"
-    log.warn("Deprecation warning: Support for Ruby versions < 2.1.0 may be removed in future")
-  end
 
   # Add tiller_lib to the LOAD PATH so we can pull in user-defined plugins
   $LOAD_PATH.unshift(config[:tiller_lib]) unless $LOAD_PATH.include?(config[:tiller_lib])
@@ -98,11 +98,12 @@ module Tiller
   data_classes      = loader(DataSource, config['data_sources'])
   template_classes  = loader(TemplateSource, config['template_sources'])
 
-
   # dynamic_values in top-level config (https://github.com/markround/tiller/issues/58)
   # We create a temporary copy of our config hash, and iterate over it, fetching values from each datasource in turn
   # and then merging the values back into the main config hash as we go along.
-  if config.assoc('dynamic_values')
+  # Due to needing binding functions only present in Ruby >= 2.1.0, this feature is not present on older Ruby versions.
+  # See See http://tiller.readthedocs.io/en/latest/requirements/ for Ruby support policy and background.
+  if config.assoc('dynamic_values') && RUBY_VERSION >= "2.1.0"
     log.debug('Parsing top-level values for ERb syntax')
     # Deep copy for our temp config
     temp_config = Marshal.load(Marshal.dump(config))
@@ -124,6 +125,8 @@ module Tiller
       end
     end
   end
+
+  pp config
 
   log.info('Template sources loaded ' + template_classes.to_s)
   log.info('Data sources loaded ' + data_classes.to_s)
