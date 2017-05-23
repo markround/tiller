@@ -50,5 +50,35 @@ Note that the configuration directory was added later on in the Dockerfile; this
 
 Now, when you run the container, Tiller will run, generate your configuration files, and if you have set the `exec: ` parameter in your `common.yaml` will also start your specified program such as your application, database daemon, [supervisord](http://supervisord/org) etc.
 
+# Setup with RVM
+If you are using [RVM](http://rvm.io) to install a more recent Ruby in your container, you'll have to invoke BASH as a login shell in order to run RVM commands. For example, a Dockerfile based on CentOS 6 might look like:
+
+```
+FROM centos:centos6
+
+# Install needed packages for RVM
+RUN yum -y update && \
+ yum -y groupinstall "Development Tools"
+
+# Install RVM
+RUN curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
+RUN curl -L get.rvm.io | bash -s stable
+
+# Install Tiller through RVM
+RUN /bin/bash -l -c "rvm install 2.4.0 && \
+        gem install bundler --no-ri --no-rdoc && \
+        rvm use 2.4.0 --default && \
+        gem update --system && \
+        gem install tiller"
+
+#
+# ... Rest of Dockerfile goes here ...
+#
+
+# Run in a login shell so RVM can set up Ruby paths etc.
+CMD ["/bin/bash" , "-l" , "-c" , "tiller"]
+
+```
+
 # Other resources
 A simple tutorial which produces a 'parameterized' NginX container with Tiller is on my blog : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/). It also provides a downloadable archive of the files used in the example, so if you want to get up and running very quickly before diving into the rest of the documentation, then this may also be a good place to start.
