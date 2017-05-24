@@ -80,5 +80,42 @@ CMD ["/bin/bash" , "-l" , "-c" , "tiller"]
 
 ```
 
+# Setup with rbenv
+If you are using [rbenv](https://github.com/rbenv/rbenv) to install a more recent Ruby in your container, you'll also have to invoke BASH as a login shell. An example Dockerfile tweaked to work with rbenv on an old CentOS base is below:
+
+```
+FROM centos:centos6
+
+# Install needed packages for RVM
+RUN yum -y update && \
+    yum -y groupinstall "Development Tools" && \
+    yum install -y openssl-devel readline-devel zlib-devel
+
+# Install rbenv and ruby-build
+RUN git clone https://github.com/rbenv/rbenv.git /usr/local/rbenv && \
+    echo '# rbenv setup' > /etc/profile.d/rbenv.sh && \
+    echo 'export RBENV_ROOT=/usr/local/rbenv' >> /etc/profile.d/rbenv.sh && \
+    echo 'export PATH="$RBENV_ROOT/bin:$PATH"' >> /etc/profile.d/rbenv.sh && \
+    echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh && \
+    chmod +x /etc/profile.d/rbenv.sh && \
+    mkdir /usr/local/rbenv/plugins && \
+    git clone https://github.com/sstephenson/ruby-build.git /usr/local/rbenv/plugins/ruby-build
+
+# Install Ruby 2.3 and Tiller through RVM
+RUN bash -l -c "rbenv install 2.3.1 && \
+    rbenv global 2.3.1 && \
+    gem update --system && \
+    gem install tiller"
+
+
+#
+# ... Rest of Dockerfile goes here ...
+#
+
+# Run in a login shell so rbenv can set up Ruby paths etc.
+CMD ["/bin/bash" , "-l" , "-c" , "tiller"]
+
+```
+
 # Other resources
 A simple tutorial which produces a 'parameterized' NginX container with Tiller is on my blog : [http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/](http://www.markround.com/blog/2014/09/18/tiller-and-docker-environment-variables/). It also provides a downloadable archive of the files used in the example, so if you want to get up and running very quickly before diving into the rest of the documentation, then this may also be a good place to start.
