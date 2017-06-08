@@ -4,7 +4,7 @@ Tiller follows a fairly standard gem project layout and has a Rakefile, Gemfile 
 
 ## Setup
 
-To get started, ensure you have Ruby > 1.9 (Ruby 2.x is preferred as some plugins require it) and the Bundler gem installed. Then run `bundle install` in the top-level directory to install all the development dependencies. You should see something similar to the following:
+To get started, ensure you have Ruby > 2.2 (Ruby 1.9 and up may still work, but I can't guarantee any new features will be supported - see [requirements.md](requirements.md)) and the Bundler gem installed. Then run `bundle install` in the top-level directory to install all the development dependencies. You should see something similar to the following:
 
 	Using rake 10.4.2
 	Using ffi 1.9.10
@@ -87,7 +87,7 @@ These provide values that templates can use. There are 3 kinds of values:
 * local values which are values provided for each template
 * target values which provide information about where a template should be installed to, what permissions it should have, and so on.
 
-You can create your own datasources by inheriting `Tiller::DataSource` and providing any of the following 3 methods :
+You can create your own datasources by inheriting `Tiller::DataSource` and providing any of the following 4 methods :
  
 * `values(template_name)` : Return a hash of keys/values for the given template name
 * `target_values(template_name)` : Return a hash of values for the given template name:
@@ -97,6 +97,7 @@ You can create your own datasources by inheriting `Tiller::DataSource` and provi
   * `perms`: The octal permissions the file should have (e.g. 0644)
   * `exec_on_write` : An optional command to execute after the template has been written (different from the main `exec` parameter), specified in array format e.g. `["touch" , "/tmp/somefile"]`
 * `global_values` : Return a hash of global values. 
+* `common` : Return a hash of common values that over-ride anything specified in the top-level blocks of `common.yaml`. See the [file plugin documentation](plugins/file.md) for an example.
 
 As with template sources, if you need to connect to a database or do any other post-initialisation work, create a `setup` method. You also have the `Tiller::config` class variable available, which is a hash of the Tiller configuration (`common.yaml`).
 

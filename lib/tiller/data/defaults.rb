@@ -26,7 +26,7 @@ class DefaultsDataSource < Tiller::DataSource
     # If we have YAML files in defaults.d, also merge them
     # We do this even if the main defaults were loaded from the v2 format config
     if File.directory? defaults_dir
-      Dir.glob(File.join(defaults_dir,'*.yaml')).each do |d|
+      Dir.glob(File.join(defaults_dir,'*.yaml')).sort().each do |d|
         yaml = YAML.load(open(d))
         Tiller::log.debug("Loading defaults from #{d}")
         @defaults_hash.deep_merge!(yaml) if yaml != false
