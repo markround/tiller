@@ -16,4 +16,6 @@ It's available as a [Ruby Gem](https://rubygems.org/gems/tiller), so installatio
 # Documentation
 The main documentation has been updated and a searchable, easy to read version is now hosted on [readthedocs.io](http://tiller.readthedocs.io/). You can also read the raw markdown files by browsing the [docs](docs/) directory in this repository.
 
+You may like to read the [Quickstart](http://tiller.readthedocs.io/en/latest/quickstart/) guide if you want a very quick overview.
+
 There is also a [Gitter chatroom](https://gitter.im/markround/tiller) for you to ask any questions, suggest new features and talk to other users.
