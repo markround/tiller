@@ -2,6 +2,8 @@
 
 As of version 0.7.8, Tiller includes plugins to retrieve templates, values, services and nodes from a [Consul](https://www.consul.io/) cluster. These plugins rely on the `diplomat` gem to be present, so before proceeding ensure you have run `gem install diplomat` in your environment. This is not listed as a hard dependency of Tiller, as this would force the gem to be installed even on systems that would never use these plugins.
 
+Note that due to a [bug](https://github.com/WeAreFarmGeek/diplomat/issues/152) in version `2.0.1` of the `diplomat` gem, we currently suggest installing version `2.0.0` to avoid issues.
+
 # Enabling the plugins
 Add the `consul` plugins in your `common.yaml`, e.g.
 
