@@ -1,3 +1,4 @@
+@ruby2
 Feature: Consul plugin
 
   Scenario: Download Consul

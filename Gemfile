@@ -12,6 +12,8 @@ group :development do
   gem 'ansible-vault'
   gem 'crack'
   gem 'rubyzip'
-  gem 'diplomat' , '2.0.0'
+  if RUBY_VERSION >= "2.0.0"
+    gem 'diplomat' , '2.0.0'
+  end
   gem 'tiller', :path => '.'
 end
