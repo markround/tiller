@@ -9,8 +9,12 @@ The following examples are intended to give you a very quick overview of how Til
 # Setup
 
 Install Tiller:
-```
+```sh
 $ gem install tiller 
+```
+#### Using Docker:
+```sh
+$ docker pull coder95/tiller
 ```
 
 Create the necessary work directories:
@@ -47,11 +51,34 @@ $ export DB_HOSTNAME=mydb.example.com
 $ tiller --base-dir=./quickstart
 ```
 
+
 Now, your template file has been written to `db.ini` (specified by the `target:` parameter in the main configuration file) and has the content set from your environment variable:
 
 ```ini
 db_hostname: mydb.example.com
 ```
+Using Docker:
+```sh 
+$ docker run --rm -v $PWD:/opt -e DB_HOSTNAME=mydb.example.com coder95/tiller --base-dir=./quickstart 
+```
+##### NOTE: 
+Tiller when used as a docker container , mounts current working directory to /opt dir in the container. Thus the --base-dir should be available within $PWD.  To dynamically place the generated files in the required directory moint the destination directory to the conatiner using `-v` option in docker.
+
+Create a file named `quickstart/common.yaml` with the following content:
+```yaml
+---
+data_sources: [ "file" , "environment" ]
+template_sources: [ "file" ]
+environments:
+  development:
+    db.erb:
+      target: /home/db.ini
+```
+and try
+```sh
+docker run --rm -v $PWD:/opt -v  <destination-dir>:/home coder95/tiller --base-dir=./quickstart --verbose
+```
+
 
 ** Further work **
 
@@ -82,6 +109,15 @@ This now enables the [Defaults](plugins/defaults.md) plugin and configures it to
 ```sh
 $ unset DB_HOSTNAME
 $ tiller --base-dir=./quickstart
+```
+Using Docker:
+```sh 
+$ docker run --rm -v $PWD:/opt coder95/tiller --base-dir=./quickstart 
+```
+or simplify your action using alias
+```sh 
+$ alias tiller='docker run --rm -v $PWD:/opt coder95/tiller'
+$ tiller --base-dir=./quickstart 
 ```
 
 Now your generated file "db.ini" should contain:
@@ -136,6 +172,10 @@ If we run Tiller now in verbose mode:
 ```sh
 $ tiller --base-dir=./t/quickstart -v
 ```
+Using Docker:
+```sh 
+$ docker run --rm -v $PWD:/opt coder95/tiller --base-dir=./quickstart  -v
+```
 
 You'll see in the output the line `Using environment development`, which shows Tiller uses the `development` environment if you don't manually specify one. Therefore, your config file will again look like :
 
@@ -148,6 +188,10 @@ Now, re-run Tiller but tell it to use the `production` environment and specify y
 ```sh
 $ tiller --base-dir=./quickstart --environment production --verbose
 ```
+Using Docker:
+```sh 
+$ docker run --rm -v $PWD:/opt coder95/tiller --base-dir=./quickstart   --environment production --verbose
+```
 
 You should see the following in the output from Tiller:
 ```
@@ -159,7 +203,6 @@ Which shows the precedence system - the `file` plugin was loaded after `defaults
 ```sh
 $ db_hostname=mydb tiller --base-dir=./t/quickstart --environment production --verbose
 ```
-
 And you'll see the following output:
 
 ```
@@ -182,3 +225,4 @@ Hopefully, this gave you a helpful overview of how Tiller works. You may now wan
  * Continue with the [rest of the documentation](general/index.md)
  * See what [plugins](plugins/index.md) are available to help you generate your files
  * Or browse some of the [other resources](resources.md)
+ * Read the [docker-tiller](https://github.com/aananthraj/docker-tiller) to see how this can help you install and use tiller in your local.
