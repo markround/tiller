@@ -1,6 +1,9 @@
 require 'yaml'
 
 class FileDataSource < Tiller::DataSource
+
+  @plugin_api_versions = [1, 2]
+
   # Open and parse the environment file. Tries from v2 format common.yaml first, if that
   # failes, then it looks for separate environment files.
   def setup
@@ -41,11 +44,26 @@ class FileDataSource < Tiller::DataSource
   end
 
   def values(template_name)
-    @config_hash.key?(template_name) ? @config_hash[template_name]['config'] : {}
+    if (Tiller::config['plugin_api_version'] == 2)
+      # Everything comes from the values method in V2
+      if @config_hash.key?(template_name)
+        all_values=[]
+        @config_hash[template_name].each { |values| all_values << values }
+        return all_values
+      end
+    else
+      return @config_hash.key?(template_name) ? @config_hash[template_name]['config'] : {}
+    end
+
   end
 
   def target_values(template_name)
-    # The config element is redundant (not a target value)
-    @config_hash.key?(template_name) ? @config_hash[template_name] : {}
+    if (Tiller::config['plugin_api_version'] == 2)
+      Tiller::log.fatal("Deprecated : We should never get here")
+      exit
+    else
+      return @config_hash.key?(template_name) ? @config_hash[template_name] : {}
+    end
   end
+
 end

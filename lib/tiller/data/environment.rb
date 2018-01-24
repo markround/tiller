@@ -2,6 +2,8 @@ require 'tiller/datasource'
 
 class EnvironmentDataSource < Tiller::DataSource
 
+  @plugin_api_versions = [ 1, 2 ]
+
   def setup
     @plugin_config = Tiller::Environment.defaults
     if Tiller::config.has_key? 'environment' and Tiller::config['environment'].is_a? Hash

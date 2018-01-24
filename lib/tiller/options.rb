@@ -33,6 +33,9 @@ def parse_options(config)
     opts.on('--md5sum-noexec', 'Do not execute a process if no templates were written or changed') do
       config['md5sum_noexec'] = true
     end
+    opts.on('--plugin-api-version [VERS]', 'Specify the plugin API version to use') do |plugin_api_version|
+      config['plugin_api_version'] = plugin_api_version
+    end
 
     opts.on('-h', '--help', 'Display this screen') do
       puts opts
