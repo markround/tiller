@@ -9,7 +9,7 @@ tiller v1.0.0 (https://github.com/markround/tiller) <github@markround.com>
 Using common.yaml v2 format configuration file
 Using configuration from /etc/tiller
 Using plugins from /usr/local/lib/tiller
-Using staging development
+Using environment staging
 Template sources loaded [FileTemplateSource]
 Data sources loaded [FileDataSource]
 Available templates : ["application.erb"]
