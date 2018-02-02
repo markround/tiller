@@ -13,6 +13,6 @@ group :development do
   gem 'ansible-vault'
   gem 'crack'
   gem 'rubyzip'
-  gem 'diplomat' , '2.0.0'
+  gem 'diplomat' , '~> 0.18.0'
   gem 'tiller', :path => '.'
 end
