@@ -5,6 +5,7 @@ group :development do
   gem 'rake'
   gem 'rspec'
   gem 'aruba', '~> 0.13.0'
+  gem 'cucumber', '~> 2.4.0'
   gem 'httpclient'
   gem 'oj'
   gem 'zk'
