@@ -212,7 +212,7 @@ module Tiller
             # Proper Ruby voodoo here.
             # See http://stackoverflow.com/questions/19304135/deep-nest-a-value-into-a-hash-given-a-path-array for
             # explanation.
-            tiller.merge!((path + [parsed_value]).reverse.reduce { |s,e| { e => s } })
+            tiller.deep_merge!((path + [parsed_value]).reverse.reduce { |s,e| { e => s } })
           end
         end
         target_values.each do |key ,value|
