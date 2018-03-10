@@ -25,6 +25,16 @@ def loader(type,sources)
     classes |= type.subclasses
   end
 
+  # Versioning check - if any of the loaded modules do not support the specified API version, we stop immediately.
+  classes.each do |c|
+    api_version = Tiller::config['plugin_api_version']
+    if ! c.plugin_api_versions.include?(api_version)
+      Tiller::log.fatal("ERROR : Plugin #{c} does not support specified API version #{api_version}")
+      exit(EXIT_FAIL)
+    end
+  end
+
+
   classes
 end
 

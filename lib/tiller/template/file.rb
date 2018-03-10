@@ -1,4 +1,7 @@
 class FileTemplateSource < Tiller::TemplateSource
+
+  @plugin_api_versions = [ 1, 2 ]
+
   def initialize
     super
     @template_dir = File.join(Tiller::config[:tiller_base], 'templates/')

@@ -1,8 +1,14 @@
+require 'tiller/util'
+
 # Tiller template source base class
 module Tiller
   # Subclasses provide templates (an array), and individual template contents
   # (a string containing ERB data)
   class TemplateSource
+
+    include ClassLevelInheritableAttributes
+    inheritable_attributes :plugin_api_versions
+    @plugin_api_versions = [ 1 ]
 
     def initialize
       setup
