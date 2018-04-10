@@ -1,4 +1,8 @@
 # 1.x
+  * 1.3.0 (10/Apr/2018)
+    * Miscellaneous bug fixes and some preparation work for future 2.0 releases
+    * Fixed [Issue #65](https://github.com/markround/tiller/issues/65), again thanks to [Pablo Gonzalez](https://github.com/kydorn) for reporting the issue and providing the PR to fix the issue.
+
   * 1.2.0 (09/Jun/2017)
     * Sort defaults files before loading. Thanks to [Pablo Gonzalez](https://github.com/kydorn) for [PR #57](https://github.com/markround/tiller/pull/57)
     * Allow dynamic_values in top-level config [Issue #58](https://github.com/markround/tiller/issues/58). Thanks to [Andrew Kroenert](https://github.com/andrewkro) for the feature request.
