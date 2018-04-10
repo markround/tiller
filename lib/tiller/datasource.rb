@@ -1,9 +1,15 @@
+require 'tiller/util.rb'
+
 # Tiller data source base class.
 module Tiller
   # Subclasses provide global_values and/or values (things local to a specific
   # template) and target_values (meta data about a template, e.g. target
   # location, permissions, owner and so on)
   class DataSource
+
+    include ClassLevelInheritableAttributes
+    inheritable_attributes :plugin_api_versions
+    @plugin_api_versions = [ 1 ]
 
     def initialize
       setup

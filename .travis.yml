@@ -9,6 +9,6 @@ rvm:
 script: bundle exec rake
 before_install:
   - gem update bundler
-  - bundler --version
+  - bundle --version
 dist: trusty
 sudo: false
