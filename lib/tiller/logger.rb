@@ -15,7 +15,7 @@ module Tiller
       self.level = Logger::DEBUG if Tiller::config[:debug]
 
       self.formatter = proc do |_severity, _datetime, _progname, msg|
-        "#{msg}\n"
+        "[#{_datetime}] [#{_severity}] #{msg}\n"
       end
 
     end
