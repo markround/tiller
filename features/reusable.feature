@@ -25,6 +25,7 @@ Feature: Reusable template plugin
   Test file: temp2
   """
     And a file named "temp3.txt" does not exist
+    And a file named "temp4.txt" does not exist
 
   Scenario: Create two configs from one template using default configuration
     Given I use a fixture named "reusable"

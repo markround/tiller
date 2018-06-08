@@ -16,7 +16,7 @@ environments:
       target: temp1.txt
       config:
         val: temp1
-    temp.erb!second:
+    temp.erb!2:
       target: temp2.txt
       config:
         val: temp2
@@ -24,3 +24,7 @@ environments:
       target: temp3.txt
       config:
         val: temp3
+    temp.erb!test:
+      target: temp4.txt
+      config:
+        val: temp4

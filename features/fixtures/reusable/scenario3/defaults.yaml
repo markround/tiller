@@ -3,12 +3,12 @@ temp.erb:
   config:
     val: default origin
 
-temp.erb!def1:
+temp.erb!1:
   target: default1.txt
   config:
     val: default1
 
-temp.erb!def2:
+temp.erb!2:
   target: default2.txt
   config:
     val: default2
