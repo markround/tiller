@@ -1,0 +1,14 @@
+temp.erb:
+  target: default.txt
+  config:
+    val: default origin
+
+temp.erb!def1:
+  target: default1.txt
+  config:
+    val: default1
+
+temp.erb!def2:
+  target: default2.txt
+  config:
+    val: default2
