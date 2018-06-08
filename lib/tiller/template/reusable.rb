@@ -27,7 +27,7 @@ class ReusableTemplateSource < Tiller::TemplateSource
   end
 
   def templates
-    @config_hash.keys.grep(/erb\!\w+/)
+    @config_hash.keys.grep(/erb\!\w+$/)
   end
 
   def template(template_name)
