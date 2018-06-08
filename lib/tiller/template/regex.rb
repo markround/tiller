@@ -1,3 +1,5 @@
+require 'pathname'
+
 class RegexTemplateSource < Tiller::TemplateSource
 
   def initialize
@@ -34,12 +36,18 @@ class RegexTemplateSource < Tiller::TemplateSource
   end
 
   def template(template_name)
-    template_org = @config_hash[template_name]['target']
-    content = open(template_org).read
+    template_org = Pathname.new(@config_hash[template_name]['target'])
+    template_absolute = template_org
+    if !template_absolute.absolute?
+      template_absolute = Pathname.pwd().join(template_org)
+    end
+    content = open(template_absolute).read
     @config_hash[template_name]['regex'].each{ |item|
-      content.gsub!(item['find'], item['replace'])
+      find = String.new(item['find'])
+      replace = String.new(item['replace'])
+      content.gsub!(Regexp.new(find), replace)
     }
-    target = open(template_org, 'w')
+    target = open(template_absolute, 'w')
     target.puts(content)
     target.close
   end
