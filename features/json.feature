@@ -24,11 +24,9 @@ Feature: JSON environment data source
      * Key 1 is : value1
      * Key 2 is : value2
     """
-    And the output should contain:
-    """
-    default_value => 'from defaults' being replaced by : 'From the file datasource' from FileDataSource
-    default_value => 'From the file datasource' being replaced by : 'from JSON!' from EnvironmentJsonDataSource
-    """
+    And the output should contain "default_value => 'from defaults' being replaced by : 'From the file datasource' from FileDataSource"
+    And the output should contain "default_value => 'From the file datasource' being replaced by : 'from JSON!' from EnvironmentJsonDataSource"
+
 
   Scenario: Simple data from environment v2 format
     Given I use a fixture named "json"

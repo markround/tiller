@@ -86,10 +86,6 @@ Feature: Test new value precedence and merging behaviour
     """
     test_var: from environment
     """
-    And the output should contain:
-    """
-    Merging duplicate data values
-    test_var => 'From defaults plugin' being replaced by : 'From file plugin' from FileDataSource
-    test_var => 'From file plugin' being replaced by : 'from environment' from EnvironmentDataSource
-    """
-
+    And the output should contain "Merging duplicate data values"
+    And the output should contain "test_var => 'From defaults plugin' being replaced by : 'From file plugin' from FileDataSource"
+    And the output should contain "test_var => 'From file plugin' being replaced by : 'from environment' from EnvironmentDataSource"
