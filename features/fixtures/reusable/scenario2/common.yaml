@@ -1,0 +1,13 @@
+exec: [ "true" ]
+
+data_sources:
+  - defaults
+
+template_sources:
+  - file
+  - reusable
+
+environments:
+  development:
+    temp.erb!1:
+    temp.erb!2:

@@ -1,0 +1,17 @@
+---
+exec: [ "true" ]
+data_sources:
+  - file
+template_sources:
+  - file
+  - regex
+
+environments:
+  development:
+    temp.erb!regex:
+      target: temp.txt
+      regex:
+        - find: confined
+          replace: free
+        - find: '^#some\.comment'
+          replace: some.comment
