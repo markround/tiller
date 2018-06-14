@@ -1,4 +1,8 @@
 # 1.x
+  * 1.4.0 (14/Jun/2018)
+    * Two new user-contributed plugins which allow you to [reuse templates](plugins/reusable.md) and [perform regex replacements](plugins/regex.md) inside existing files. Many thanks to the awesome work of [dmarchewka](https://github.com/dmarchewka) for the great PR, tests and documentation. 
+    * Log output now includes timestamp and verbosity level. Again, thanks to [dmarchewka](https://github.com/dmarchewka) for supplying this pull request.
+
   * 1.3.0 (10/Apr/2018)
     * Miscellaneous bug fixes and some preparation work for future 2.0 releases
     * Fixed [Issue #65](https://github.com/markround/tiller/issues/65), again thanks to [Pablo Gonzalez](https://github.com/kydorn) for reporting the issue and providing the PR to fix the issue.
