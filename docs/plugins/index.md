@@ -15,6 +15,8 @@ In addition to specifying values in YAML environment files, there are other plug
  * [Zookeeper plugins](zookeeper.md) : These plugins allow you to store your templates and values in a ZooKeeper cluster.
  * [Hashicorp Vault](vault.md) : These plugins allow you to to store and retrieve your templates and values from the Hashicorp [Vault](https://www.vaultproject.io/) secrets store.
  * [Ansible Vault](ansible_vault.md) : This plugin lets you retrieve values from an encrypted [Ansible Vault](http://docs.ansible.com/ansible/playbooks_vault.html) YAML file.
+ * [Regex](regex.md) : This plugin allows developers to take advantage of regular expression functionality to find and replace strings inside existing files.
+ * [Reusable Templates](reusable.md) : This plugin allows developers to reuse file templates.
   
 # Helper modules
 You can also make use of custom utility functions in Ruby that can be called from within templates. For more information on this, see the [developers documentation](../developers.md#helper-modules).
