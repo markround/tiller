@@ -1,4 +1,4 @@
-# Regex
+# Reusable
 
 This plugin allows develops to reuse file templates.
 
