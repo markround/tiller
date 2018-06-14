@@ -33,6 +33,8 @@ pages:
       - File: 'plugins/file.md'
       - HTTP: 'plugins/http.md'
       - Random: 'plugins/random.md'
+      - Regex: 'plugins/regex.md'
+      - Reusable Templates: 'plugins/reusable.md'
       - Hashicorp Vault: 'plugins/vault.md'
       - XML File: 'plugins/xml_file.md'
       - Zookeeper: 'plugins/zookeeper.md'

@@ -41,10 +41,10 @@ Feature: MD5 file checksums with noexec
     """
     test_var: This is a variable from the file datasource
     """
+    And the output should contain "[2/2] templates written, [0] skipped with no change"
+    And the output should contain "Template generation completed"
     And the output should contain:
     """
-    [2/2] templates written, [0] skipped with no change
-    Template generation completed
     Executing ["true"]...
     """
 
@@ -71,10 +71,7 @@ Feature: MD5 file checksums with noexec
     test_var: This is a variable from the file datasource
     """
     When I successfully run `tiller -b . -d -e development`
-    Then the output should contain:
-    """
-    [0/2] templates written, [2] skipped with no change
-    Template generation completed
-    No templates written, stopping without exec
-    """
+    Then the output should contain "[0/2] templates written, [2] skipped with no change"
+    Then the output should contain "Template generation completed"
+    Then the output should contain "No templates written, stopping without exec"
 

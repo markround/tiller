@@ -1,0 +1,30 @@
+---
+exec: [ "true" ]
+data_sources:
+  - file
+template_sources:
+  - file
+  - reusable
+
+environments:
+  development:
+    temp.erb:
+      target: temp.txt
+      config:
+        val: temp origin
+    temp.erb!1:
+      target: temp1.txt
+      config:
+        val: temp1
+    temp.erb!2:
+      target: temp2.txt
+      config:
+        val: temp2
+    temp.erb!3%:
+      target: temp3.txt
+      config:
+        val: temp3
+    temp.erb!test:
+      target: temp4.txt
+      config:
+        val: temp4

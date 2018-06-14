@@ -68,17 +68,11 @@ Feature: Configuration from config.d
     """
     Test var : From 02-environments.yaml
     """
-    And the output should contain:
-    """
-    Loading config file ./config.d/00-base.yaml
-    Loading config file ./config.d/01-defaults.yaml
-    Loading config file ./config.d/02-environments.yaml
-    """
-    And the output should contain:
-    """
-    Merging duplicate data values
-    test_var => 'From defaults module' being replaced by : 'From 02-environments.yaml' from FileDataSource
-    """
+    And the output should contain "Loading config file ./config.d/00-base.yaml"
+    And the output should contain "Loading config file ./config.d/01-defaults.yaml"
+    And the output should contain "Loading config file ./config.d/02-environments.yaml"
+    And the output should contain "Merging duplicate data values"
+    And the output should contain "test_var => 'From defaults module' being replaced by : 'From 02-environments.yaml' from FileDataSource"
 
   Scenario: Add additional templates in later configuration
     Given a file named "config.d/00-base.yaml" with:
@@ -117,9 +111,7 @@ Feature: Configuration from config.d
     """
     Additional var : From 02-development-additional.yaml
     """
-    And the output should contain:
-    """
-    Loading config file ./config.d/00-base.yaml
-    Loading config file ./config.d/01-development-base.yaml
-    Loading config file ./config.d/02-development-additional.yaml
-    """
+    And the output should contain "Loading config file ./config.d/00-base.yaml"
+    And the output should contain "Loading config file ./config.d/01-development-base.yaml"
+    And the output should contain "Loading config file ./config.d/02-development-additional.yaml"
+
