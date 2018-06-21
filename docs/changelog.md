@@ -1,4 +1,7 @@
 # 1.x
+  * 1.4.1 (21/Jun/2018) 
+    * No code changes, just corrected date in gemspec
+
   * 1.4.0 (14/Jun/2018)
     * Two new user-contributed plugins which allow you to [reuse templates](plugins/reusable.md) and [perform regex replacements](plugins/regex.md) inside existing files. Many thanks to the awesome work of [dmarchewka](https://github.com/dmarchewka) for the great PR, tests and documentation. 
     * Log output now includes timestamp and verbosity level. Again, thanks to [dmarchewka](https://github.com/dmarchewka) for supplying this pull request.
