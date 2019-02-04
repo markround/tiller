@@ -247,6 +247,7 @@ module Tiller
       log.debug("MD5 of #{template} is #{template_md5}")
       file_md5 = Digest::MD5.hexdigest(File.read(filename))
       log.debug("MD5 of #{filename} is #{file_md5}")
+
       if template_md5 == file_md5
         log.info("Content unchanged for #{template}, not writing anything")
         skipped_templates += 1
@@ -255,7 +256,7 @@ module Tiller
     end
 
     target = open(target_values['target'], 'w')
-    target.puts(parsed_template)
+    target.print(parsed_template)
     target.close
 
     updated_templates += 1
@@ -282,13 +283,17 @@ module Tiller
     end
 
     # Exec on write
-    if target_values.key?('exec_on_write')
+    if target_values.key?('exec_on_write') 
       if ! target_values['exec_on_write'].is_a?(Array)
         log.warn("Warning: exec_on_write for template #{template} is not in array format")
       else
-        eow_pid=launch(target_values['exec_on_write'])
-        pids.push(eow_pid)
-        log.info("exec_on_write process for #{template} forked with PID #{eow_pid}")
+        if config[:no_exec] == true
+          log.info("no-exec option set, so not running exec_on_write for this template")
+        else
+          eow_pid=launch(target_values['exec_on_write'])
+          pids.push(eow_pid)
+          log.info("exec_on_write process for #{template} forked with PID #{eow_pid}")
+        end
       end
     end
 
