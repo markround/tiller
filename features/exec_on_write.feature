@@ -140,5 +140,31 @@ Scenario: Test exec_on_write twice
     And the output should contain "[0/1] templates written, [1] skipped with no change"
     And a file named "exec_on_write.tmp.2" should not exist
 
+  Scenario: Test exec_on_write with --no-exec
+    Given a file named "common.yaml" with:
+    """
+    ---
+    exec: [ "cat" , "test.txt" ]
+    data_sources: [ "file" ]
+    template_sources: [ "file" ]
+
+    environments:
+      development:
+        test.erb:
+          target: test.txt
+          exec_on_write: ["touch" , "exec_on_write.tmp"]
+          config:
+            value: exec_on_write feature
+    """
+    And a directory named "templates"
+    And a file named "templates/test.erb" with:
+    """
+    value: <%= value %>
+    """
+    When I successfully run `tiller -vd -b . -l ./lib -n`
+    Then a file named "test.txt" should exist
+    And the file "test.txt" should contain "value: exec_on_write feature"
+    And a file named "exec_on_write.tmp" should not exist
+    And the output should match /no-exec option set, so not running exec_on_write for this template/
 
 

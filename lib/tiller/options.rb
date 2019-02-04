@@ -1,6 +1,6 @@
 def parse_options(config)
   optparse = OptionParser.new do |opts|
-    opts.on('-n', '--no-exec', 'Do not execute a replacement process') do
+    opts.on('-n', '--no-exec', 'Do not execute any processes') do
       config[:no_exec] = true
     end
     opts.on('-v', '--verbose', 'Display verbose output') do
