@@ -36,6 +36,9 @@ def parse_options(config)
     opts.on('--plugin-api-version [VERS]', 'Specify the plugin API version to use') do |plugin_api_version|
       config['plugin_api_version'] = plugin_api_version
     end
+    opts.on('--templates [TEMPLATES]', 'Only generate the specified,comma-separated list of templates') do |templates|
+      config['templates'] = templates.split(',')
+    end
 
     opts.on('-h', '--help', 'Display this screen') do
       puts opts

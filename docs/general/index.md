@@ -46,6 +46,7 @@ Tiller understands the following *optional* command-line arguments (mostly used 
 * `-h` / `--help` : Show a short help screen
 * `--md5sum` : Only write templates if they do not already exist, or their content has changed (see [below](#checksums)). 
 * `--md5sum-noexec` : If no templates were written/updated, do not execute any  process.
+* `--templates` : Only generate the specified comma-separated list of templates
 
 
 
