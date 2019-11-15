@@ -8,11 +8,14 @@ group :development do
   gem 'cucumber', '~> 2.4.0'
   gem 'httpclient'
   gem 'oj'
-  gem 'zk'
-  gem 'vault', '~> 0.1'
   gem 'ansible-vault'
   gem 'crack'
   gem 'rubyzip'
-  gem 'diplomat' , '~> 0.18.0'
   gem 'tiller', :path => '.'
+end
+
+group :deprecated do
+  gem 'zk'
+  gem 'vault', '~> 0.1'
+  gem 'diplomat' , '~> 0.18.0'
 end

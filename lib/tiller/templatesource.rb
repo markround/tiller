@@ -30,5 +30,10 @@ module Tiller
     def ping
       'ping!' + Tiller::config.to_s
     end
+
+    def deprecated
+      Tiller::log.warn("#{self} : This plugin is deprecated and will be removed in a future release")
+    end
+    
   end
 end

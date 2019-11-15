@@ -7,6 +7,7 @@ module Tiller::ConsulCommon
 
 
   def setup
+    self.deprecated
     # Set our defaults if not specified
     @consul_config = Tiller::Consul.defaults
     unless Tiller::config.has_key?('consul')

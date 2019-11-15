@@ -1,3 +1,7 @@
+# Deprecation Warning
+
+This plugin is deprecated and will be removed or significantly re-worked in a future release.
+
 # Vault plugins
 
 Tiller includes plugins to retrieve templates and values [Vault](https://www.vaultproject.io) cluster. These plugins rely on the `vault` gem to be present, so before proceeding ensure you have run `gem install vault` in your environment. This is not listed as a hard dependency of Tiller, as this would force the gem to be installed even on systems that would never use these plugins.
