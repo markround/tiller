@@ -7,6 +7,7 @@ require 'tiller/datasource'
 class ZookeeperDataSource < Tiller::DataSource
 
   def setup
+    self.deprecated
     # Set our defaults if not specified
     @zk_config = Tiller::Zookeeper::Defaults
 

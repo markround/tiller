@@ -3,6 +3,7 @@ require 'tiller/templatesource'
 class ZookeeperTemplateSource < Tiller::TemplateSource
 
   def setup
+    self.deprecated
     # Set our defaults if not specified
     @zk_config = Tiller::Zookeeper::Defaults
 

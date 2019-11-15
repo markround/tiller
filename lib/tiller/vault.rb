@@ -7,6 +7,7 @@ VAULT_TOKEN_FILE = ENV.key?('HOME') ? "#{Dir.home}/.vault-token" : nil
 
 module Tiller::VaultCommon
   def setup
+    self.deprecated
     # Set our defaults if not specified
     @vault_config = Tiller::Vault::Defaults
 
