@@ -1,3 +1,7 @@
+# Deprecation Warning
+
+This plugin is deprecated and will be removed or significantly re-worked in a future release.
+
 # Consul plugins
 
 As of version 0.7.8, Tiller includes plugins to retrieve templates, values, services and nodes from a [Consul](https://www.consul.io/) cluster. These plugins rely on the `diplomat` gem to be present, so before proceeding ensure you have run `gem install diplomat` in your environment. This is not listed as a hard dependency of Tiller, as this would force the gem to be installed even on systems that would never use these plugins.
