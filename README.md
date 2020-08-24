@@ -21,3 +21,17 @@ The main documentation has been updated and a searchable, easy to read version i
 You may like to read the [Quickstart](http://tiller.readthedocs.io/en/latest/quickstart/) guide if you want a very quick overview.
 
 There is also a [Gitter chatroom](https://gitter.im/markround/tiller) for you to ask any questions, suggest new features and talk to other users.
+
+# Status
+
+OK, real talk here. This project has more-or-less stalled. I hesitate to say "abandoned" because I still care about it, but I have to be honest with anyone who might be looking at using it. The thing is, my life has had a number of (positive!) changes recently such as becoming a Dad, which have led to my free project time being greatly reduced. 
+
+Also, due to job changes and the changing technology landscape I now find myself involved in, I haven't actually used Tiller for several years. On top of that, I have realised that there are several fundamental issues with Tiller that I should tackle: Things like a re-write in Golang to avoid having to drag in a full Ruby/Gem environment for the runtime, and I also now believe that the top-level construct should be the file, and not the template that generates it. This would mean, for example, that having multiple files generated from the same template would be a very simple operation. The problem with all that is again lack of time, and the fact that I _really_ hate Go as a programming language.
+
+So where does this leave the project ? Well, it _does_ work and has been battle-tested over many years. Some of the extra plugins such as Consul have badly stagnated however, and no longer work with current versions of libraries/APIs. If it works for you, then great! If you're looking for updates and a fancy Tiller 2.0 then I'm afraid you're going to be kept waiting. I'm not going to say "never" because I do still have a lot of love for this project; it was the first real open-source project I made that attracted a bunch of users, contributions and a small community around it which I'll always be thankful for. 
+
+But I guess it's best for everyone if you consider it "done" and what you see is what you get. If anyone is interested in forking it and producing a "Tiller - The Next Generation" then by all means give me a shout and I'll update things with links and pointers to your project but I won't be transferring ownership/RubyGems.org ownership etc. in the interests of security.
+
+Thanks again for everything, and stay safe out there.
+
+-Mark Dastmalchi-Round, August 2020
