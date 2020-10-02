@@ -43,9 +43,12 @@ class RegexTemplateSource < Tiller::TemplateSource
     end
     content = open(template_absolute).read
     @config_hash[template_name]['regex'].each{ |item|
-      find = String.new(item['find'])
       replace = String.new(item['replace'])
-      content.gsub!(Regexp.new(find), replace)
+      find = String.new(item['find'])
+      if find.start_with?('/')
+        find = eval(item['find'])
+      end
+      content.gsub!(find, replace)
     }
     target = open(template_absolute, 'w')
     target.puts(content)

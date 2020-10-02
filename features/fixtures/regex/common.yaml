@@ -8,10 +8,15 @@ template_sources:
 
 environments:
   development:
-    temp.erb!regex:
+    temp!regex:
       target: temp.txt
       regex:
         - find: confined
           replace: free
         - find: '^#some\.comment'
           replace: some.comment
+    temp2!regex:
+      target: temp2.txt
+      regex:
+        - find: /<!--\s+?<Connector\s+port="8443".+?certificateKeystoreFile="conf\/localhost-rsa.jks".+?<\/Connector>\s+?-->/m
+          replace: "<Connector protocol=\"org.apache.coyote.http11.Http11NioProtocol\"\n \t\tport=\"8443\" maxThreads=\"200\"\n \t</Connector>"
