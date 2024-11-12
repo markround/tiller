@@ -26,7 +26,7 @@ end
 
 
 Given(/^an empty consul data directory$/) do
-  if Dir.exists?(CONSUL_DATA_DIR)
+  if Dir.exist?(CONSUL_DATA_DIR)
     puts "Directory #{CONSUL_DATA_DIR} exists, deleting"
     FileUtils.rm_r(CONSUL_DATA_DIR)
   else

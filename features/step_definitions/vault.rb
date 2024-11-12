@@ -5,7 +5,7 @@ require 'pp'
 # Vault configuration
 VAULT_TOKEN_FILE = "#{Dir.home}/.vault-token"
 # So that Cucumber does not complain that the file does not exist
-File.open(VAULT_TOKEN_FILE, "w+"){|file| file.write(".")} if !File.exists? VAULT_TOKEN_FILE
+File.open(VAULT_TOKEN_FILE, "w+"){|file| file.write(".")} if !File.exist? VAULT_TOKEN_FILE
 
 Vault.configure do |config|
   config.address = "http://127.0.0.1:8200"
@@ -26,7 +26,7 @@ When(/^I have downloaded vault "(.+)" to "(.+)"$/) do |version, path|
 end
 
 And (/^a token should be created$/) do
-  test = File.exists? VAULT_TOKEN_FILE
+  test = File.exist? VAULT_TOKEN_FILE
   expect(test).to be_truthy
 end
 

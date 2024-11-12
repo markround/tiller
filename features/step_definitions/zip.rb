@@ -6,7 +6,7 @@ When(/^I have unzipped the archive "(.+)"$/) do |archive|
     zip_file.each do |entry|
       dest = File.join(dirname, entry.name)
       puts "Extracting #{entry.name} to #{dest}"
-      if File.exists?(dest)
+      if File.exist?(dest)
         puts "File exists, skipping..."
       else
         entry.extract(dest)

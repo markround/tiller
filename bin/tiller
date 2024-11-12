@@ -58,7 +58,7 @@ module Tiller
 
     # Is there a common.yaml ? If so, load that first
     common_file = File.join(config[:tiller_base], 'common.yaml')
-    if File.exists?(common_file)
+    if File.exist?(common_file)
       config.merge!(YAML.load(open(common_file)))
       config_loaded = true
     end
@@ -242,7 +242,7 @@ module Tiller
     filename = target_values['target']
 
     # MD5 checksum of templates
-    if config['md5sum'] && File.exists?(filename)
+    if config['md5sum'] && File.exist?(filename)
       template_md5 = Digest::MD5.hexdigest(parsed_template)
       log.debug("MD5 of #{template} is #{template_md5}")
       file_md5 = Digest::MD5.hexdigest(File.read(filename))

@@ -19,7 +19,7 @@ module Tiller::VaultCommon
 
     # Sanity checks
     ['url'].each {|c| raise "Missing Vault configuration #{c}" unless @vault_config.has_key?(c)}
-    raise "Missing Vault token" if !((VAULT_TOKEN_FILE && File.exists?(VAULT_TOKEN_FILE)) || @vault_config['token'] || ENV['VAULT_TOKEN'])
+    raise "Missing Vault token" if !((VAULT_TOKEN_FILE && File.exist?(VAULT_TOKEN_FILE)) || @vault_config['token'] || ENV['VAULT_TOKEN'])
 
     Vault.configure do |config|
         # The address of the Vault server

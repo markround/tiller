@@ -1,4 +1,6 @@
 # 1.x
+  * 1.5.1 (07/Nov/2024)
+    * Updated File/Dir.exists? to exist? due to exists? being removed from Ruby 3.2+
   * 1.5.0 (02/Feb/2019)
     * Fixed [Issue #48](https://github.com/markround/tiller/issues/48). MD5 checksums were incorrectly calculated as a newline character was getting added. Also modified --no-exec flag so that it also prevents any exec_on_write commands running. Thanks again [EugenMayer](https://github.com/EugenMayer) for the comments.
 
